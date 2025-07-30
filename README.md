@@ -38,7 +38,8 @@ Arvo maintains minimal opinions, giving you maximum freedom to implement your ar
 Arvo addresses critical event-driven architecture design bottlenecks that typically require complex custom solutions:
 
 #### Event Structure
-The heart of an event-driven system is inter-service communication, and the event is the foundational data structure upon which everything else depends. At the core of Arvo is an open standard based custom JSON-based, self-describing event structure that extends the [CloudEvent](https://cloudevents.io) specification. Arvo calls this enhanced event an `ArvoEvent`.
+
+The heart of an event-driven system is inter-service communication, and the event is the foundational data structure upon which everything else depends. At the core of Arvo is an open standard based custom, self-describing JSON event structure that extends the [CloudEvent](https://cloudevents.io) specification. Arvo calls this event an `ArvoEvent`.
 
 This sophisticated data structure carries not only the business payload but also comprehensive metadata for system operation: data integrity validation through schema references, intelligent routing information for next-hop delivery, security and access control information, distributed telemetry headers for end-to-end tracing, as well as deduplication, causation, and process correlation identifiers that link related events across complex workflows.
 
