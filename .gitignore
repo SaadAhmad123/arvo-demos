@@ -1,0 +1,12 @@
+dist
+node_modules
+.env
+yarn-error.log
+coverage
+.yarnrc.yml
+.temp
+deployable
+.DS_Store
+asyncapi.spec.json
+interface.spec.json
+.vector_store
