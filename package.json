@@ -1,6 +1,6 @@
 {
-  "name": "typescript-starter-project",
-  "description": "This is a starter project template for a typescript project",
+  "name": "arvo-practice",
+  "description": "This project containes different Arvo modules for practice and demo",
   "version": "1.0.0",
   "type": "module",
   "exports": {
