@@ -1,18 +1,38 @@
+---
+[Hero Section]
+- Headline: "Arvo - A Toolkit for Service Choreography"
+- Subheading: "Build reliable, evolutionary event-driven applications that scale from simple microservices to complex distributed workflows"
+- CTA Buttons: [Get Started] [View Documentation] [GitHub]
+
+[Core Value Props - 3 columns]
+1. "Simplicity Through Composition"
+2. "Built-in Reliability" 
+3. "Evolutionary Architecture"
+
+[Second Hero]
+"Start Simple, Scale Naturally"
+
+[Quick Start Section]
+- Code snippet showing basic usage
+- Link to Getting Started guide
+---
+
 # Arvo - A Toolkit for Service Choreography
 
 Arvo is an enterprise-grade Node.js standard library for building reliable, evolutionary event-driven applications that scale from simple microservices to complex distributed workflows and agents.
 
 #### Simplicity Through Composition
  
-Arvo provides focused, composable primitives that work together seamlessly across all complexity levels. Whether you're building a single stateless service or orchestrating complex multi-agent workflows, you use only what you need without architectural lock-in. Arvo's design philosophy embraces gradual adoption - **start simple and evolve naturally** as your requirements grow.
+Arvo provides focused, composable primitives that work together seamlessly across all complexity levels. Whether you're building a single stateless service or orchestrating complex multi-agent/service workflows, you use only what you need without architectural lock-in. Arvo's design philosophy embraces gradual adoption - **start simple and evolve naturally** as your requirements grow.
 
 ### Built-in Reliability
 
-Reliability isn't an afterthought in Arvo - it's engineered into the foundation. Every service interaction is validated against explicit contracts, traced through distributed OpenTelemetry, and made replayable through event sourcing. This contract-first approach eliminates entire classes of integration failures while providing comprehensive observability from day one. When issues arise, you have complete visibility into event flows and the ability to replay scenarios for debugging.
+Reliability isn't an afterthought in Arvo - it's **engineered into the foundation**. Every service interaction is validated against explicit contracts, traced through distributed OpenTelemetry, and made replayable through event sourcing. The **contract-first approach** eliminates entire classes of integration failures while providing comprehensive observability from day one. When issues arise, you have complete visibility into event flows and the ability to replay scenarios for debugging.
 
 ### Evolutionary Architecture
 
-Arvo treats system evolution as a fundamental requirement, not an edge case. Services evolve independently while maintaining compatibility through semantic contract versioning and backward-compatible schema evolution. This enables teams to deploy changes confidently, knowing that existing consumers remain unaffected. The framework provides clear evolution paths that let you refactor implementations while preserving external interfaces.
+Event-driven systems are notoriously difficult to evolve due to service decoupling trade-offs. Arvo treats **system evolution as a fundamental requirement** by addressing the **core issue: integration**. Through semantic versioning in contracts and version-sensitive primitives, Arvo provides comprehensive semantics that make system evolution a core tenant of event-driven architecture. This delivers clear evolution paths that enable system changes with confidence and peace of mind.
+
 
 ## Safe Scaling
 
@@ -20,7 +40,7 @@ Safe scaling in Arvo means two things:
 
 ### Infrastructure Flexibility
 
-Your business logic remains unchanged whether you're running on a single machine or distributed across multiple data centers. Arvo's event-driven architecture scales horizontally by design, while vertical scaling happens naturally. More importantly, you can transition between scaling strategies without rewriting your application - start vertical, go horizontal, then back to vertical if needed. The choice is yours, and it's reversible.
+Your business logic remains unchanged whether you're running on a single machine or distributed across multiple data centers. Arvo's event-driven architecture scales horizontally by design, while vertical scaling comes naturally. More importantly, **you can transition between scaling strategies** without rewriting your application - start vertical, go horizontal, then back to vertical if needed. The **choice is yours, and it's reversible**.
 
 ### Feature Reliability
 

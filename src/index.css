@@ -1,0 +1,335 @@
+@import "tailwindcss";
+
+@custom-variant lightmc (&:where(.light-mc, .light-mc *));
+@custom-variant lighthc (&:where(.light-hc, .light-hc *));
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant darkmc (&:where(.dark-mc, .dark-mc *));
+@custom-variant darkhc (&:where(.dark-hc, .dark-hc *));
+
+@theme {
+  /* Default (Standard Contrast) Light Mode */
+  --color-primary: rgb(133, 75, 113);
+  --color-surface-tint: rgb(133, 75, 113);
+  --color-on-primary: rgb(255, 255, 255);
+  --color-primary-container: rgb(255, 216, 237);
+  --color-on-primary-container: rgb(106, 52, 89);
+  --color-secondary: rgb(112, 87, 102);
+  --color-on-secondary: rgb(255, 255, 255);
+  --color-secondary-container: rgb(251, 218, 235);
+  --color-on-secondary-container: rgb(87, 64, 78);
+  --color-tertiary: rgb(128, 84, 62);
+  --color-on-tertiary: rgb(255, 255, 255);
+  --color-tertiary-container: rgb(255, 219, 204);
+  --color-on-tertiary-container: rgb(101, 61, 41);
+  --color-error: rgb(186, 26, 26);
+  --color-on-error: rgb(255, 255, 255);
+  --color-error-container: rgb(255, 218, 214);
+  --color-on-error-container: rgb(147, 0, 10);
+  --color-background: rgb(255, 248, 249);
+  --color-on-background: rgb(33, 26, 29);
+  --color-surface: rgb(255, 248, 249);
+  --color-on-surface: rgb(33, 26, 29);
+  --color-surface-variant: rgb(240, 222, 229);
+  --color-on-surface-variant: rgb(79, 68, 74);
+  --color-outline: rgb(129, 115, 122);
+  --color-outline-variant: rgb(211, 194, 201);
+  --color-shadow: rgb(0, 0, 0);
+  --color-scrim: rgb(0, 0, 0);
+  --color-inverse-surface: rgb(54, 46, 50);
+  --color-inverse-on-surface: rgb(251, 237, 242);
+  --color-inverse-primary: rgb(248, 177, 220);
+  --color-primary-fixed: rgb(255, 216, 237);
+  --color-on-primary-fixed: rgb(54, 7, 43);
+  --color-primary-fixed-dim: rgb(248, 177, 220);
+  --color-on-primary-fixed-variant: rgb(106, 52, 89);
+  --color-secondary-fixed: rgb(251, 218, 235);
+  --color-on-secondary-fixed: rgb(40, 22, 34);
+  --color-secondary-fixed-dim: rgb(221, 190, 207);
+  --color-on-secondary-fixed-variant: rgb(87, 64, 78);
+  --color-tertiary-fixed: rgb(255, 219, 204);
+  --color-on-tertiary-fixed: rgb(49, 19, 4);
+  --color-tertiary-fixed-dim: rgb(244, 185, 159);
+  --color-on-tertiary-fixed-variant: rgb(101, 61, 41);
+  --color-surface-dim: rgb(228, 214, 220);
+  --color-surface-bright: rgb(255, 248, 249);
+  --color-surface-container-lowest: rgb(255, 255, 255);
+  --color-surface-container-low: rgb(254, 240, 245);
+  --color-surface-container: rgb(248, 234, 239);
+  --color-surface-container-high: rgb(243, 229, 234);
+  --color-surface-container-highest: rgb(237, 223, 228);
+}
+
+@layer base {
+  @variant dark {
+    --color-primary: rgb(248, 177, 220);
+    --color-surface-tint: rgb(248, 177, 220);
+    --color-on-primary: rgb(80, 30, 65);
+    --color-primary-container: rgb(106, 52, 89);
+    --color-on-primary-container: rgb(255, 216, 237);
+    --color-secondary: rgb(221, 190, 207);
+    --color-on-secondary: rgb(63, 42, 55);
+    --color-secondary-container: rgb(87, 64, 78);
+    --color-on-secondary-container: rgb(251, 218, 235);
+    --color-tertiary: rgb(244, 185, 159);
+    --color-on-tertiary: rgb(75, 39, 21);
+    --color-tertiary-container: rgb(101, 61, 41);
+    --color-on-tertiary-container: rgb(255, 219, 204);
+    --color-error: rgb(255, 180, 171);
+    --color-on-error: rgb(105, 0, 5);
+    --color-error-container: rgb(147, 0, 10);
+    --color-on-error-container: rgb(255, 218, 214);
+    --color-background: rgb(24, 17, 21);
+    --color-on-background: rgb(237, 223, 228);
+    --color-surface: rgb(24, 17, 21);
+    --color-on-surface: rgb(237, 223, 228);
+    --color-surface-variant: rgb(79, 68, 74);
+    --color-on-surface-variant: rgb(211, 194, 201);
+    --color-outline: rgb(155, 141, 148);
+    --color-outline-variant: rgb(79, 68, 74);
+    --color-shadow: rgb(0, 0, 0);
+    --color-scrim: rgb(0, 0, 0);
+    --color-inverse-surface: rgb(237, 223, 228);
+    --color-inverse-on-surface: rgb(54, 46, 50);
+    --color-inverse-primary: rgb(133, 75, 113);
+    --color-primary-fixed: rgb(255, 216, 237);
+    --color-on-primary-fixed: rgb(54, 7, 43);
+    --color-primary-fixed-dim: rgb(248, 177, 220);
+    --color-on-primary-fixed-variant: rgb(106, 52, 89);
+    --color-secondary-fixed: rgb(251, 218, 235);
+    --color-on-secondary-fixed: rgb(40, 22, 34);
+    --color-secondary-fixed-dim: rgb(221, 190, 207);
+    --color-on-secondary-fixed-variant: rgb(87, 64, 78);
+    --color-tertiary-fixed: rgb(255, 219, 204);
+    --color-on-tertiary-fixed: rgb(49, 19, 4);
+    --color-tertiary-fixed-dim: rgb(244, 185, 159);
+    --color-on-tertiary-fixed-variant: rgb(101, 61, 41);
+    --color-surface-dim: rgb(24, 17, 21);
+    --color-surface-bright: rgb(63, 55, 59);
+    --color-surface-container-lowest: rgb(19, 12, 16);
+    --color-surface-container-low: rgb(33, 26, 29);
+    --color-surface-container: rgb(37, 30, 33);
+    --color-surface-container-high: rgb(47, 40, 44);
+    --color-surface-container-highest: rgb(59, 51, 55);
+  }
+}
+
+/* Medium Contrast Light Mode */
+@layer base {
+  @variant lightmc {
+    --color-primary: rgb(86, 36, 71);
+    --color-surface-tint: rgb(133, 75, 113);
+    --color-on-primary: rgb(255, 255, 255);
+    --color-primary-container: rgb(149, 90, 128);
+    --color-on-primary-container: rgb(255, 255, 255);
+    --color-secondary: rgb(69, 48, 61);
+    --color-on-secondary: rgb(255, 255, 255);
+    --color-secondary-container: rgb(128, 102, 116);
+    --color-on-secondary-container: rgb(255, 255, 255);
+    --color-tertiary: rgb(82, 44, 26);
+    --color-on-tertiary: rgb(255, 255, 255);
+    --color-tertiary-container: rgb(145, 98, 76);
+    --color-on-tertiary-container: rgb(255, 255, 255);
+    --color-error: rgb(116, 0, 6);
+    --color-on-error: rgb(255, 255, 255);
+    --color-error-container: rgb(207, 44, 39);
+    --color-on-error-container: rgb(255, 255, 255);
+    --color-background: rgb(255, 248, 249);
+    --color-on-background: rgb(33, 26, 29);
+    --color-surface: rgb(255, 248, 249);
+    --color-on-surface: rgb(22, 15, 19);
+    --color-surface-variant: rgb(240, 222, 229);
+    --color-on-surface-variant: rgb(62, 51, 57);
+    --color-outline: rgb(91, 79, 85);
+    --color-outline-variant: rgb(119, 105, 112);
+    --color-shadow: rgb(0, 0, 0);
+    --color-scrim: rgb(0, 0, 0);
+    --color-inverse-surface: rgb(54, 46, 50);
+    --color-inverse-on-surface: rgb(251, 237, 242);
+    --color-inverse-primary: rgb(248, 177, 220);
+    --color-primary-fixed: rgb(149, 90, 128);
+    --color-on-primary-fixed: rgb(255, 255, 255);
+    --color-primary-fixed-dim: rgb(122, 66, 103);
+    --color-on-primary-fixed-variant: rgb(255, 255, 255);
+    --color-secondary-fixed: rgb(128, 102, 116);
+    --color-on-secondary-fixed: rgb(255, 255, 255);
+    --color-secondary-fixed-dim: rgb(102, 78, 92);
+    --color-on-secondary-fixed-variant: rgb(255, 255, 255);
+    --color-tertiary-fixed: rgb(145, 98, 76);
+    --color-on-tertiary-fixed: rgb(255, 255, 255);
+    --color-tertiary-fixed-dim: rgb(117, 74, 54);
+    --color-on-tertiary-fixed-variant: rgb(255, 255, 255);
+    --color-surface-dim: rgb(208, 195, 200);
+    --color-surface-bright: rgb(255, 248, 249);
+    --color-surface-container-lowest: rgb(255, 255, 255);
+    --color-surface-container-low: rgb(254, 240, 245);
+    --color-surface-container: rgb(243, 229, 234);
+    --color-surface-container-high: rgb(231, 217, 222);
+    --color-surface-container-highest: rgb(220, 206, 211);
+  }
+}
+
+/* Medium Contrast Dark Mode */
+@layer base {
+  @variant darkmc {
+    --color-primary: rgb(255, 207, 234);
+    --color-surface-tint: rgb(248, 177, 220);
+    --color-on-primary: rgb(67, 19, 54);
+    --color-primary-container: rgb(189, 125, 165);
+    --color-on-primary-container: rgb(0, 0, 0);
+    --color-secondary: rgb(244, 211, 228);
+    --color-on-secondary: rgb(51, 31, 44);
+    --color-secondary-container: rgb(165, 137, 152);
+    --color-on-secondary-container: rgb(0, 0, 0);
+    --color-tertiary: rgb(255, 211, 192);
+    --color-on-tertiary: rgb(62, 28, 11);
+    --color-tertiary-container: rgb(185, 133, 109);
+    --color-on-tertiary-container: rgb(0, 0, 0);
+    --color-error: rgb(255, 210, 204);
+    --color-on-error: rgb(84, 0, 3);
+    --color-error-container: rgb(255, 84, 73);
+    --color-on-error-container: rgb(0, 0, 0);
+    --color-background: rgb(24, 17, 21);
+    --color-on-background: rgb(237, 223, 228);
+    --color-surface: rgb(24, 17, 21);
+    --color-on-surface: rgb(255, 255, 255);
+    --color-surface-variant: rgb(79, 68, 74);
+    --color-on-surface-variant: rgb(233, 216, 223);
+    --color-outline: rgb(190, 174, 181);
+    --color-outline-variant: rgb(155, 140, 147);
+    --color-shadow: rgb(0, 0, 0);
+    --color-scrim: rgb(0, 0, 0);
+    --color-inverse-surface: rgb(237, 223, 228);
+    --color-inverse-on-surface: rgb(48, 40, 44);
+    --color-inverse-primary: rgb(107, 53, 90);
+    --color-primary-fixed: rgb(255, 216, 237);
+    --color-on-primary-fixed: rgb(41, 0, 31);
+    --color-primary-fixed-dim: rgb(248, 177, 220);
+    --color-on-primary-fixed-variant: rgb(86, 36, 71);
+    --color-secondary-fixed: rgb(251, 218, 235);
+    --color-on-secondary-fixed: rgb(29, 11, 23);
+    --color-secondary-fixed-dim: rgb(221, 190, 207);
+    --color-on-secondary-fixed-variant: rgb(69, 48, 61);
+    --color-tertiary-fixed: rgb(255, 219, 204);
+    --color-on-tertiary-fixed: rgb(36, 9, 0);
+    --color-tertiary-fixed-dim: rgb(244, 185, 159);
+    --color-on-tertiary-fixed-variant: rgb(82, 44, 26);
+    --color-surface-dim: rgb(24, 17, 21);
+    --color-surface-bright: rgb(75, 66, 70);
+    --color-surface-container-lowest: rgb(11, 6, 9);
+    --color-surface-container-low: rgb(35, 28, 31);
+    --color-surface-container: rgb(45, 38, 42);
+    --color-surface-container-high: rgb(56, 48, 52);
+    --color-surface-container-highest: rgb(68, 59, 64);
+  }
+}
+
+/* High Contrast Light Mode */
+@layer base {
+  @variant lighthc {
+    --color-primary: rgb(75, 25, 61);
+    --color-surface-tint: rgb(133, 75, 113);
+    --color-on-primary: rgb(255, 255, 255);
+    --color-primary-container: rgb(109, 55, 91);
+    --color-on-primary-container: rgb(255, 255, 255);
+    --color-secondary: rgb(58, 38, 51);
+    --color-on-secondary: rgb(255, 255, 255);
+    --color-secondary-container: rgb(90, 66, 80);
+    --color-on-secondary-container: rgb(255, 255, 255);
+    --color-tertiary: rgb(70, 35, 17);
+    --color-on-tertiary: rgb(255, 255, 255);
+    --color-tertiary-container: rgb(104, 63, 43);
+    --color-on-tertiary-container: rgb(255, 255, 255);
+    --color-error: rgb(96, 0, 4);
+    --color-on-error: rgb(255, 255, 255);
+    --color-error-container: rgb(152, 0, 10);
+    --color-on-error-container: rgb(255, 255, 255);
+    --color-background: rgb(255, 248, 249);
+    --color-on-background: rgb(33, 26, 29);
+    --color-surface: rgb(255, 248, 249);
+    --color-on-surface: rgb(0, 0, 0);
+    --color-surface-variant: rgb(240, 222, 229);
+    --color-on-surface-variant: rgb(0, 0, 0);
+    --color-outline: rgb(51, 41, 47);
+    --color-outline-variant: rgb(82, 70, 76);
+    --color-shadow: rgb(0, 0, 0);
+    --color-scrim: rgb(0, 0, 0);
+    --color-inverse-surface: rgb(54, 46, 50);
+    --color-inverse-on-surface: rgb(255, 255, 255);
+    --color-inverse-primary: rgb(248, 177, 220);
+    --color-primary-fixed: rgb(109, 55, 91);
+    --color-on-primary-fixed: rgb(255, 255, 255);
+    --color-primary-fixed-dim: rgb(82, 32, 67);
+    --color-on-primary-fixed-variant: rgb(255, 255, 255);
+    --color-secondary-fixed: rgb(90, 66, 80);
+    --color-on-secondary-fixed: rgb(255, 255, 255);
+    --color-secondary-fixed-dim: rgb(65, 44, 57);
+    --color-on-secondary-fixed-variant: rgb(255, 255, 255);
+    --color-tertiary-fixed: rgb(104, 63, 43);
+    --color-on-tertiary-fixed: rgb(255, 255, 255);
+    --color-tertiary-fixed-dim: rgb(78, 41, 23);
+    --color-on-tertiary-fixed-variant: rgb(255, 255, 255);
+    --color-surface-dim: rgb(194, 181, 186);
+    --color-surface-bright: rgb(255, 248, 249);
+    --color-surface-container-lowest: rgb(255, 255, 255);
+    --color-surface-container-low: rgb(251, 237, 242);
+    --color-surface-container: rgb(237, 223, 228);
+    --color-surface-container-high: rgb(222, 209, 214);
+    --color-surface-container-highest: rgb(208, 195, 200);
+  }
+}
+
+/* High Contrast Dark Mode */
+@layer base {
+  @variant darkhc {
+    --color-primary: rgb(255, 235, 244);
+    --color-surface-tint: rgb(248, 177, 220);
+    --color-on-primary: rgb(0, 0, 0);
+    --color-primary-container: rgb(244, 173, 217);
+    --color-on-primary-container: rgb(30, 0, 23);
+    --color-secondary: rgb(255, 235, 244);
+    --color-on-secondary: rgb(0, 0, 0);
+    --color-secondary-container: rgb(217, 186, 203);
+    --color-on-secondary-container: rgb(22, 6, 17);
+    --color-tertiary: rgb(255, 236, 229);
+    --color-on-tertiary: rgb(0, 0, 0);
+    --color-tertiary-container: rgb(240, 182, 156);
+    --color-on-tertiary-container: rgb(27, 5, 0);
+    --color-error: rgb(255, 236, 233);
+    --color-on-error: rgb(0, 0, 0);
+    --color-error-container: rgb(255, 174, 164);
+    --color-on-error-container: rgb(34, 0, 1);
+    --color-background: rgb(24, 17, 21);
+    --color-on-background: rgb(237, 223, 228);
+    --color-surface: rgb(24, 17, 21);
+    --color-on-surface: rgb(255, 255, 255);
+    --color-surface-variant: rgb(79, 68, 74);
+    --color-on-surface-variant: rgb(255, 255, 255);
+    --color-outline: rgb(253, 235, 243);
+    --color-outline-variant: rgb(207, 190, 198);
+    --color-shadow: rgb(0, 0, 0);
+    --color-scrim: rgb(0, 0, 0);
+    --color-inverse-surface: rgb(237, 223, 228);
+    --color-inverse-on-surface: rgb(0, 0, 0);
+    --color-inverse-primary: rgb(107, 53, 90);
+    --color-primary-fixed: rgb(255, 216, 237);
+    --color-on-primary-fixed: rgb(0, 0, 0);
+    --color-primary-fixed-dim: rgb(248, 177, 220);
+    --color-on-primary-fixed-variant: rgb(41, 0, 31);
+    --color-secondary-fixed: rgb(251, 218, 235);
+    --color-on-secondary-fixed: rgb(0, 0, 0);
+    --color-secondary-fixed-dim: rgb(221, 190, 207);
+    --color-on-secondary-fixed-variant: rgb(29, 11, 23);
+    --color-tertiary-fixed: rgb(255, 219, 204);
+    --color-on-tertiary-fixed: rgb(0, 0, 0);
+    --color-tertiary-fixed-dim: rgb(244, 185, 159);
+    --color-on-tertiary-fixed-variant: rgb(36, 9, 0);
+    --color-surface-dim: rgb(24, 17, 21);
+    --color-surface-bright: rgb(87, 78, 82);
+    --color-surface-container-lowest: rgb(0, 0, 0);
+    --color-surface-container-low: rgb(37, 30, 33);
+    --color-surface-container: rgb(54, 46, 50);
+    --color-surface-container-high: rgb(65, 57, 61);
+    --color-surface-container-highest: rgb(77, 68, 73);
+  }
+}
