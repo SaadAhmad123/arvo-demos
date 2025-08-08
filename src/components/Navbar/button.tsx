@@ -6,9 +6,9 @@ export const NavButton: React.FC<NavOption> = ({ title, icon, link, isSelected }
   const location = useLocation();
 
   return (
-    <Link to={link} className={'group size-[56px] flex flex-col items-center justify-center'}>
+    <Link to={link} className={'group size-[56px] flex flex-col items-center justify-center text-primary'}>
       <span
-        className={`flex items-center justify-center w-[56px] h-[32px] group-hover:bg-surface-variant rounded-[16px] transition-all duration-400 ${isSelected(location) ? 'bg-secondary-container' : ''} mb-[4px]`}
+        className={`flex items-center justify-center w-[56px] h-[32px] rounded-[16px] transition-all duration-400 ${isSelected(location) ? 'bg-secondary-container' : 'group-hover:bg-surface-variant'} mb-[4px]`}
       >
         {icon}
       </span>

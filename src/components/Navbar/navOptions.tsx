@@ -1,10 +1,10 @@
 import type { NavOption } from './types';
-import { AiOutlineHome } from 'react-icons/ai';
+import { MdHome } from 'react-icons/md';
 
 export const navOptions: NavOption[] = [
   {
     title: 'Home',
-    icon: <AiOutlineHome size={24} />,
+    icon: <MdHome size={24} />,
     link: '/',
     isSelected: (location) => location.pathname === '/',
   },

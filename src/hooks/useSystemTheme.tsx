@@ -20,7 +20,7 @@ export const useSystemTheme = (
     try {
       document.documentElement.className = `${theme}${contrast === 'medium' ? '-mc' : contrast === 'high' ? '-hc' : ''}`; // Get computed style from root element
       const rootStyles = getComputedStyle(document.documentElement);
-      const primaryColor = rootStyles.getPropertyValue('--color-primary').trim();
+      const primaryColor = rootStyles.getPropertyValue('--color-background').trim();
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 
       if (metaThemeColor) {

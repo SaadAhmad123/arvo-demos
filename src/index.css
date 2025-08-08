@@ -8,6 +8,10 @@
 @custom-variant darkhc (&:where(.dark-hc, .dark-hc *));
 
 @theme {
+  --font-montserrat: Montserrat, sans-serif;
+  --font-roboto: Roboto, sans-serif;
+  --font-family-roboto: Roboto, sans-serif;
+
   /* Default (Standard Contrast) Light Mode */
   --color-primary: rgb(143 76 52);
   --color-surface-tint: rgb(143 76 52);
