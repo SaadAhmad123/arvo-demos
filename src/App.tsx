@@ -1,12 +1,17 @@
+import { Navigate, Route, Routes } from 'react-router';
 import { useSystemTheme } from './hooks/useSystemTheme';
 import './index.css';
+import { HomePage } from './pages/Home';
+import { NotFoundPage } from './pages/404';
 
 export default () => {
   useSystemTheme();
 
   return (
-    <div>
-      <h1 className='text-3xl bg-primary text-on-primary'>Hello from Arvo</h1>
-    </div>
+    <Routes>
+      <Route index element={<HomePage />} />
+      <Route path='/404' element={<NotFoundPage />} />
+      <Route path='*' element={<Navigate to={'/404'} replace />} />
+    </Routes>
   );
 };
