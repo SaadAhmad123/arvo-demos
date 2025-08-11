@@ -2,7 +2,7 @@ export const Md3Cards = {
   elevated: `
     rounded-xl
     bg-surface-container-high
-    text-surface-container
+    text-on-surface
     shadow-sm
     hover:shadow-md
     transition-shadow duration-200
@@ -11,7 +11,7 @@ export const Md3Cards = {
   filled: `
     rounded-xl
     bg-surface-container
-    text-on-surface-container
+    text-on-surface
     shadow-none
   `,
 

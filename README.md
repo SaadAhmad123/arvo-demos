@@ -19,7 +19,7 @@
 
 # Arvo - A Toolkit for Service Choreography
 
-Arvo is an enterprise-grade Node.js standard library for building reliable, evolutionary event-driven applications that scale from simple microservices to complex distributed workflows and agents.
+Build reliable, scalable, and adaptable event-driven applications using an enterprise-grade Node.js toolkit. Develop sophisticated AI agents, automated workflows, and robust business applications with the flexibility to deploy anywhere and scale seamlessly as your needs evolve.
 
 #### Simplicity Through Composition
  

@@ -24,7 +24,7 @@ const elevatedButtonWithIcon = `
   font-roboto
   cursor-pointer
   disabled:cursor-not-allowed
-  h-10 min-w-[64px] pl-4 pr-6 
+  h-10 min-w-[64px] pl-4 pr-4
   rounded-full 
   bg-surface-container-low 
   text-primary 
@@ -62,7 +62,7 @@ const filledButtonWithIcon = `
   font-roboto
   cursor-pointer
   disabled:cursor-not-allowed
-  h-10 min-w-[64px] pl-4 pr-6 
+  h-10 min-w-[64px] pl-4 pr-4
   rounded-full 
   bg-primary 
   text-on-primary 
@@ -99,7 +99,7 @@ const filledTonalButtonWithIcon = `
   font-roboto
   cursor-pointer
   disabled:cursor-not-allowed
-  h-10 min-w-[64px] pl-4 pr-6 
+  h-10 min-w-[64px] pl-4 pr-4
   rounded-full 
   bg-secondary-container 
   text-on-secondary-container 
@@ -137,7 +137,7 @@ const outlinedButtonWithIcon = `
   font-roboto
   cursor-pointer
   disabled:cursor-not-allowed
-  h-10 min-w-[64px] pl-4 pr-6 
+  h-10 min-w-[64px] pl-4 pr-4
   rounded-full 
   bg-transparent 
   text-primary 

@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 
 export const useDebounce = <T extends unknown[]>(func: (...args: T) => void, delay: number) => {
-  const timeoutRef = useRef<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
   const funcRef = useRef(func);
   funcRef.current = func;
   const invoke = (...args: T) => {

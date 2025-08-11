@@ -3,7 +3,7 @@ import { Md3Typography } from '../../../classNames/typography';
 import { Separator } from '../../../components/Separator';
 
 export const Hero = () => (
-  <div className={`${Md3Cards.filled} px-6 py-10 md:px-8 md:py-16 lg:px-10 lg:py-20 flex flex-col justify-center`}>
+  <div className={`${Md3Cards.filled} px-4 py-8 md:px-8 md:py-16 lg:px-10 lg:py-20 flex flex-col justify-center`}>
     <h1 className={`${Md3Typography.display.large} font-bold tracking-tight text-on-surface`}>Arvo</h1>
 
     <Separator padding={2} />
@@ -15,8 +15,9 @@ export const Hero = () => (
     <Separator padding={24} />
 
     <p className={`${Md3Typography.body.large} text-on-surface-variant leading-relaxed`}>
-      Build reliable, evolutionary event-driven applications that scale from simple microservices to complex distributed
-      workflows and intelligent agents
+      Build reliable, scalable, and adaptable event-driven applications using an enterprise-grade Node.js toolkit.
+      Develop sophisticated AI agents, automated workflows, and robust business applications with the flexibility to
+      deploy anywhere and scale seamlessly as your needs evolve.
     </p>
   </div>
 );
