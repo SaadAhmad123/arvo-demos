@@ -1,6 +1,6 @@
 export const Md3Cards = {
   elevated: `
-    rounded-xl
+    rounded-3xl
     bg-surface-container-high
     text-on-surface
     shadow-sm
@@ -9,14 +9,14 @@ export const Md3Cards = {
   `,
 
   filled: `
-    rounded-xl
+    rounded-3xl
     bg-surface-container
     text-on-surface
     shadow-none
   `,
 
   outlined: `
-    rounded-xl
+    rounded-3xl
     bg-surface
     text-on-surface
     border border-outline
@@ -41,18 +41,7 @@ export const Md3Cards = {
 
   inner: {
     content: `
-      p-4 space-y-2
-    `,
-
-    media: `
-      w-full overflow-hidden rounded-t-xl
-      aspect-video object-cover
-    `,
-
-    actions: `
-      flex items-center justify-end
-      px-4 pb-4 pt-2
-      gap-2
+      p-[32px] sm:p-[56px]
     `,
   },
 } as const;

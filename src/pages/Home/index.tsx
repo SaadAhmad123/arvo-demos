@@ -7,15 +7,7 @@ import { withNavBar } from '../../components/Navbar/withNavBar';
 import { Separator } from '../../components/Separator';
 import { CTA } from './components/CTA';
 import { Hero } from './components/Hero';
-import {
-  HiCheckCircle,
-  HiLightningBolt,
-  HiCube,
-  HiPuzzle,
-  HiShieldCheck,
-  HiTrendingUp,
-  HiArrowRight,
-} from 'react-icons/hi';
+import { HiPuzzle, HiShieldCheck, HiTrendingUp, HiArrowRight } from 'react-icons/hi';
 import { runPhase3 } from '../../examples/simplicity_through_composition';
 import { useMount } from '../../hooks/useMount';
 
@@ -37,37 +29,23 @@ export const HomePage = withNavBar(() => {
         </div>
       </ContentContainer>
       <Separator padding={18} />
-      <ContentContainer>
-        <div className='flex flex-wrap items-center justify-center gap-2'>
-          {[
-            [HiCheckCircle, 'Production Ready'],
-            [HiLightningBolt, 'Built for Scale'],
-            [HiCube, 'Infrastructure Agnostic'],
-          ].map(([Icon, text], index) => (
-            <div
-              key={index.toString()}
-              className={`${Md3Cards.outlined} p-4 flex items-center justify-center gap-2 text-sm text-on-surface-variant w-full sm:w-auto`}
-            >
-              <Icon className='w-5 h-5' />
-              <span className='font-medium'>{text as string}</span>
-            </div>
-          ))}
+      <ContentContainer content>
+        <div className={Md3Cards.inner.content}>
+          <h1 className={Md3Typography.headline.large}>Build scalable &amp; portable applications</h1>
+          <Separator padding={8} />
+          <p className={`${Md3Typography.body.large} text-on-surface`}>
+            Arvo is an <strong>enterprise-grade</strong> toolkit that provides essential primitives for building
+            event-driven applications at the <strong>application layer</strong>. It enables you to write reliable,
+            observable, and portable business logic that seamlessly interfaces with any cloud infrastructure, event
+            broker, or messaging system. <strong>Arvo is not another event broker or messaging platform</strong> -
+            instead, it empowers you to create scalable, adaptable application architectures that leverage existing
+            technologies within the event-driven ecosystem.
+          </p>
         </div>
       </ContentContainer>
       <Separator padding={18} />
-      <ContentContainer>
-        <p className={`${Md3Typography.body.large} text-center text-on-surface sm:px-4 xl:px-16`}>
-          Arvo is an enterprise-grade toolkit that provides essential primitives for building event-driven applications
-          at the <strong>application layer</strong>. It enables you to write reliable, observable, and portable business
-          logic that seamlessly interfaces with any cloud infrastructure, event broker, or messaging system.{' '}
-          <strong>Arvo is not another event broker or messaging platform</strong> – instead, it empowers you to create
-          scalable, adaptable application architectures that leverage existing technologies within the event-driven
-          ecosystem.
-        </p>
-      </ContentContainer>
-      <Separator padding={36} />
       {/* TODO - This strucutre is fine. Now make the content of each card better */}
-      <ContentContainer>
+      <ContentContainer content>
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
           {[
             {
