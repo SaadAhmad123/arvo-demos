@@ -37,7 +37,7 @@ export const HomePage = withNavBar(() => {
       <ContentContainer content>
         <section aria-labelledby='core-message'>
           <div className={Md3Cards.inner.content}>
-            <h1 id='core-message' className={Md3Typography.headline.large}>
+            <h1 id='core-message' className={`${Md3Typography.headline.large} leading-12`}>
               An enterprise-grade toolkit for building event-driven
               <strong> AI agentic systems and workflows</strong> that are composable, reliable, observable, evolvable,
               and scalable.
@@ -101,10 +101,7 @@ export const HomePage = withNavBar(() => {
 
                 <Separator padding={16} />
                 <p className={Md3Typography.body.medium}>{item.content}</p>
-
-                {/* spacer to push CTA to bottom */}
                 <div className='mt-auto' />
-
                 <Separator padding={16} />
                 <Link to={item.link} className={`${Md3Buttons.filledWithIcon} w-full sm:w-64`} aria-label={item.cta}>
                   <span>{item.cta}</span>

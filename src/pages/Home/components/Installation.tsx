@@ -149,14 +149,14 @@ export const Installation: React.FC = () => {
             <Separator padding={8} />
             <p className={Md3Typography.body.medium}>
               Once the environment is ready, install Arvo itself and its required core dependencies. This step brings in
-              the main framework (arvo-core, event handling, and schema validation libraries like Zod) that form the
+              the main dependencies (Arvo core, event handling, and schema validation libraries like Zod) that form the
               foundation of an Arvo application.
             </p>
             <Separator />
             <p className={`${Md3Typography.body.small} opacity-75`}>
-              <strong>Note:</strong> If you are running Arvo in the browser (its intended runtime), you will also need
-              to install a Node <code>Buffer</code> polyfill, since the <code>Buffer</code> class does not exist in the
-              browser environment.
+              <strong>Note:</strong> If you want to run Arvo in the browser, you will also need to install a Node{' '}
+              <code>Buffer</code> polyfill, since the <code>Buffer</code> class does not exist in the browser
+              environment.
             </p>
           </div>
         </div>
