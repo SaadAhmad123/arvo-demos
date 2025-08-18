@@ -13,9 +13,10 @@ export const Hero = () => (
       </p>
       <Separator padding={24} />
       <p className={`${Md3Typography.body.large} text-on-surface-variant leading-relaxed`}>
-        Build <strong>reliable, scalable, and adaptable event-driven applications</strong> using an enterprise-grade
-        Node.js toolkit. Develop sophisticated AI agents, automated workflows, and robust business applications with the
-        flexibility to deploy anywhere and scale seamlessly as your needs evolve.
+        Arvo provides essential primitives at the <strong>application layer</strong> for event-driven systems. Write
+        reliable, observable, portable business logic that integrates with any cloud, event broker, or messaging system.{' '}
+        <strong>Arvo is not a broker or messaging platform</strong>—it helps you craft scalable, adaptable architectures
+        that leverage your existing ecosystem.
       </p>
       <Separator padding={24} />
       <div className='flex flex-wrap items-center justify-center sm:justify-start gap-6'>

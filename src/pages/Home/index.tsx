@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { Md3Buttons } from '../../classNames/buttons';
 import { Md3Cards } from '../../classNames/cards';
 import { Md3Typography } from '../../classNames/typography';
@@ -8,8 +7,10 @@ import { Separator } from '../../components/Separator';
 import { CTA } from './components/CTA';
 import { Hero } from './components/Hero';
 import { HiPuzzle, HiShieldCheck, HiTrendingUp, HiArrowRight } from 'react-icons/hi';
-import { runPhase3 } from '../../examples/simplicity_through_composition';
+import { Link } from 'react-router';
+import { Installation } from './components/Installation';
 import { useMount } from '../../hooks/useMount';
+import { runPhase3 } from '../../examples/simplicity_through_composition';
 
 export const HomePage = withNavBar(() => {
   useMount(() => {
@@ -20,92 +21,103 @@ export const HomePage = withNavBar(() => {
   });
 
   return (
-    <>
+    <main>
       <Separator padding={8} />
       <ContentContainer>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'>
+        <section
+          className='grid grid-cols-1 lg:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'
+          aria-labelledby='hero-title'
+        >
           <Hero />
           <CTA />
-        </div>
+        </section>
       </ContentContainer>
+
       <Separator padding={18} />
       <ContentContainer content>
-        <div className={Md3Cards.inner.content}>
-          <h1 className={Md3Typography.headline.large}>Build scalable &amp; portable applications</h1>
-          <Separator padding={8} />
-          <p className={`${Md3Typography.body.large} text-on-surface`}>
-            Arvo is an <strong>enterprise-grade</strong> toolkit that provides essential primitives for building
-            event-driven applications at the <strong>application layer</strong>. It enables you to write reliable,
-            observable, and portable business logic that seamlessly interfaces with any cloud infrastructure, event
-            broker, or messaging system. <strong>Arvo is not another event broker or messaging platform</strong> -
-            instead, it empowers you to create scalable, adaptable application architectures that leverage existing
-            technologies within the event-driven ecosystem.
-          </p>
-        </div>
+        <section aria-labelledby='core-message'>
+          <div className={Md3Cards.inner.content}>
+            <h1 id='core-message' className={Md3Typography.headline.large}>
+              An enterprise-grade toolkit for building event-driven
+              <strong> AI agentic systems and workflows</strong> that are composable, reliable, observable, evolvable,
+              and scalable.
+            </h1>
+          </div>
+        </section>
       </ContentContainer>
+
       <Separator padding={18} />
-      {/* TODO - This strucutre is fine. Now make the content of each card better */}
       <ContentContainer content>
-        <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
-          {[
-            {
-              title: 'Simplicity Through Composition',
-              icon: HiPuzzle,
-              link: '/',
-              content: (
-                <span>
-                  Build complex event-driven systems using simple, reusable primitives. Start small, scale seamlessly
-                  without architectural rewrites.
-                </span>
-              ),
-              cta: 'Learn About Composition',
-            },
-            {
-              title: 'Built-in Reliability',
-              icon: HiShieldCheck,
-              link: '/',
-              content: (
-                <span>
-                  Contract-validated interactions, distributed tracing, and event sourcing built-in. Eliminate
-                  integration bugs before they reach production.
-                </span>
-              ),
-              cta: 'Explore Reliability Features',
-            },
-            {
-              title: 'Evolutionary Architecture',
-              icon: HiTrendingUp,
-              link: '/',
-              content: (
-                <span>
-                  Semantic contract versioning enables safe system evolution. Deploy, migrate, and rollback service
-                  changes with complete confidence.
-                </span>
-              ),
-              cta: 'Discover Evolution Strategies',
-            },
-          ].map((item, index) => (
-            <div key={index.toString()} className={`${Md3Cards.filled} p-4`}>
-              <div className='flex items-center gap-3'>
-                <div className='p-2 rounded-lg bg-on-surface/10'>
-                  <item.icon className='w-6 h-6' />
+        <section aria-labelledby='pillars'>
+          <h2 id='pillars' className='sr-only'>
+            Platform pillars
+          </h2>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch'>
+            {[
+              {
+                title: 'Compose with Clarity',
+                icon: HiPuzzle,
+                link: '/composition',
+                content: (
+                  <span>
+                    Break down complex processes into modular, reusable components. Design and build once, then apply
+                    across use cases—from single interactions to workflows to AI-driven enterprise orchestrations.
+                  </span>
+                ),
+                cta: 'Learn About Composition',
+              },
+              {
+                title: 'Operate with Assurance',
+                icon: HiShieldCheck,
+                link: '/reliability',
+                content: (
+                  <span>
+                    Contract-first design and clear error boundaries let you build with certainty. OpenTelemetry tracing
+                    gives end-to-end visibility, and event sourcing enables robust replayability.
+                  </span>
+                ),
+                cta: 'Explore Reliability Features',
+              },
+              {
+                title: 'Evolve with Ease',
+                icon: HiTrendingUp,
+                link: '/evolution',
+                content: (
+                  <span>
+                    Treat evolution as a first-class concern. Contract-driven semantic versioning enables changes with
+                    minimal downtime and safe experimentation with new features.
+                  </span>
+                ),
+                cta: 'Discover Evolution Strategies',
+              },
+            ].map((item, index) => (
+              <div key={index.toString()} className={`${Md3Cards.filled} p-4 flex flex-col h-full`}>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 rounded-lg bg-on-surface/10'>
+                    <item.icon className='w-6 h-6' />
+                  </div>
+                  <h3 className={`${Md3Typography.title.large} flex-1`}>{item.title}</h3>
                 </div>
-                <h1 className={`${Md3Typography.title.large} flex-1`}>{item.title}</h1>
+
+                <Separator padding={16} />
+                <p className={Md3Typography.body.medium}>{item.content}</p>
+
+                {/* spacer to push CTA to bottom */}
+                <div className='mt-auto' />
+
+                <Separator padding={16} />
+                <Link to={item.link} className={`${Md3Buttons.filledWithIcon} w-full sm:w-64`} aria-label={item.cta}>
+                  <span>{item.cta}</span>
+                  <HiArrowRight />
+                </Link>
               </div>
-              <Separator padding={16} />
-              <p className={`${Md3Typography.body.medium}`}>{item.content}</p>
-              <Separator padding={16} />
-              <Link to={item.link} className={`${Md3Buttons.filledWithIcon} w-full sm:w-64`}>
-                <span>{item.cta}</span>
-                <HiArrowRight />
-              </Link>
-              <Separator padding={8} />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </section>
       </ContentContainer>
+      <Separator padding={18} />
+      <Installation />
       <Separator padding={36} />
-      <Separator padding={8} />
-    </>
+    </main>
   );
 });
