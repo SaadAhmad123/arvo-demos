@@ -50,7 +50,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   const isError = shiki.state === 'error';
 
   return (
-    <figure className={`${Md3Cards.outlined} overflow-hidden`} style={{ backgroundColor: '#263238' }}>
+    <figure className={`${Md3Cards.outlined} overflow-hidden flex flex-col`} style={{ backgroundColor: '#263238' }}>
       <figcaption
         className='flex items-center justify-between px-4 py-2 border-b border-outline overflow-auto gap-6 bg-background'
         aria-live='polite'
@@ -65,7 +65,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
                 idx === activeIndex
                   ? 'border-b-2 border-primary text-primary'
                   : 'text-on-surface-variant hover:text-on-surface'
-              } px-2 py-1 text-sm font-medium cursor-pointer`}
+              } px-2 py-1 text-sm font-medium cursor-pointer truncate`}
             >
               {tab.title || tab.lang}
             </button>
@@ -95,11 +95,13 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       )}
 
       {!isLoading && !isError && shiki.data && (
-        <div
-          className={`[&_.shiki]:m-0 [&_.shiki]:max-h-[60vh] [&_.shiki]:overflow-auto [&_.shiki]:px-4 [&_.shiki]:py-5 [&_.shiki]:font-mono [&_.shiki]:text-sm [&_.shiki]:leading-6 ${wrap ? '[&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-words [&_.shiki]:[overflow-wrap:anywhere]' : ''}`}
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: This is fine
-          dangerouslySetInnerHTML={{ __html: shiki.data }}
-        />
+        <div className='flex-1 overflow-auto'>
+          <div
+            className={`[&_.shiki]:m-0 [&_.shiki]:max-h-[60vh] [&_.shiki]:px-4 [&_.shiki]:py-5 [&_.shiki]:font-mono [&_.shiki]:text-sm [&_.shiki]:leading-6 ${wrap ? '[&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-words [&_.shiki]:[overflow-wrap:anywhere]' : ''}`}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: This is fine
+            dangerouslySetInnerHTML={{ __html: shiki.data }}
+          />
+        </div>
       )}
     </figure>
   );

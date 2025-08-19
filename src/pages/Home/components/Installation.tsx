@@ -4,6 +4,7 @@ import { Md3Typography } from '../../../classNames/typography';
 import CodeBlock from '../../../components/CodeBlock';
 import { ContentContainer } from '../../../components/ContentContainer';
 import { Separator } from '../../../components/Separator';
+import { Label } from '../../../components/Label';
 
 type PkgMap = Record<string, string>;
 type PkgManager = 'pnpm' | 'npm' | 'yarn';
@@ -15,20 +16,21 @@ const PM_INSTALL_PREFIX: Record<PkgManager, { dev: string; prod: string }> = {
 };
 
 const withContinuations = (items: string[]) =>
-  items.map((line, i) => ` ${line}${i === items.length - 1 ? '' : ' \\\n'}`).join('');
+  items.map((line, i) => ` ${line}${i === items.length - 1 ? '' : '\\\n'}`).join('');
 
 const mapToPkgLines = (pkgs: PkgMap, { forceVersion = true } = {}) =>
   Object.entries(pkgs).map(([name, ver]) => (ver || !forceVersion ? `${name}${ver ? `@${ver}` : ''}` : name));
 
 const buildInstallTabs = (
   pkgs: PkgMap,
-  { dev = false, titleSuffix = '' }: { dev?: boolean; titleSuffix?: string } = {},
+  params: { showNodeVersion?: boolean; dev?: boolean; titleSuffix?: string } = {},
 ) => {
+  const { showNodeVersion = false, dev = false, titleSuffix = '' } = params;
   const lines = mapToPkgLines(pkgs);
   return (['pnpm', 'npm', 'yarn'] as PkgManager[]).map((pm) => ({
     lang: 'bash' as const,
     title: pm.toUpperCase() + (titleSuffix ? ` • ${titleSuffix}` : ''),
-    code: `${PM_INSTALL_PREFIX[pm][dev ? 'dev' : 'prod']} \\\n${withContinuations(lines)}`,
+    code: `${showNodeVersion ? '# Use Node version 19 or above for Arvo. You can put this version in .nvmrc for future use.\n# nvm i 19 # Use this command to install the Node version\nnvm use 19\n' : ''}${PM_INSTALL_PREFIX[pm][dev ? 'dev' : 'prod']} \\\n${withContinuations(lines)}`,
   }));
 };
 
@@ -38,27 +40,27 @@ const PREPARATION_PACKAGES: PkgMap = {
 };
 
 const ARVO_PACKAGES: PkgMap = {
-  'arvo-core': '3.0.6',
-  'arvo-event-handler': '3.0.6',
-  zod: '3.25.67',
-  xstate: '5.20.1',
-  'zod-to-json-schema': '3.24.5',
+  'arvo-core': '^3.0.6',
+  'arvo-event-handler': '^3.0.6',
+  zod: '^3.25.67',
+  xstate: '^5.20.1',
+  'zod-to-json-schema': '^3.24.5',
 };
 
 const OTEL_BROWSER_PACKAGES: PkgMap = {
-  '@opentelemetry/api': '1.9.0',
-  '@opentelemetry/context-zone': '2.0.1',
-  '@opentelemetry/exporter-zipkin': '2.0.1',
-  '@opentelemetry/instrumentation': '0.203.0',
-  '@opentelemetry/instrumentation-document-load': '0.48.0',
-  '@opentelemetry/resources': '2.0.1',
-  '@opentelemetry/sdk-trace-web': '2.0.1',
-  '@opentelemetry/semantic-conventions': '1.36.0',
+  '@opentelemetry/api': '^1.9.0',
+  '@opentelemetry/context-zone': '^2.0.1',
+  '@opentelemetry/exporter-zipkin': '^2.0.1',
+  '@opentelemetry/instrumentation': '^0.203.0',
+  '@opentelemetry/instrumentation-document-load': '^0.48.0',
+  '@opentelemetry/resources': '^2.0.1',
+  '@opentelemetry/sdk-trace-web': '^2.0.1',
+  '@opentelemetry/semantic-conventions': '^1.36.0',
 };
 
 const OTEL_BROWSER_CODE_SNIPPET = `
-// Run this code in your \`main.tsx\` or equivalent. This code sets up the OTEL
-// connection to the OTEL collector
+// Run this code in your application \`index.tsx\` or equivalent. In case of NextJS
+// see NextJS Otel documentation. This code sets up the OTEL connection to the OTEL collector
 import {
   WebTracerProvider,
   BatchSpanProcessor,
@@ -73,21 +75,20 @@ import { ZipkinExporter } from '@opentelemetry/exporter-zipkin';
 
 // Setting it to false will log the telemetry data to broswer console
 const exportToJaeger = true;
+const serviceName = 'arvo-browser';
 
-// Using Zipkin export to export logs to Jaeger
+// Using Zipkin HTTP exporter to export logs to Jaeger
 const httpExporter = new ZipkinExporter({
   url: 'http://localhost:9411/api/v2/spans',
-  serviceName: 'web-frontend',
+  serviceName,
 });
 
 const provider = new WebTracerProvider({
   resource: resourceFromAttributes({
-    [ATTR_SERVICE_NAME]: 'web-frontend',
+    [ATTR_SERVICE_NAME]: serviceName,
   }),
   spanProcessors: [
-    exportToJaeger ? 
-      new BatchSpanProcessor(httpExporter) : 
-      new SimpleSpanProcessor(new ConsoleSpanExporter()),
+    exportToJaeger ? new BatchSpanProcessor(httpExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
   ],
 });
 
@@ -101,24 +102,59 @@ registerInstrumentations({
 `;
 
 const OTEL_SERVER_PACKAGES: PkgMap = {
-  '@opentelemetry/api': '1.9.0',
-  '@opentelemetry/auto-instrumentations-node': '0.49.1',
-  '@opentelemetry/core': '1.30.1',
-  '@opentelemetry/exporter-metrics-otlp-proto': '0.52.1',
-  '@opentelemetry/exporter-trace-otlp-grpc': '0.53.0',
-  '@opentelemetry/exporter-trace-otlp-proto': '0.52.1',
-  '@opentelemetry/resources': '1.25.1',
-  '@opentelemetry/sdk-metrics': '1.25.1',
-  '@opentelemetry/sdk-node': '0.52.1',
-  '@opentelemetry/sdk-trace-node': '1.25.1',
-  '@opentelemetry/semantic-conventions': '1.25.1',
+  '@opentelemetry/api': '^1.9.0',
+  '@opentelemetry/auto-instrumentations-node': '^0.62.1',
+  '@opentelemetry/exporter-trace-otlp-grpc': '^0.203.0',
+  '@opentelemetry/resources': '^2.0.1',
+  '@opentelemetry/sdk-metrics': '^2.0.1',
+  '@opentelemetry/sdk-node': '^0.203.0',
+  '@opentelemetry/sdk-trace-node': '^2.0.1',
+  '@opentelemetry/semantic-conventions': '^1.36.0',
 };
+
+const OTEL_SERVER_CODE_SNIPPET = `
+import { OTLPTraceExporter as GRPCTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { BatchSpanProcessor, ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-node';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+
+// Setting it to false will log the telemetry data to broswer console
+const exportToJaeger = true;
+const serviceName = 'arvo-node';
+
+// The GRPC export is responsible to export telemetry data to the 
+// OTel collector (in this case Jaeger)
+const grpcExporter = new GRPCTraceExporter();
+
+export const telemetrySdk = new NodeSDK({
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: serviceName,
+  }),
+  spanProcessors: [
+    exportToJaeger ? new BatchSpanProcessor(grpcExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
+  ],
+  instrumentations: [getNodeAutoInstrumentations()], // Comment this out - if you only want to see Arvo traces
+});
+
+// Call this function in your application 'index.ts'
+export const telemetrySdkStart = () => {
+  telemetrySdk.start();
+};
+
+export const telemetrySdkStop = async () => {
+  await telemetrySdk.shutdown();
+};
+`;
 
 export const Installation: React.FC = () => {
   return (
     <ContentContainer content>
       <div className={`${Md3Cards.inner.content} pb-0!`}>
-        <h1 className={Md3Typography.headline.large}>Getting Started with Arvo</h1>
+        <h1 className={Md3Typography.headline.large} id='getting-started'>
+          Getting Started with Arvo
+        </h1>
         <Separator padding={12} />
         <p className={Md3Typography.body.large}>
           This guide walks you through preparing your environment, installing Arvo, and configuring observability with
@@ -126,8 +162,7 @@ export const Installation: React.FC = () => {
           telemetry support.
         </p>
       </div>
-      <Separator padding={16} />
-      <Separator padding={16} />
+      <Separator padding={36} />
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
         <div className={Md3Cards.filled}>
           <div className={Md3Cards.inner.content}>
@@ -141,7 +176,7 @@ export const Installation: React.FC = () => {
             </p>
           </div>
         </div>
-        <CodeBlock tabs={buildInstallTabs(PREPARATION_PACKAGES, { dev: true })} />
+        <CodeBlock tabs={buildInstallTabs(PREPARATION_PACKAGES, { dev: true, showNodeVersion: true })} />
 
         <div className={Md3Cards.filled}>
           <div className={Md3Cards.inner.content}>
@@ -164,6 +199,7 @@ export const Installation: React.FC = () => {
 
         <div className={Md3Cards.filled}>
           <div className={Md3Cards.inner.content}>
+            <Label content='Optional' />
             <h2 className={Md3Typography.headline.large}>Observability</h2>
             <Separator padding={8} />
             <p className={Md3Typography.body.medium}>
@@ -182,6 +218,11 @@ export const Installation: React.FC = () => {
               code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_SERVER_PACKAGES))}`,
             },
             {
+              lang: 'ts' as const,
+              title: 'Server Config (otel.ts)',
+              code: OTEL_SERVER_CODE_SNIPPET.trim(),
+            },
+            {
               lang: 'bash' as const,
               title: 'Client',
               code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_BROWSER_PACKAGES))}`,
@@ -196,6 +237,7 @@ export const Installation: React.FC = () => {
 
         <div className={Md3Cards.filled}>
           <div className={Md3Cards.inner.content}>
+            <Label content='Optional' />
             <h2 className={Md3Typography.headline.large}>Experience Telemetry</h2>
             <Separator padding={8} />
             <p className={Md3Typography.body.medium}>
