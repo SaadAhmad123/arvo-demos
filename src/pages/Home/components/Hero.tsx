@@ -9,14 +9,14 @@ export const Hero = () => (
       <h1 className={`${Md3Typography.display.large} font-bold tracking-tight text-on-surface`}>Arvo</h1>
       <Separator padding={2} />
       <p className={`${Md3Typography.headline.medium} text-on-surface-variant font-light`}>
-        A toolkit for service choreography
+        A toolkit for event-driven applications
       </p>
       <Separator padding={24} />
-      <p className={`${Md3Typography.body.large} text-on-surface-variant leading-relaxed`}>
-        Arvo provides essential primitives at the <strong>application layer</strong> for event-driven systems. Write
-        reliable, observable, portable business logic that integrates with any cloud, event broker, or messaging system.{' '}
-        <strong>Arvo is not a broker or messaging platform</strong>—it helps you craft scalable, adaptable architectures
-        that leverage your existing ecosystem.
+      <p className={`${Md3Typography.headline.small} text-on-surface-variant`}>
+        Build <strong>enterprise-grade</strong> event-driven services, <strong>Agentic AI</strong> systems and{' '}
+        <strong>workflows</strong> that are <span className='underline'>composable</span>,{' '}
+        <span className='underline'>reliable</span>, <span className='underline'>observable</span>,{' '}
+        <span className='underline'>evolvable</span>, and <span className='underline'>scalable</span>.
       </p>
       <Separator padding={24} />
       <div className='flex flex-wrap items-center justify-center sm:justify-start gap-6'>

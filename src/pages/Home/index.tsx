@@ -35,15 +35,14 @@ export const HomePage = withNavBar(() => {
 
       <Separator padding={18} />
       <ContentContainer content>
-        <section aria-labelledby='core-message'>
-          <div className={Md3Cards.inner.content}>
-            <h1 id='core-message' className={`${Md3Typography.headline.large} leading-12`}>
-              An enterprise-grade toolkit for building event-driven
-              <strong> AI agentic systems and workflows</strong> that are composable, reliable, observable, evolvable,
-              and scalable.
-            </h1>
-          </div>
-        </section>
+        <div className={Md3Cards.inner.content}>
+          <p className={`${Md3Typography.headline.small}`}>
+            Arvo provides essential primitives at the <strong>application layer</strong> for event-driven systems. Write
+            reliable, observable, portable business logic that integrates with any cloud, event broker, or messaging
+            system. <strong>Arvo is not a broker or messaging platform</strong>—it helps you craft scalable, adaptable
+            architectures that leverage your existing ecosystem.
+          </p>
+        </div>
       </ContentContainer>
 
       <Separator padding={18} />
