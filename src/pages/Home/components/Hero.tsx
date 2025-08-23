@@ -14,9 +14,7 @@ export const Hero = () => (
       <Separator padding={24} />
       <p className={`${Md3Typography.headline.small} text-on-surface-variant`}>
         Build <strong>enterprise-grade</strong> event-driven services, <strong>Agentic AI</strong> systems and{' '}
-        <strong>workflows</strong> that are <span className='underline'>composable</span>,{' '}
-        <span className='underline'>reliable</span>, <span className='underline'>observable</span>,{' '}
-        <span className='underline'>evolvable</span>, and <span className='underline'>scalable</span>.
+        <strong>workflows</strong> that are composable, reliable, observable, evolvable, and scalable.
       </p>
       <Separator padding={24} />
       <div className='flex flex-wrap items-center justify-center sm:justify-start gap-6'>
