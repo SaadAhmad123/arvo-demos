@@ -36,7 +36,11 @@ export const HomePage = withNavBar(() => {
       <Separator padding={18} />
       <ContentContainer content>
         <div className={Md3Cards.inner.content}>
-          <p className={`${Md3Typography.headline.small}`}>
+          <h1 className={`${Md3Typography.headline.large} text-on-surface-variant font-light`}>
+            A toolkit for event-driven applications
+          </h1>
+          <Separator padding={8} />
+          <p className={`${Md3Typography.body.large}`}>
             Arvo provides essential primitives at the <strong>application layer</strong> for event-driven systems. Write
             reliable, observable, portable business logic that integrates with any cloud, event broker, or messaging
             system. <strong>Arvo is not a broker or messaging platform</strong>—it helps you craft scalable, adaptable

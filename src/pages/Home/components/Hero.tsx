@@ -6,15 +6,11 @@ import { HiCheckCircle, HiLightningBolt, HiCube } from 'react-icons/hi';
 export const Hero = () => (
   <div className={`${Md3Cards.filled} flex flex-col justify-center`}>
     <div className={`${Md3Cards.inner.content}`}>
-      <h1 className={`${Md3Typography.display.large} font-bold tracking-tight text-on-surface`}>Arvo</h1>
-      <Separator padding={2} />
-      <p className={`${Md3Typography.headline.medium} text-on-surface-variant font-light`}>
-        A toolkit for event-driven applications
-      </p>
+      <h1 className={`${Md3Typography.display.large} text-on-surface`}>Arvo</h1>
       <Separator padding={24} />
-      <p className={`${Md3Typography.headline.small} text-on-surface-variant`}>
+      <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
         Build <strong>enterprise-grade</strong> event-driven services, <strong>Agentic AI</strong> systems and{' '}
-        <strong>workflows</strong> that are composable, reliable, observable, evolvable, and scalable.
+        <strong>workflows</strong> that are sustainable, composable, reliable, observable, evolvable, and scalable.
       </p>
       <Separator padding={24} />
       <div className='flex flex-wrap items-center justify-center sm:justify-start gap-6'>
