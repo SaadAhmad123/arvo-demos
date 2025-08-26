@@ -8,7 +8,6 @@ import { Hero } from './components/Hero';
 import {} from 'react-icons/hi';
 import { Installation } from './components/Installation';
 import { useMount } from '../../hooks/useMount';
-import { runPhase3 } from '../../examples/simplicity_through_composition';
 import { Pillers } from './components/Pillars';
 import { Demo } from './components/Demo';
 
@@ -16,8 +15,8 @@ export const HomePage = withNavBar(() => {
   useMount(() => {
     // runPhase1();
     // runPhase2();
-    runPhase3();
-    //runPhase4();
+    // runPhase3();
+    // runPhase4();
   });
 
   return (
