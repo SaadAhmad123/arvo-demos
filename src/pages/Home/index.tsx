@@ -5,11 +5,11 @@ import { withNavBar } from '../../components/Navbar/withNavBar';
 import { Separator } from '../../components/Separator';
 import { CTA } from './components/CTA';
 import { Hero } from './components/Hero';
-import {} from 'react-icons/hi';
 import { Installation } from './components/Installation';
 import { useMount } from '../../hooks/useMount';
 import { Pillers } from './components/Pillars';
 import { Demo } from './components/Demo';
+import { UnderConstruction } from './UnderConstruction';
 
 export const HomePage = withNavBar(() => {
   useMount(() => {
@@ -23,6 +23,8 @@ export const HomePage = withNavBar(() => {
     <main>
       <Separator padding={8} />
       <ContentContainer>
+        <UnderConstruction />
+        <Separator padding={8} />
         <section
           className='grid grid-cols-1 lg:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'
           aria-labelledby='hero-title'
