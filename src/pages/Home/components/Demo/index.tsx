@@ -49,7 +49,7 @@ export const Demo: React.FC = () => {
           <h1 className={Md3Typography.headline.small}>Architecture - What Are We Building?</h1>
           <Separator padding={12} />
           <p className={`${Md3Typography.body.large}`}>
-            This example demonstrates a simple event-driven system with three core components:
+            This example demonstrates a simple event-driven system with four core components:
           </p>
           <Separator padding={9} />
           <ul className={`${Md3Typography.body.large} ml-6 space-y-2 list-disc`}>
@@ -60,8 +60,12 @@ export const Demo: React.FC = () => {
               <strong>Math Handler:</strong> Takes two numbers and returns their sum
             </li>
             <li>
-              <strong>Orchestrator:</strong> Coordinates both handlers by taking a name and age, then returning both a
-              greeting and the age plus 7
+              <strong>Orchestration Handler:</strong> Coordinates both handlers by taking a name and age, then returning
+              both a greeting and the age plus seven
+            </li>
+            <li>
+              <strong>Event Broker:</strong> Routes events seamlessly between handlers using an in-memory broker that
+              runs in any JavaScript runtime without requiring external message brokers
             </li>
           </ul>
           <Separator padding={9} />

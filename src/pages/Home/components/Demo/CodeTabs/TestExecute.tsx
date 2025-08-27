@@ -20,6 +20,7 @@ export const testArvoDemo = () => {
     },
   });
 
+  // Event flow: test.test.test -> greetingHandler -> evt.greeting.create.success
   execute(event)
     .then((e) => console.log(e))
     .catch(console.error);
