@@ -1,5 +1,6 @@
-import { createSimpleArvoContract } from 'arvo-core';
+import { createArvoOrchestratorContract, createSimpleArvoContract } from 'arvo-core';
 import { createArvoEventHandler, type EventHandlerFactory } from 'arvo-event-handler';
+
 import { z } from 'zod';
 
 export const greetingContract = createSimpleArvoContract({
@@ -69,3 +70,58 @@ export const addHandler: EventHandlerFactory = () =>
       },
     },
   });
+
+const greetingOrchestratorContract = createArvoOrchestratorContract({
+  uri: '#/demo/orc/greeting',
+  name: 'greeting', // -> type = 'arvo.orc.greeting' as the type creation here is 'arvo.core.${name}'
+  versions: {
+    '1.0.0': {
+      init: z.object({
+        name: z.string(),
+        age: z.number(),
+      }),
+      complete: z.object({
+        result: z.string(),
+      }),
+    },
+  },
+});
+
+// const greetingMachineV100 = setupArvoMachine({
+//   contracts: {
+//     self: greetingOrchestratorContract.version('1.0.0'),
+//     services: {
+//       greeting: greetingContract.version('1.0.0'),
+//       adder: addContract.version('1.0.0'),
+//     },
+//   },
+//   types: {
+//     context: {} as {
+//       name: string;
+//       age: number;
+//       greeting: string | null;
+//       updatedAge: number | null;
+//     },
+//   },
+// }).createMachine({
+//   id: 'greetingMachine',
+//   context: ({ input }) => ({
+//     name: input.data.name,
+//     age: input.data.age,
+//     greeting: null,
+//     updatedAge: null,
+//   }),
+//   init: 'route',
+//   states: {
+//     route: {},
+//     process: {
+//       type: 'parallel',
+//       states: {
+//         greet: {},
+//         add: {},
+//       },
+//     },
+//     done: {},
+//     error: {},
+//   },
+// });
