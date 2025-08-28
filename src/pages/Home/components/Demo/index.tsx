@@ -8,8 +8,12 @@ import CodeBlock from '../../../../components/CodeBlock';
 import { AdderTab } from './CodeTabs/Adder';
 import { ExecuteTab } from './CodeTabs/Execute';
 import { TestExecuteTab } from './CodeTabs/TestExecute';
+import { useMount } from '../../../../hooks/useMount';
+import { testArvoDemo } from '../../../../examples/execute.test';
 
 export const Demo: React.FC = () => {
+  useMount(() => testArvoDemo());
+
   return (
     <>
       <ContentContainer content>
@@ -74,8 +78,9 @@ export const Demo: React.FC = () => {
             workflows while maintaining clean separation of concerns and full observability.
           </p>
         </div>
-
-        <CodeBlock tabs={[ExecuteTab, TestExecuteTab, GreetingTab, AdderTab]} />
+        <div className='grid grid-cols-1'>
+          <CodeBlock tabs={[ExecuteTab, TestExecuteTab, GreetingTab, AdderTab]} />
+        </div>
       </ContentContainer>
     </>
   );

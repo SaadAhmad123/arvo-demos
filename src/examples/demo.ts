@@ -9,11 +9,9 @@ export const greetingContract = createSimpleArvoContract({
     '1.0.0': {
       accepts: z.object({
         name: z.string(),
-        toolUseId: z.string().optional().describe('For AI agents to reference tool calls'),
       }),
       emits: z.object({
         greeting: z.string(),
-        toolUseId: z.string().optional().describe('For AI agents to reference tool calls'),
       }),
     },
   },
@@ -29,7 +27,6 @@ export const greetingHandler: EventHandlerFactory = () =>
           type: 'evt.greeting.create.success',
           data: {
             greeting: `Hello, ${event.data.name}!`,
-            toolUseId: event.data.toolUseId,
           },
         };
       },
@@ -44,11 +41,9 @@ export const addContract = createSimpleArvoContract({
     '1.0.0': {
       accepts: z.object({
         numbers: z.number().array(),
-        toolUseId: z.string().optional().describe('For AI agents to reference tool calls'),
       }),
       emits: z.object({
         result: z.number(),
-        toolUseId: z.string().optional().describe('For AI agents to reference tool calls'),
       }),
     },
   },
@@ -68,7 +63,6 @@ export const addHandler: EventHandlerFactory = () =>
           type: 'evt.calculator.add.success',
           data: {
             result: event.data.numbers.reduce((acc, cur) => acc + cur, 0),
-            toolUseId: event.data.toolUseId,
           },
           executionunits: event.data.numbers.length * 1e-6,
         };
