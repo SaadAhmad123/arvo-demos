@@ -1,5 +1,4 @@
 import React from 'react';
-import { Md3Cards } from '../../../../classNames/cards';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
 import { Separator } from '../../../../components/Separator';
@@ -10,6 +9,9 @@ import { ExecuteTab } from './CodeTabs/Execute';
 import { TestExecuteTab } from './CodeTabs/TestExecute';
 import { useMount } from '../../../../hooks/useMount';
 import { testArvoDemo } from '../../../../examples/execute.test';
+import { Md3Buttons } from '../../../../classNames/buttons';
+import { HiLightningBolt } from 'react-icons/hi';
+import { Md3ContentPadding } from '../../../../classNames';
 
 export const Demo: React.FC = () => {
   useMount(() => testArvoDemo());
@@ -17,7 +19,7 @@ export const Demo: React.FC = () => {
   return (
     <>
       <ContentContainer content>
-        <div className={Md3Cards.inner.content}>
+        <div className={Md3ContentPadding}>
           <h1 className={Md3Typography.headline.large}>Arvo in your Stack - Say, Hello World!</h1>
           <Separator padding={12} />
           <p className={Md3Typography.body.large}>
@@ -64,8 +66,8 @@ export const Demo: React.FC = () => {
               <strong>Math Handler:</strong> Takes two numbers and returns their sum
             </li>
             <li>
-              <strong>Orchestration Handler:</strong> Coordinates both handlers by taking a name and age, then returning
-              both a greeting and the age plus seven
+              <strong>Orchestration Handler:</strong> A state-machine based orchestration handler which coordinates both
+              handlers by taking a name and age, then returning both a greeting and the age plus seven
             </li>
             <li>
               <strong>Event Broker:</strong> Routes events seamlessly between handlers using an in-memory broker that
@@ -80,6 +82,45 @@ export const Demo: React.FC = () => {
         </div>
         <div className='grid grid-cols-1'>
           <CodeBlock tabs={[ExecuteTab, TestExecuteTab, GreetingTab, AdderTab]} />
+        </div>
+
+        <div className={`${Md3ContentPadding} ${Md3Typography.body.large}`}>
+          <h1 className={Md3Typography.headline.large}>Nature of Orchestrators in Arvo</h1>
+          <Separator padding={9} />
+          <p>
+            Arvo's orchestrators represent a fundamental shift in event-driven architecture design. Unlike traditional
+            systems where orchestrators act as centralized coordinators that own entire workflows,{' '}
+            <strong>Arvo treats orchestrators as specialized event handlers</strong> that can receive and emit multiple
+            event types while maintaining persistent internal state. This architectural approach offers several key
+            advantages over conventional orchestration patterns:
+          </p>
+          <Separator padding={9} />
+          <ul className='ml-6 space-y-2 list-disc'>
+            <li>
+              <strong>Eliminates Single Points of Failure:</strong> Orchestrators function as distributed event handlers
+              rather than centralized bottlenecks
+            </li>
+            <li>
+              <strong>Enables Horizontal Scaling:</strong> Multiple orchestrator instances can process events
+              concurrently without coordination overhead
+            </li>
+            <li>
+              <strong>Distributed Event Routing:</strong> Built-in routing intelligence with Arvo Event Handlers removes
+              the need for complex broker-level routing logic
+            </li>
+          </ul>
+          <Separator padding={9} />
+          <p>
+            Whether using state-machine-based or imperative orchestration patterns, Arvo orchestrators follow the same
+            event handler contract: they consume events and produce arrays of output events. This consistency enables{' '}
+            <strong>seamless composition, testing, and deployment</strong> across your entire event-driven system while
+            maintaining the flexibility to handle complex workflow requirements.
+          </p>
+          <Separator padding={18} />
+          <button type='button' className={Md3Buttons.filledWithIcon}>
+            <HiLightningBolt className='w-4 h-4' />
+            Learn About Routing Intelligence
+          </button>
         </div>
       </ContentContainer>
     </>

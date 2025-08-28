@@ -1,4 +1,3 @@
-import { Md3Cards } from '../../classNames/cards';
 import { Md3Typography } from '../../classNames/typography';
 import { ContentContainer } from '../../components/ContentContainer';
 import { withNavBar } from '../../components/Navbar/withNavBar';
@@ -10,6 +9,7 @@ import { useMount } from '../../hooks/useMount';
 import { Pillers } from './components/Pillars';
 import { Demo } from './components/Demo';
 import { UnderConstruction } from './UnderConstruction';
+import { Md3ContentPadding } from '../../classNames';
 
 export const HomePage = withNavBar(() => {
   useMount(() => {
@@ -36,7 +36,7 @@ export const HomePage = withNavBar(() => {
 
       <Separator padding={18} />
       <ContentContainer content>
-        <div className={Md3Cards.inner.content}>
+        <div className={Md3ContentPadding}>
           <h1 className={`${Md3Typography.headline.large} text-on-surface-variant font-light`}>
             A toolkit for event-driven applications
           </h1>

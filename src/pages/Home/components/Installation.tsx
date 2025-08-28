@@ -5,6 +5,7 @@ import CodeBlock from '../../../components/CodeBlock';
 import { ContentContainer } from '../../../components/ContentContainer';
 import { Separator } from '../../../components/Separator';
 import { Label } from '../../../components/Label';
+import { Md3ContentPadding } from '../../../classNames';
 
 type PkgMap = Record<string, string>;
 type PkgManager = 'pnpm' | 'npm' | 'yarn';
@@ -151,7 +152,7 @@ export const telemetrySdkStop = async () => {
 export const Installation: React.FC = () => {
   return (
     <ContentContainer content>
-      <div className={`${Md3Cards.inner.content} pb-0!`}>
+      <div className={`${Md3ContentPadding} pb-0!`}>
         <h1 className={Md3Typography.headline.large} id='getting-started'>
           Getting Started with Arvo
         </h1>
