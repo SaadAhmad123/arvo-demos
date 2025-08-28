@@ -31,7 +31,7 @@ export const addHandler: EventHandlerFactory = () =>
     handler: {
       '1.0.0': async ({ event }) => {
         if (event.data.numbers.length === 0) {
-          // This will result in 'sys.calculator.add.error' event
+          // This will result in 'sys.com.calculator.add.error' event
           throw new Error('Numbers array cannot be empty');
         }
         return {
@@ -44,6 +44,6 @@ export const addHandler: EventHandlerFactory = () =>
       },
     },
   });
-  
+
 `,
 };
