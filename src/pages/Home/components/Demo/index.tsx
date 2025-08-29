@@ -12,9 +12,10 @@ import { testArvoDemo } from '../../../../examples/execute.test';
 import { Md3Buttons } from '../../../../classNames/buttons';
 import { HiLightningBolt } from 'react-icons/hi';
 import { Md3ContentPadding } from '../../../../classNames';
+import { GreetingOrchestratorTab } from './CodeTabs/GreetingOrchestrator';
 
 export const Demo: React.FC = () => {
-  useMount(() => testArvoDemo());
+  useMount(testArvoDemo);
 
   return (
     <>
@@ -81,7 +82,7 @@ export const Demo: React.FC = () => {
           </p>
         </div>
         <div className='grid grid-cols-1'>
-          <CodeBlock tabs={[ExecuteTab, TestExecuteTab, GreetingTab, AdderTab]} />
+          <CodeBlock tabs={[ExecuteTab, TestExecuteTab, GreetingTab, AdderTab, GreetingOrchestratorTab]} />
         </div>
 
         <div className={`${Md3ContentPadding} ${Md3Typography.body.large}`}>

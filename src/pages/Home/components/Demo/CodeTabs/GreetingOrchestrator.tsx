@@ -1,11 +1,15 @@
+import type { CodeBlockProps } from '../../../../../components/CodeBlock';
+const label = 'greeting.orchestrator.ts';
+export const GreetingOrchestratorTab: CodeBlockProps['tabs'][number] = {
+  title: label,
+  lang: 'ts',
+  code: `
 import {
   ArvoErrorSchema,
   createArvoOrchestratorContract,
-  createSimpleArvoContract,
   type ArvoErrorType,
 } from 'arvo-core';
 import {
-  createArvoEventHandler,
   createArvoOrchestrator,
   type EventHandlerFactory,
   type IMachineMemory,
@@ -13,80 +17,21 @@ import {
   setupArvoMachine,
   xstate,
 } from 'arvo-event-handler';
-
 import { z } from 'zod';
 
-export const greetingContract = createSimpleArvoContract({
-  uri: '#/demo/greeting',
-  type: 'greeting.create',
-  versions: {
-    '1.0.0': {
-      accepts: z.object({
-        name: z.string(),
-      }),
-      emits: z.object({
-        greeting: z.string(),
-      }),
-    },
-  },
-});
-
-export const greetingHandler: EventHandlerFactory = () =>
-  createArvoEventHandler({
-    contract: greetingContract,
-    executionunits: 0,
-    handler: {
-      '1.0.0': async ({ event }) => {
-        return {
-          type: 'evt.greeting.create.success',
-          data: {
-            greeting: `Hello, ${event.data.name}!`,
-          },
-        };
-      },
-    },
-  });
-
-export const addContract = createSimpleArvoContract({
-  uri: '#/demo/calculator/add',
-  type: 'calculator.add',
-  description: 'This service provides the sum of all the numbers provided to it.',
-  versions: {
-    '1.0.0': {
-      accepts: z.object({
-        numbers: z.number().array(),
-      }),
-      emits: z.object({
-        result: z.number(),
-      }),
-    },
-  },
-});
-
-export const addHandler: EventHandlerFactory = () =>
-  createArvoEventHandler({
-    contract: addContract,
-    executionunits: 0,
-    handler: {
-      '1.0.0': async ({ event }) => {
-        if (event.data.numbers.length === 0) {
-          // This will result in 'sys.calculator.add.error' event
-          throw new Error('Numbers array cannot be empty');
-        }
-        return {
-          type: 'evt.calculator.add.success',
-          data: {
-            result: event.data.numbers.reduce((acc, cur) => acc + cur, 0),
-          },
-          executionunits: event.data.numbers.length * 1e-6,
-        };
-      },
-    },
-  });
-
+/**
+ * Orchestrator Contract Definition
+ * 
+ * createArvoOrchestratorContract is a specialized utility that automatically:
+ * - Generates standardized orchestrator event types (e.g., 'arvo.orc.greeting')
+ * - Provides init/complete lifecycle management for orchestrator workflows
+ * 
+ * This abstraction simplifies orchestrator development while maintaining full type safety
+ * and event traceability across complex workflows.
+ */
 export const greetingOrchestratorContract = createArvoOrchestratorContract({
   uri: '#/demo/orc/greeting',
-  name: 'greeting', // -> type = 'arvo.orc.greeting' as the type creation here is 'arvo.core.${name}'
+  name: 'greeting', // Generates type: 'arvo.orc.greeting' with 'arvo.orc.' prefix
   versions: {
     '1.0.0': {
       init: z.object({
@@ -101,6 +46,18 @@ export const greetingOrchestratorContract = createArvoOrchestratorContract({
   },
 });
 
+/**
+ * State Machine Definition
+ * 
+ * This XState machine is optimized for Arvo's event-driven architecture:
+ * - Uses setupArvoMachine for contract-aware type safety
+ * - Integrates with Arvo's event routing and error handling
+ * - Compatible with XState ecosystem tools (VSCode visualizer, inspector, etc.)
+ * 
+ * Key limitation: Async XState features (actors, promises) are not supported
+ * in Arvo orchestrators due to the event-driven execution model. Please, follow
+ * xstate documentation to learn more about this xstate state machine definition
+ */ 
 export const greetingMachineV100 = setupArvoMachine({
   contracts: {
     self: greetingOrchestratorContract.version('1.0.0'),
@@ -119,7 +76,6 @@ export const greetingMachineV100 = setupArvoMachine({
     },
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5RQE5jAFwJYDsoFkBDAYwAtcwA6ABxQHti5YBiCOnK2DQjK1dbHiJkKNeo1iwA2gAYAuolDU6sLNnaKQAD0QB2AEwBmSgA4ArAE5DANhP6AjIbP7dFgDQgAnokO6TlfRlDe3szGRdDQxldAF8Yj35MXAIScg4xBiZKRIxKXDVmMAA3XJzkymI0Hk4AV2IJaXlNZVV1HE0dBH1rGUoLM2Du3RkLa11Ij28EZ11KABYB+xkTe11dOet7ObiEtCShVNFaTMlsvdz8jGZYT1gKugBbM4FyyrBqyjAUehRZBSQQC01FgNADOgZjOYrLYHE4XO4vIgxvZKKtRsN9C4THMjDsQGUDiJ0scGpRCBAIHkcAVirliIQADbEGoMnh0FBkimUWB1Bp-ZoqYGg0CdboWShOUI9Iz6OYyMy6SaITG9OYWdUmEzy3TOOY6vEElJEqgkrLkymXa63e5PelMllsjnmz7fdn8gFAtodPRGUyWGx2RwzBFTHFmSjDYIjfQmCyy7pxeIgHB0CBwTSG4RpMAC1og9pgxAAWhxSoQJf0BvOySzR3ETFzQoLIqRZYW83V6p69gsqzVoSrL0J2YypJyja9hemczbhnF-WC9gcZjsJmsZkH+yNI9NpxyVLUE-z3oQS30ZbMcxRY3RFhkV629k3gm3dZOd33bA4R+F2kQMwCHFVh1MNIhDf81UoG8YTMWDrGRZ8a0OYl61Oc0f2bP8EGsfQJQsbFImcCIjB1MtHFwzt1UCQwTEMNVaMQ4c31JZ1Lgwk8Ql6OcCLhYiaLLIw5gjbpYNjBxAivWIk0zZCTVQu5nS-HMPUFScW2mFxAIcNZL30AY5wEnFhPXHC5iccYgkMRjX3SJT2KnJYgglMydWGJY50xMtfHDBdlnsFZzClKTdiHGyqC+H57PUxzjDo7y3KCONz0RBAFnDSxrDonDZWxRMYiAA */
   id: 'greetingMachine',
   context: ({ input }) => ({
     name: input.data.name,
@@ -130,17 +86,18 @@ export const greetingMachineV100 = setupArvoMachine({
   }),
   output: ({ context }) => ({
     errors: context.errors.length ? context.errors : null,
-    result: context.errors.length ? null : `Greeting -> ${context.greeting}, Updated Age -> ${context.updatedAge}`,
+    result: context.errors.length ? null : \`Greeting -> \${context.greeting}, Updated Age -> \${context.updatedAge}\`,
   }),
   initial: 'process',
   states: {
     process: {
-      type: 'parallel',
+      type: 'parallel', // Enables concurrent execution of greeting and math operations
       states: {
         greet: {
           initial: 'init',
           states: {
             init: {
+              // Emit event to greeting service using xstate.emit for Arvo integration
               entry: xstate.emit(({ context }) => ({
                 type: 'com.greeting.create',
                 data: {
@@ -154,7 +111,7 @@ export const greetingMachineV100 = setupArvoMachine({
                 },
                 'sys.com.greeting.create.error': {
                   actions: xstate.assign({ errors: ({ event, context }) => [...context.errors, event.data] }),
-                  target: '#greetingMachine.error',
+                  target: '#greetingMachine.error', // Global error state reference
                 },
               },
             },
@@ -167,6 +124,7 @@ export const greetingMachineV100 = setupArvoMachine({
           initial: 'init',
           states: {
             init: {
+              // Emit event to calculator service with age + 7 calculation
               entry: xstate.emit(({ context }) => ({
                 type: 'com.calculator.add',
                 data: {
@@ -191,7 +149,7 @@ export const greetingMachineV100 = setupArvoMachine({
         },
       },
       onDone: {
-        target: 'done',
+        target: 'done', // Triggered when both parallel states reach 'done'
       },
     },
     done: {
@@ -203,11 +161,29 @@ export const greetingMachineV100 = setupArvoMachine({
   },
 });
 
+/**
+ * Orchestrator Event Handler Factory
+ * 
+ * Creates an ArvoOrchestrator that provides:
+ * - Runtime execution environment for XState machines
+ * - Built-in event routing and correlation logic
+ * - State persistence capability (configurable via IMachineMemory interface)
+ * - Version-aware machine deployment and lifecycle management
+ * 
+ * Production considerations:
+ * - Memory interface can be replaced with persistent storage (Redis, Database, etc.)
+ * - Multiple machine versions can coexist for zero-downtime deployments
+ * - Missing machine versions will won't prevent deployment (this is only special to this event 
+ *   handler so please be mindful)
+ */
 export const greetingOrchestrator: EventHandlerFactory<{ memory: IMachineMemory<Record<string, unknown>> }> = ({
   memory,
 }) =>
   createArvoOrchestrator({
     machines: [greetingMachineV100],
     memory: memory as unknown as IMachineMemory<MachineMemoryRecord>,
-    executionunits: 0, // Default machine
+    executionunits: 0, // Base cost - can be dynamic based on machine complexity
   });
+
+`,
+};

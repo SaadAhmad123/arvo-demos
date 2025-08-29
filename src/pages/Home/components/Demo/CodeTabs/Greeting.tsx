@@ -49,6 +49,6 @@ export const greetingHandler: EventHandlerFactory = () =>
       },
     },
   });
-
+  
 `,
 };
