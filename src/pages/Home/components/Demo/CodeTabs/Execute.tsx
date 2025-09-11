@@ -1,12 +1,33 @@
-import type { CodeBlockProps } from '../../../../../components/CodeBlock';
+import { cleanString } from '../../../../../utils';
+import type { DemoCodePanel } from '../types';
 
 const label = 'execute.ts';
-export const ExecuteTab: CodeBlockProps['tabs'][number] = {
-  title: label,
-  lang: 'ts',
-  code: `
+export const ExecuteTab: DemoCodePanel = {
+  heading: 'A Runtime Environment',
+  description: cleanString(`
+      Arvo handlers are execution environment agnostic, enabling deployment across local, 
+      single-server, or distributed architectures. They require only an event broker for 
+      event distribution between handlers.
+      
+      This demonstration implements a local execution environment using Arvo's 
+      \`SimpleEventBroker\`, an in-memory FIFO queue that facilitates rapid development 
+      and testing. The \`createSimpleEventBroker\` function registers handlers and 
+      provides a \`resolve\` method that processes events and returns final results.
+      
+      Stateful components like ArvoOrchestrators and ArvoResumables require key-value 
+      storage for intermediate state management. Arvo includes \`SimpleMachineMemory\`, 
+      an in-memory implementation of the \`IMachineMemory\` interface, designed for 
+      quick prototyping and experimentation.
+    `),
+  tabs: [
+    {
+      title: label,
+      lang: 'ts',
+      code: `
 import type { ArvoEvent } from 'arvo-core';
-import { addHandler, greetingHandler, greetingOrchestrator } from './demo';
+import { addHandler } from './handlers/add.handler.ts';
+import { greetingHandler } from './handlers/greeting.handler.ts';
+import { greetingOrchestrator } from './handlers/greeting.orchestrator.ts'
 import { createSimpleEventBroker, SimpleMachineMemory } from 'arvo-event-handler';
 
 export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
@@ -30,4 +51,6 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
 };
   
 `,
+    },
+  ],
 };

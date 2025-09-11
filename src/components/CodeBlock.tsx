@@ -94,10 +94,10 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         </pre>
       )}
 
-      {!isLoading && !isError && shiki.data && (
+      {shiki.data && (
         <div className='flex-1 overflow-auto'>
           <div
-            className={`[&_.shiki]:m-0 [&_.shiki]:max-h-[60vh] [&_.shiki]:px-4 [&_.shiki]:py-5 [&_.shiki]:font-mono [&_.shiki]:text-sm [&_.shiki]:leading-6 ${wrap ? '[&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-words [&_.shiki]:[overflow-wrap:anywhere]' : ''}`}
+            className={`[&_.shiki]:m-0 [&_.shiki]:max-h-[600px] [&_.shiki]:px-4 [&_.shiki]:py-5 [&_.shiki]:font-mono [&_.shiki]:text-sm [&_.shiki]:leading-6 ${wrap ? '[&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-words [&_.shiki]:[overflow-wrap:anywhere]' : ''}`}
             // biome-ignore lint/security/noDangerouslySetInnerHtml: This is fine
             dangerouslySetInnerHTML={{ __html: shiki.data }}
           />

@@ -16,50 +16,49 @@ export const Pillers: React.FC = () => {
         <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch'>
           {[
             {
-              title: 'Compose with Clarity',
-              icon: HiPuzzle,
+              title: 'Contract-First Development',
+              icon: HiShieldCheck,
               link: '/composition',
               content: (
                 <span>
-                  Break down complex processes into modular, reusable components. Design and build once, then apply
-                  across use cases—from single interactions to workflows to AI-driven enterprise orchestrations.
+                  Define your service interfaces as TypeScript contracts with automatic validation, type inference, and
+                  semantic versioning. Every event is validated at compile-time and runtime.
                 </span>
               ),
-              cta: 'Learn About Composition',
+              cta: 'Explore Contracts',
             },
             {
-              title: 'Operate with Assurance',
-              icon: HiShieldCheck,
+              title: 'Distributed Without the Complexity',
+              icon: HiPuzzle,
               link: '/reliability',
               content: (
                 <span>
-                  Contract-first design and clear error boundaries let you build with certainty. OpenTelemetry tracing
-                  gives end-to-end visibility, and event sourcing enables robust replayability.
+                  Write business logic once, deploy anywhere. The same handlers run in Node.js, browsers, serverless
+                  functions, or distributed clusters without modification.
                 </span>
               ),
-              cta: 'Explore Reliability Features',
+              cta: 'Explore Portability',
             },
             {
-              title: 'Evolve with Ease',
+              title: 'Enterprise-Grade Orchestration',
               icon: HiTrendingUp,
               link: '/evolution',
               content: (
                 <span>
-                  Treat evolution as a first-class concern. Contract-driven semantic versioning enables changes with
-                  minimal downtime and safe experimentation with new features.
+                  Coordinate complex workflows using state machines or imperative handlers. Built-in OpenTelemetry
+                  tracing, error boundaries, and cost tracking from day one.
                 </span>
               ),
-              cta: 'Discover Evolution Strategies',
+              cta: 'Discover Patterns',
             },
           ].map((item, index) => (
             <div key={index.toString()} className={`${Md3Cards.filled} ${Md3Cards.inner.content} flex flex-col h-full`}>
               <div className='flex items-center gap-3'>
                 <div className='p-2 rounded-lg bg-on-surface/10'>
-                  <item.icon className='w-6 h-6' />
+                  <item.icon className='w-8 h-8' />
                 </div>
                 <h3 className={`${Md3Typography.title.large} flex-1`}>{item.title}</h3>
               </div>
-
               <Separator padding={16} />
               <p className={Md3Typography.body.medium}>{item.content}</p>
               <div className='mt-auto' />

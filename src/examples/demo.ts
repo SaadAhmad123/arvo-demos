@@ -1,5 +1,6 @@
 import {
   ArvoErrorSchema,
+  createArvoContract,
   createArvoOrchestratorContract,
   createSimpleArvoContract,
   type ArvoErrorType,
@@ -47,18 +48,20 @@ export const greetingHandler: EventHandlerFactory = () =>
     },
   });
 
-export const addContract = createSimpleArvoContract({
+export const addContract = createArvoContract({
   uri: '#/demo/calculator/add',
-  type: 'calculator.add',
+  type: 'com.calculator.add',
   description: 'This service provides the sum of all the numbers provided to it.',
   versions: {
     '1.0.0': {
       accepts: z.object({
         numbers: z.number().array(),
       }),
-      emits: z.object({
-        result: z.number(),
-      }),
+      emits: {
+        'evt.calculator.add.success': z.object({
+          result: z.number(),
+        }),
+      },
     },
   },
 });
@@ -119,7 +122,7 @@ export const greetingMachineV100 = setupArvoMachine({
     },
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5RQE5jAFwJYDsoFkBDAYwAtcwA6ABxQHti5YBiCOnK2DQjK1dbHiJkKNeo1iwA2gAYAuolDU6sLNnaKQAD0QB2AEwBmSgA4ArAE5DANhP6AjIbP7dFgDQgAnokO6TlfRlDe3szGRdDQxldAF8Yj35MXAIScg4xBiZKRIxKXDVmMAA3XJzkymI0Hk4AV2IJaXlNZVV1HE0dBH1rGUoLM2Du3RkLa11Ij28EZ11KABYB+xkTe11dOet7ObiEtCShVNFaTMlsvdz8jGZYT1gKugBbM4FyyrBqyjAUehRZBSQQC01FgNADOgZjOYrLYHE4XO4vIgxvZKKtRsN9C4THMjDsQGUDiJ0scGpRCBAIHkcAVirliIQADbEGoMnh0FBkimUWB1Bp-ZoqYGg0CdboWShOUI9Iz6OYyMy6SaITG9OYWdUmEzy3TOOY6vEElJEqgkrLkymXa63e5PelMllsjnmz7fdn8gFAtodPRGUyWGx2RwzBFTHFmSjDYIjfQmCyy7pxeIgHB0CBwTSG4RpMAC1og9pgxAAWhxSoQJf0BvOySzR3ETFzQoLIqRZYW83V6p69gsqzVoSrL0J2YypJyja9hemczbhnF-WC9gcZjsJmsZkH+yNI9NpxyVLUE-z3oQS30ZbMcxRY3RFhkV629k3gm3dZOd33bA4R+F2kQMwCHFVh1MNIhDf81UoG8YTMWDrGRZ8a0OYl61Oc0f2bP8EGsfQJQsbFImcCIjB1MtHFwzt1UCQwTEMNVaMQ4c31JZ1Lgwk8Ql6OcCLhYiaLLIw5gjbpYNjBxAivWIk0zZCTVQu5nS-HMPUFScW2mFxAIcNZL30AY5wEnFhPXHC5iccYgkMRjX3SJT2KnJYgglMydWGJY50xMtfHDBdlnsFZzClKTdiHGyqC+H57PUxzjDo7y3KCONz0RBAFnDSxrDonDZWxRMYiAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5RQE5jAFwJYDsoFkBDAYwAtcwA6ABxQHti5YBiCOnK2DQjK1dbHiJkKNeo1iwA2gAYAuolDU6sLNnaKQAD0QAOAEwBWSgGYZRgCwyLARgCcMgxYA0IAJ6J9uk5Rl2TurqG+gDsFiF24SYAvtGu-Ji4BCTkHGIMTJQJGJS4asxgAG452UmUxGg8nACuxBLS8prKquo4mjoI+gBsMpR2XbohPXZB1jZdrh4IwV19hiZm+ksyEYaGsfFoiUIporQZkllbOXkYzLBusOV0ALZHAmUVYFWUYCj0KLIKSCDNalgaH4dEL6Hy6BxdcL2Gwgiy6SaILohXoWfQjbw2GwycaQjYgUo7ERpfb1SiECAQXI4fJFHLEQgAG2I1QZPDoKDJFMosFq9S+TRU-0BoA63TsphChmsulsgX6IQRnX0vSlMhkXRMXQGhgsizxBOSRKoJMy5Mpp3Ol2ud3pTJZbI5Zte73Z-J+f1a7UQILBEKhdhh+jhitRxmVJn0MMlGv6ulicRAODoEDgmgNwlSYAFLQBbSBiAAtKjFUWbH07BWQiFxhYut0vPrjkkM3txExs0K8yLESHjKqZJqLLXddiuo2HoTM+lSdkO5789MXO5ELrxRZ5l5dMMQiYA+PtoapybDtkqWo57mvQgsfpFTrenY0YN15FdDCLPvBIfWwcrqe2BwF7CtoiDBCElDdIYkKDJE4Y2HecJ9GiET9AM-QmDYn7NrsxJtocZpAV2IEIHWlBWBq2IRjYwR+DYS5TDYCy+GqMiqoYYRbmOCbpjhxp4VcTqnIRV6Yii6pmIxkY0QGiqghYZFDBqPShtB6zcU2k4-qSToAVm7qCvO3bTKEEFdFBcIRKiA7wcunSogpWo4kiJg7iCWGaWkunCQuWIDhKhg2KCUFmV4ioucY64RvMWJhCscbqRO35pG8HzeUZvk+OFgUmMFwTwrZ67yTKkK1tWz6OPG0RAA */
   id: 'greetingMachine',
   context: ({ input }) => ({
     name: input.data.name,

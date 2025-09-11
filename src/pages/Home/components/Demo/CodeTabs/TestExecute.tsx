@@ -1,10 +1,31 @@
-import type { CodeBlockProps } from '../../../../../components/CodeBlock';
+import { cleanString } from '../../../../../utils';
+import type { DemoCodePanel } from '../types';
 
 const label = 'execute.test.ts';
-export const TestExecuteTab: CodeBlockProps['tabs'][number] = {
-  title: label,
-  lang: 'ts',
-  code: `
+export const TestExecuteTab: DemoCodePanel = {
+  heading: 'Test Event Processing',
+  description: cleanString(`
+    Before actually delving into creating the event handlers. Let's create 
+    a simple test script to demonstrate the event processing pipeline execution. 
+    The scenarios here cover individual handler executions and orchestrated workflows.
+    
+    Each test creates an \`ArvoEvent\` using the appropriate contract factory, then 
+    passes it to the execute function to process through the event broker. This 
+    validates that handlers are properly registered, events are correctly routed, 
+    and the orchestrator manages complex multi-step workflows as expected.
+    
+    This example script show three key patterns: simple handler processing, calculator 
+    operations, and orchestrated workflows that coordinate multiple handlers 
+    concurrently to produce final results.
+
+    > **Note:** In production applications, use proper testing frameworks like Jest 
+    > instead of console logging for comprehensive test suites.
+  `),
+  tabs: [
+    {
+      title: label,
+      lang: 'ts',
+      code: `
 import { type ArvoEvent, createArvoEventFactory } from 'arvo-core';
 import { addContract, greetingContract, greetingOrchestratorContract } from './demo';
 import { execute } from './execute';
@@ -62,4 +83,6 @@ export const testArvoDemo = () => {
 };
     
 `,
+    },
+  ],
 };

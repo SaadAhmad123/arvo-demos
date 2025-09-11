@@ -2,17 +2,18 @@ import React from 'react';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
 import { Separator } from '../../../../components/Separator';
-import { GreetingTab } from './CodeTabs/Greeting';
-import CodeBlock from '../../../../components/CodeBlock';
-import { AdderTab } from './CodeTabs/Adder';
-import { ExecuteTab } from './CodeTabs/Execute';
-import { TestExecuteTab } from './CodeTabs/TestExecute';
 import { useMount } from '../../../../hooks/useMount';
 import { testArvoDemo } from '../../../../examples/execute.test';
 import { Md3Buttons } from '../../../../classNames/buttons';
 import { HiLightningBolt } from 'react-icons/hi';
 import { Md3ContentPadding } from '../../../../classNames';
+import { ExecuteTab } from './CodeTabs/Execute';
+import { TestExecuteTab } from './CodeTabs/TestExecute';
+import { SimpleHandlersTab } from './CodeTabs/SimpleHandlers';
 import { GreetingOrchestratorTab } from './CodeTabs/GreetingOrchestrator';
+import { Md3Cards } from '../../../../classNames/cards';
+import { ReMark } from '../../../../components/ReMark';
+import CodeBlock from '../../../../components/CodeBlock';
 
 export const Demo: React.FC = () => {
   useMount(testArvoDemo);
@@ -21,7 +22,7 @@ export const Demo: React.FC = () => {
     <>
       <ContentContainer content>
         <div className={Md3ContentPadding}>
-          <h1 className={Md3Typography.headline.large}>Arvo in your Stack - Say, Hello World!</h1>
+          <h1 className={Md3Typography.headline.large}>Explore Arvo in your Stack</h1>
           <Separator padding={12} />
           <p className={Md3Typography.body.large}>
             Let's build a "Hello World" example to demonstrate Arvo's core capabilities. This interactive example will
@@ -41,13 +42,9 @@ export const Demo: React.FC = () => {
           </ul>
           <Separator padding={9} />
           <p className={`${Md3Typography.body.large}`}>
-            We'll start by creating portable core business logic, then show you how to deploy it across different
-            platforms. The beauty of Arvo is that <strong>the same business logic runs everywhere</strong> – from
-            Node.js scripts and servers to React apps to AWS Lambda functions.
-            <br />
-            <br />
-            These platform examples represent just a fraction of what's possible. Arvo works with any TypeScript
-            environment, event broker (Redis, RabbitMQ, AWS SQS, etc.), or database.{' '}
+            We'll start by creating portable core business logic, then later explore how to deploy it across different
+            platforms. The beauty of Arvo is that <strong>the same business logic runs everywhere</strong> - from
+            Node.js scripts and servers to React apps to AWS Lambda functions. Arvo works with any TypeScript{' '}
             <strong>Arvo encourages you to build the execution environment the way you see fit</strong> and provides
             clean interfaces to implement functionality for state persistence and event brokering within your existing
             architecture.
@@ -81,19 +78,33 @@ export const Demo: React.FC = () => {
             workflows while maintaining clean separation of concerns and full observability.
           </p>
         </div>
-        <div className='grid grid-cols-1'>
-          <CodeBlock tabs={[ExecuteTab, TestExecuteTab, GreetingTab, AdderTab, GreetingOrchestratorTab]} />
+      </ContentContainer>
+      <ContentContainer content>
+        <div className='grid grid-cols-1 xl:grid-cols-2 gap-4'>
+          {[ExecuteTab, TestExecuteTab, SimpleHandlersTab, GreetingOrchestratorTab].map((item, index) => (
+            <React.Fragment key={index.toString()}>
+              <div className={Md3Cards.filled}>
+                <div className={Md3Cards.inner.content}>
+                  <h2 className={Md3Typography.headline.large}>{item.heading}</h2>
+                  <Separator padding={8} />
+                  <ReMark content={item.description} />
+                </div>
+              </div>
+              <CodeBlock tabs={item.tabs} />
+            </React.Fragment>
+          ))}
         </div>
-
-        <div className={`${Md3ContentPadding} ${Md3Typography.body.large}`}>
-          <h1 className={Md3Typography.headline.large}>Nature of Orchestrators in Arvo</h1>
+      </ContentContainer>
+      <ContentContainer content>
+        <div className={`${Md3ContentPadding} ${Md3Typography.body.large} !pb-0`}>
+          <h1 className={Md3Typography.headline.large}>Nature of Orchestration in Arvo</h1>
           <Separator padding={9} />
           <p>
-            Arvo's orchestrators represent a fundamental shift in event-driven architecture design. Unlike traditional
-            systems where orchestrators act as centralized coordinators that own entire workflows,{' '}
-            <strong>Arvo treats orchestrators as specialized event handlers</strong> that can receive and emit multiple
-            event types while maintaining persistent internal state. This architectural approach offers several key
-            advantages over conventional orchestration patterns:
+            It can be observed that Arvo's orchestrators represent a fundamental shift in event-driven architecture
+            design. Unlike traditional systems where orchestrators act as centralized coordinators that own entire
+            workflows, <strong>Arvo treats orchestrators as specialized event handlers</strong> that can receive and
+            emit multiple event types while maintaining persistent internal state. This architectural approach offers
+            several key advantages over conventional orchestration patterns:
           </p>
           <Separator padding={9} />
           <ul className='ml-6 space-y-2 list-disc'>

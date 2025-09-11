@@ -1,9 +1,53 @@
-import type { CodeBlockProps } from '../../../../../components/CodeBlock';
-const label = 'greeting.orchestrator.ts';
-export const GreetingOrchestratorTab: CodeBlockProps['tabs'][number] = {
-  title: label,
-  lang: 'ts',
-  code: `
+import { cleanString } from '../../../../../utils';
+import type { DemoCodePanel } from '../types';
+
+const label = 'handlers/greeting.orchestrator.ts';
+export const GreetingOrchestratorTab: DemoCodePanel = {
+  heading: 'Composing Declarative Workflows',
+  description: cleanString(`
+    Simple event handlers in Arvo are intentionally narrow in scope—they perform one job 
+    with strict boundaries. Their real strength emerges when they are composed into larger 
+    workflows. Since Arvo is built on functional, event-driven, and distributed principles, 
+    handlers cannot directly call each other like functions or APIs. Instead, they 
+    communicate exclusively through events, ensuring loose coupling and composability.
+
+    One powerful composition pattern in Arvo is **state machine–based orchestration**. 
+    An orchestrator is itself an event handler: it consumes events, calculates the next 
+    workflow state, and emits new events accordingly. Unlike centralized orchestration 
+    frameworks, Arvo treats orchestrators as specialized event handlers that remain cohesive 
+    and decoupled.
+
+    To support this, Arvo builds on [Stately’s **XState**](https://stately.ai/docs), 
+    a best-in-class functional state machine library with strong ecosystem support 
+    (e.g., visualization tools). On top of this, Arvo introduces:
+    - \`ArvoMachine\`: a declarative state machine that **extends XState**, defined via 
+      \`setupArvoMachine(...)\` and \`createMachine(...)\`. Notice that the machine **declares the 
+      contracts of the events it handles** but does not call these handlers directly. The 
+      assumption is that each declared contract has a handler participating in the pipeline. 
+      The state machine itself is purely declarative—execution is handled by the orchestrator 
+      runtime.
+    - \`createArvoOrchestratorContract\`: generates orchestrator contracts with meaningful 
+      default event names and lifecycle fields.
+    - \`ArvoOrchestrator\`: a runtime created with \`createArvoOrchestrator\` that registers 
+      machine definitions, manages lifecycle, persists state via the \`IMachineMemory\` 
+      interface, and tracks execution cost through \`executionunits\`.
+
+    In this example, the \`ArvoMachine\` declares both its own contract and the service contracts 
+    it coordinates. The orchestrator runtime then drives execution, providing composability, 
+    type safety, persistence, versioning, and cost monitoring out of the box.
+
+    While the example here is simple, orchestrators in Arvo can express rich, production-grade 
+    workflows. More advanced examples are explored in the dedicated documentation.
+
+    > **Note:** This example is intentionally minimal for demonstration purposes.  
+    > It’s meant to help you get acquainted with Arvo’s concepts in a getting-started 
+    > scenario. Practical and complex workflows are covered later in the documentation.
+  `),
+  tabs: [
+    {
+      title: label,
+      lang: 'ts',
+      code: `
 import {
   ArvoErrorSchema,
   createArvoOrchestratorContract,
@@ -18,6 +62,8 @@ import {
   xstate,
 } from 'arvo-event-handler';
 import { z } from 'zod';
+import { addContract } from './handlers/add.handler.ts';
+import { greetingContract } from './handlers/greeting.handler.ts';
 
 /**
  * Orchestrator Contract Definition
@@ -54,9 +100,13 @@ export const greetingOrchestratorContract = createArvoOrchestratorContract({
  * - Integrates with Arvo's event routing and error handling
  * - Compatible with XState ecosystem tools (VSCode visualizer, inspector, etc.)
  * 
+ * > In VSCode, download the xstate visualiser extenstion and a 'Open Visual Editor'
+ * > button will appear below
+ * 
  * Key limitation: Async XState features (actors, promises) are not supported
  * in Arvo orchestrators due to the event-driven execution model. Please, follow
  * xstate documentation to learn more about this xstate state machine definition
+ * 
  */ 
 export const greetingMachineV100 = setupArvoMachine({
   contracts: {
@@ -185,5 +235,8 @@ export const greetingOrchestrator: EventHandlerFactory<{ memory: IMachineMemory<
     executionunits: 0, // Base cost - can be dynamic based on machine complexity
   });
 
+  
 `,
+    },
+  ],
 };
