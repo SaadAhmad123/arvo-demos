@@ -2,10 +2,14 @@ export const Md3Cards = {
   elevated: `
     rounded-3xl
     bg-surface-container-high
+    hover:bg-surface-container-highest
+    border
+    border-surface-container-highest
+    hover:border-outline
     text-on-surface
     shadow-sm
     hover:shadow-md
-    transition-shadow duration-200
+    transition-all duration-200
   `,
 
   filled: `

@@ -5,23 +5,14 @@ import { Separator } from '../../components/Separator';
 import { CTA } from './components/CTA';
 import { Hero } from './components/Hero';
 import { Installation } from './components/Installation';
-import { useMount } from '../../hooks/useMount';
 import { Pillers } from './components/Pillars';
 import { Demo } from './components/Demo';
 import { UnderConstruction } from './UnderConstruction';
 import { Md3ContentPadding } from '../../classNames';
 import { Comparison } from './components/Comparison';
-import { testArvoDemo } from '../../examples/execute.test';
+import { PageNavigation } from '../../components/PageNavigation';
 
 export const HomePage = withNavBar(() => {
-  useMount(() => {
-    // runPhase1();
-    // runPhase2();
-    // runPhase3();
-    // runPhase4();
-    testArvoDemo();
-  });
-
   return (
     <main>
       <Separator padding={8} />
@@ -62,7 +53,14 @@ export const HomePage = withNavBar(() => {
       <Separator padding={18} />
       <Demo />
       <Separator padding={18} />
-      <Separator padding={36} />
+      <PageNavigation
+        next={{
+          link: '/learn',
+          heading: 'Learn Arvo',
+          content: "Let's learn more about Arvo and how to build your next application with it.",
+        }}
+      />
+      <Separator padding={54} />
     </main>
   );
 });

@@ -12,7 +12,7 @@ export const NavButton: React.FC<NavOption> = ({ title, icon, link, isSelected }
       >
         {icon}
       </span>
-      <span className='text-[12px]'>{title}</span>
+      <span className={`text-[12px] text-center ${isSelected(location) ? 'font-bold' : ''}`}>{title}</span>
     </Link>
   );
 };
