@@ -7,14 +7,15 @@ import { Hero } from './components/Hero';
 
 export const LearnPage = withNavBar(() => {
   return (
-    <>
+    <main>
+      <Separator padding={8} />
       <ContentContainer>
         <section
           className='grid grid-cols-1 lg:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'
           aria-labelledby='hero-title'
         >
           <Hero />
-          <img alt='learning illustration' src='/learning.png' className='h-full rounded-3xl object-cover' />
+          <img alt='learning illustration' src='/learning.png' className='rounded-3xl object-cover' />
         </section>
       </ContentContainer>
       <Separator padding={18} />
@@ -28,6 +29,6 @@ export const LearnPage = withNavBar(() => {
         </div>
       </ContentContainer>
       <Separator padding={18} />
-    </>
+    </main>
   );
 });
