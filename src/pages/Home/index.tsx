@@ -32,7 +32,7 @@ export const HomePage = withNavBar(() => {
       <ContentContainer content>
         <div className={Md3ContentPadding}>
           <h1 className={`${Md3Typography.headline.large} text-on-surface-variant font-light`}>
-            A toolkit for reliable event-driven systems
+            Build reliable &amp; platform-agnostic event-driven systems
           </h1>
           <Separator padding={8} />
           <p className={`${Md3Typography.body.large}`}>
