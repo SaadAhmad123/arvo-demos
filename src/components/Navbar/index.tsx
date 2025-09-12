@@ -13,11 +13,6 @@ export const NavBar = () => {
   const toggleShow = () => {
     const newShow = !show;
     setShow(newShow);
-    if (newShow) {
-      document.documentElement.classList.add('overflow-hidden');
-    } else {
-      document.documentElement.classList.remove('overflow-hidden');
-    }
   };
 
   return (
