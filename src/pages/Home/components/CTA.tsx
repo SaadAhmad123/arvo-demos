@@ -17,7 +17,7 @@ export const CTA = () => (
     </a>
 
     <Link
-      to='/docs'
+      to='/learn'
       className='flex-1 flex flex-col items-center justify-center text-center px-6 py-8 bg-primary text-on-primary hover:brightness-110 transition-all duration-200 min-h-[160px] cursor-pointer'
     >
       <div className='mb-3 p-3 bg-on-primary/10 rounded-xl'>
