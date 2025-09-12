@@ -11,6 +11,7 @@ import { Demo } from './components/Demo';
 import { UnderConstruction } from './UnderConstruction';
 import { Md3ContentPadding } from '../../classNames';
 import { Comparison } from './components/Comparison';
+import { testArvoDemo } from '../../examples/execute.test';
 
 export const HomePage = withNavBar(() => {
   useMount(() => {
@@ -18,6 +19,7 @@ export const HomePage = withNavBar(() => {
     // runPhase2();
     // runPhase3();
     // runPhase4();
+    testArvoDemo();
   });
 
   return (

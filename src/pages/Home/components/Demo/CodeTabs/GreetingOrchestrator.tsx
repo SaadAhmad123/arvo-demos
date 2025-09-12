@@ -1,7 +1,6 @@
 import { cleanString } from '../../../../../utils';
 import type { DemoCodePanel } from '../types';
 
-const label = 'handlers/greeting.orchestrator.ts';
 export const GreetingOrchestratorTab: DemoCodePanel = {
   heading: 'Composing Declarative Workflows',
   description: cleanString(`
@@ -45,7 +44,7 @@ export const GreetingOrchestratorTab: DemoCodePanel = {
   `),
   tabs: [
     {
-      title: label,
+      title: 'handlers/greeting.orchestrator.ts',
       lang: 'ts',
       code: `
 import {
@@ -62,8 +61,8 @@ import {
   xstate,
 } from 'arvo-event-handler';
 import { z } from 'zod';
-import { addContract } from './handlers/add.handler.ts';
-import { greetingContract } from './handlers/greeting.handler.ts';
+import { addContract } from './add.handler.ts';
+import { greetingContract } from './greeting.handler.ts';
 
 /**
  * Orchestrator Contract Definition

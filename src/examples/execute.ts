@@ -1,5 +1,5 @@
 import type { ArvoEvent } from 'arvo-core';
-import { addHandler, greetingHandler, greetingOrchestrator } from './demo';
+import { addHandler, greetingHandler, greetingOrchestrator, greetingResumable } from './demo';
 import { createSimpleEventBroker, SimpleMachineMemory } from 'arvo-event-handler';
 
 export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
@@ -18,6 +18,11 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
    * This pattern enables event brokering without requiring external message brokers and is helpful
    * for rapid development, limited-scoped projects, and testing
    */
-  const { resolve } = createSimpleEventBroker([addHandler(), greetingHandler(), greetingOrchestrator({ memory })]);
+  const { resolve } = createSimpleEventBroker(
+    [addHandler(), greetingHandler(), greetingResumable({ memory }), greetingOrchestrator({ memory })],
+    {
+      onError: (error) => console.error(error),
+    },
+  );
   return await resolve(event);
 };

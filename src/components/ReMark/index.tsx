@@ -16,7 +16,7 @@ const isValidMarkdown = (text: string) => {
 };
 
 export const ReMark: React.FC<{ content: string | null }> = ({ content }) => {
-  const tableClassNames = Md3Table.variants.default;
+  const tableClassNames = Md3Table.variants.compact;
   if (!content) return <></>;
   return (
     <ReactMarkdown

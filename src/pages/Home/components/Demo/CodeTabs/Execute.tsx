@@ -3,7 +3,7 @@ import type { DemoCodePanel } from '../types';
 
 const label = 'execute.ts';
 export const ExecuteTab: DemoCodePanel = {
-  heading: 'A Runtime Environment',
+  heading: 'Setup Execution Environment',
   description: cleanString(`
       Arvo handlers are execution environment agnostic, enabling deployment across local, 
       single-server, or distributed architectures. They require only an event broker for 
@@ -28,7 +28,9 @@ import type { ArvoEvent } from 'arvo-core';
 import { addHandler } from './handlers/add.handler.ts';
 import { greetingHandler } from './handlers/greeting.handler.ts';
 import { greetingOrchestrator } from './handlers/greeting.orchestrator.ts'
+import { greetingResumable } from './handlers/greeting.resumable.ts';
 import { createSimpleEventBroker, SimpleMachineMemory } from 'arvo-event-handler';
+
 
 export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
   /**
@@ -46,7 +48,12 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
    * This pattern enables event brokering without requiring external message brokers and is helpful
    * for rapid development, limited-scoped projects, and testing
    */
-  const { resolve } = createSimpleEventBroker([addHandler(), greetingHandler(), greetingOrchestrator({ memory })]);
+  const { resolve } = createSimpleEventBroker([
+    addHandler(), 
+    greetingHandler(), 
+    greetingResumable({ memory }), 
+    greetingOrchestrator({ memory })
+  ]);
   return await resolve(event);
 };
   

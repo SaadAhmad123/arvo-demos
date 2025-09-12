@@ -1,9 +1,4 @@
-import {
-  WebTracerProvider,
-  BatchSpanProcessor,
-  ConsoleSpanExporter,
-  SimpleSpanProcessor,
-} from '@opentelemetry/sdk-trace-web';
+import { WebTracerProvider, ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-web';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { resourceFromAttributes } from '@opentelemetry/resources';
@@ -23,7 +18,7 @@ const provider = new WebTracerProvider({
     [ATTR_SERVICE_NAME]: serviceName,
   }),
   spanProcessors: [
-    exportToJaeger ? new BatchSpanProcessor(httpExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
+    exportToJaeger ? new SimpleSpanProcessor(httpExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
   ],
 });
 

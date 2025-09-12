@@ -2,10 +2,6 @@ import React from 'react';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
 import { Separator } from '../../../../components/Separator';
-import { useMount } from '../../../../hooks/useMount';
-import { testArvoDemo } from '../../../../examples/execute.test';
-import { Md3Buttons } from '../../../../classNames/buttons';
-import { HiLightningBolt } from 'react-icons/hi';
 import { Md3ContentPadding } from '../../../../classNames';
 import { ExecuteTab } from './CodeTabs/Execute';
 import { TestExecuteTab } from './CodeTabs/TestExecute';
@@ -14,9 +10,10 @@ import { GreetingOrchestratorTab } from './CodeTabs/GreetingOrchestrator';
 import { Md3Cards } from '../../../../classNames/cards';
 import { ReMark } from '../../../../components/ReMark';
 import CodeBlock from '../../../../components/CodeBlock';
+import { GreetingResumableTab } from './CodeTabs/GreetingResumable';
 
 export const Demo: React.FC = () => {
-  useMount(testArvoDemo);
+  //useMount(testArvoDemo);
 
   return (
     <>
@@ -68,6 +65,12 @@ export const Demo: React.FC = () => {
               handlers by taking a name and age, then returning both a greeting and the age plus seven
             </li>
             <li>
+              <strong>Agentic Orchestrator:</strong> An imperative orchestrator (powered by ArvoResumable) that
+              coordinates workflows in a step-by-step programming style. It's especially useful for agentic AI use
+              cases, where workflow decisions depend on dynamic inputs such as LLM outputs, API responses, or human
+              feedback.
+            </li>
+            <li>
               <strong>Event Broker:</strong> Routes events seamlessly between handlers using an in-memory broker that
               runs in any JavaScript runtime without requiring external message brokers
             </li>
@@ -79,20 +82,22 @@ export const Demo: React.FC = () => {
           </p>
         </div>
       </ContentContainer>
-      <ContentContainer content>
+      <ContentContainer>
         <div className='grid grid-cols-1 xl:grid-cols-2 gap-4'>
-          {[ExecuteTab, TestExecuteTab, SimpleHandlersTab, GreetingOrchestratorTab].map((item, index) => (
-            <React.Fragment key={index.toString()}>
-              <div className={Md3Cards.filled}>
-                <div className={Md3Cards.inner.content}>
-                  <h2 className={Md3Typography.headline.large}>{item.heading}</h2>
-                  <Separator padding={8} />
-                  <ReMark content={item.description} />
+          {[ExecuteTab, TestExecuteTab, SimpleHandlersTab, GreetingOrchestratorTab, GreetingResumableTab].map(
+            (item, index) => (
+              <React.Fragment key={index.toString()}>
+                <div className={Md3Cards.filled}>
+                  <div className={Md3Cards.inner.content}>
+                    <h2 className={Md3Typography.headline.large}>{item.heading}</h2>
+                    <Separator padding={8} />
+                    <ReMark content={item.description} />
+                  </div>
                 </div>
-              </div>
-              <CodeBlock tabs={item.tabs} />
-            </React.Fragment>
-          ))}
+                <CodeBlock tabs={item.tabs} />
+              </React.Fragment>
+            ),
+          )}
         </div>
       </ContentContainer>
       <ContentContainer content>
@@ -100,39 +105,54 @@ export const Demo: React.FC = () => {
           <h1 className={Md3Typography.headline.large}>Nature of Orchestration in Arvo</h1>
           <Separator padding={9} />
           <p>
-            It can be observed that Arvo's orchestrators represent a fundamental shift in event-driven architecture
-            design. Unlike traditional systems where orchestrators act as centralized coordinators that own entire
-            workflows, <strong>Arvo treats orchestrators as specialized event handlers</strong> that can receive and
-            emit multiple event types while maintaining persistent internal state. This architectural approach offers
-            several key advantages over conventional orchestration patterns:
+            Orchestration in Arvo is designed to feel natural within the broader event-driven model. Rather than relying
+            on a centralized workflow engine, <strong>orchestrators are just specialized event handlers</strong> that
+            manage state, emit events, and coordinate other handlers. This allows orchestration logic to run anywhere
+            your handlers run—locally, in serverless environments, or across distributed clusters.
           </p>
           <Separator padding={9} />
+          <p>Two orchestration styles are available out of the box:</p>
+          <Separator />
           <ul className='ml-6 space-y-2 list-disc'>
             <li>
-              <strong>Eliminates Single Points of Failure:</strong> Orchestrators function as distributed event handlers
-              rather than centralized bottlenecks
+              <strong>State-Machine Orchestrators:</strong> Declarative workflows built on XState, ideal for
+              well-defined, predictable processes that benefit from visualization and strong guarantees.
             </li>
             <li>
-              <strong>Enables Horizontal Scaling:</strong> Multiple orchestrator instances can process events
-              concurrently without coordination overhead
-            </li>
-            <li>
-              <strong>Distributed Event Routing:</strong> Built-in routing intelligence with Arvo Event Handlers removes
-              the need for complex broker-level routing logic
+              <strong>Resumable (Imperative) Orchestrators:</strong> Step-by-step workflows written in a familiar coding
+              style, perfect for <em>agentic AI scenarios</em> or dynamic processes where the next step depends on
+              runtime inputs such as LLM responses, API calls, or human-in-the-loop actions.
             </li>
           </ul>
           <Separator padding={9} />
           <p>
-            Whether using state-machine-based or imperative orchestration patterns, Arvo orchestrators follow the same
-            event handler contract: they consume events and produce arrays of output events. This consistency enables{' '}
-            <strong>seamless composition, testing, and deployment</strong> across your entire event-driven system while
-            maintaining the flexibility to handle complex workflow requirements.
+            A key characteristic of Arvo’s execution model is its <strong>start–stop nature</strong>. Orchestrators do
+            not run as long-lived threads; instead, they process an incoming event, emit the next set of events, persist
+            their state, and then pause. When responses or follow-up events arrive, the orchestrator resumes from where
+            it left off. This design delivers several benefits:
           </p>
-          <Separator padding={18} />
-          <button type='button' className={Md3Buttons.filledWithIcon}>
-            <HiLightningBolt className='w-4 h-4' />
-            Learn About Routing Intelligence
-          </button>
+          <Separator />
+          <ul className='ml-6 space-y-2 list-disc'>
+            <li>
+              <strong>Resource Efficiency:</strong> No CPU or memory is consumed while waiting—thousands of workflows
+              can be in flight without heavy infrastructure costs.
+            </li>
+            <li>
+              <strong>Horizontal Scalability:</strong> Since orchestrators are stateless between events, new instances
+              can be spun up easily to handle load without coordination overhead.
+            </li>
+            <li>
+              <strong>Resiliency:</strong> If a process crashes mid-orchestration, another instance can pick up
+              seamlessly using the persisted state in <code>IMachineMemory</code>.
+            </li>
+          </ul>
+          <Separator padding={9} />
+          <p>
+            This dual approach—<em>structured state machines</em> plus <em>imperative resumables</em>—combined with the
+            start–stop execution model means you can model both predictable workflows and adaptive AI-driven processes
+            in the same system. All orchestrators use contracts for type-safety and observability, making them easy to
+            evolve, compose, and test without central bottlenecks.
+          </p>
         </div>
       </ContentContainer>
     </>

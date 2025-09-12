@@ -34,7 +34,7 @@ const getTableHeaderClasses = (config: TableClassConfig = {}): string => {
   };
 
   return [
-    'bg-surface-container-highest text-on-surface-variant font-medium text-left',
+    'bg-primary text-on-primary font-medium text-left',
     'border-b border-outline-variant',
     sizeClasses[size],
     stickyHeader ? 'sticky top-0 z-10' : '',
@@ -60,7 +60,7 @@ const getTableRowClasses = (config: TableClassConfig = {}): string => {
 
   return [
     striped ? 'odd:bg-surface-container-lowest' : '',
-    hoverable ? 'bg-surface-container-lowest hover:bg-surface-container-low transition-colors duration-200' : '',
+    hoverable ? 'bg-surface-container-low hover:bg-surface-container transition-colors duration-200' : '',
     'group border-b border-outline-variant last:border-b-0',
   ]
     .filter(Boolean)
