@@ -16,8 +16,13 @@ const isValidMarkdown = (text: string) => {
   }
 };
 
-export const ReMark: React.FC<{ content: string | null }> = ({ content }) => {
-  const tableClassNames = Md3Table.variants.compact;
+export const ReMark: React.FC<{
+  content: string | null;
+  tableType?: 'compact' | 'defautl';
+  bodyTextSize?: 'large' | 'default';
+}> = ({ content, tableType = 'compact', bodyTextSize = 'default' }) => {
+  const tableClassNames = tableType === 'compact' ? Md3Table.variants.compact : Md3Table.variants.default;
+  const bodyTextClassNames = bodyTextSize === 'default' ? Md3Typography.body.medium : Md3Typography.body.large;
   if (!content) return <></>;
   return (
     <ReactMarkdown
@@ -30,6 +35,12 @@ export const ReMark: React.FC<{ content: string | null }> = ({ content }) => {
             </div>
           </div>
         ),
+        h1: ({ node, ...props }) => (
+          <h1 className={`${Md3Typography.headline.large} text-on-surface-variant my-2`} {...props} />
+        ),
+        h2: ({ node, ...props }) => (
+          <h2 className={`${Md3Typography.headline.medium} text-on-surface-variant my-2`} {...props} />
+        ),
         thead: ({ node, ...props }) => <thead {...props} />,
         th: ({ node, ...props }) => <th className={tableClassNames.header} {...props} />,
         td: ({ node, ...props }) => <td className={tableClassNames.cell} {...props} />,
@@ -41,7 +52,7 @@ export const ReMark: React.FC<{ content: string | null }> = ({ content }) => {
           />
         ),
         a: ({ node, ...props }) => <a className='hover:underline text-blue-600' target='_blank' {...props} />,
-        p: ({ node, ...props }) => <p className={`py-2 ${Md3Typography.body.medium}`} {...props} />,
+        p: ({ node, ...props }) => <p className={`py-2 ${bodyTextClassNames}`} {...props} />,
         ul: ({ node, ...props }) => <ul className='list-disc ml-5 my-2' {...props} />,
         ol: ({ node, ...props }) => <ol className='list-decimal ml-5 my-2' {...props} />,
         li: ({ node, ...props }) => <li className='my-1' {...props} />,

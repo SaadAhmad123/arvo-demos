@@ -4,6 +4,7 @@ import './index.css';
 import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/404';
 import { LearnPage } from './pages/Learn';
+import { ArvoEventPage } from './pages/Learn/pages/ArvoEvent';
 
 export default () => {
   useSystemTheme();
@@ -12,7 +13,7 @@ export default () => {
     <Routes>
       <Route index element={<HomePage />} />
       <Route path='/learn' element={<LearnPage />} />
-      <Route path='/learn/arvo-event' element={<LearnPage />} />
+      <Route path='/learn/arvo-event' element={<ArvoEventPage />} />
       <Route path='/learn/arvo-contract' element={<LearnPage />} />
       <Route path='/learn/arvo-event-factory' element={<LearnPage />} />
       <Route path='/learn/arvo-event-handler' element={<LearnPage />} />
