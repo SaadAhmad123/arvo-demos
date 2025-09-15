@@ -53,9 +53,9 @@ export const ReMark: React.FC<{
         ),
         a: ({ node, ...props }) => <a className='hover:underline text-blue-600' target='_blank' {...props} />,
         p: ({ node, ...props }) => <p className={`py-2 ${bodyTextClassNames}`} {...props} />,
-        ul: ({ node, ...props }) => <ul className='list-disc ml-5 my-2' {...props} />,
-        ol: ({ node, ...props }) => <ol className='list-decimal ml-5 my-2' {...props} />,
-        li: ({ node, ...props }) => <li className='my-1' {...props} />,
+        ul: ({ node, ...props }) => <ul className={`list-disc ml-5 my-2 ${bodyTextClassNames}`} {...props} />,
+        ol: ({ node, ...props }) => <ol className={`list-decimal ml-5 my-2 ${bodyTextClassNames}`} {...props} />,
+        li: ({ node, ...props }) => <li className={`my-1 ${bodyTextClassNames}`} {...props} />,
         hr: () => <hr className='bg-gray-200 mt-2 mb-4 h-[1px] border-none' />,
         code: ({ children, className }) => {
           if (!className)
