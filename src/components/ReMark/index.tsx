@@ -5,6 +5,7 @@ import remarkParse from 'remark-parse';
 import { unified } from 'unified';
 import { CopyButton } from '../buttons/Copy';
 import { Md3Table } from '../../classNames/table';
+import { Md3Typography } from '../../classNames/typography';
 
 const isValidMarkdown = (text: string) => {
   try {
@@ -40,7 +41,7 @@ export const ReMark: React.FC<{ content: string | null }> = ({ content }) => {
           />
         ),
         a: ({ node, ...props }) => <a className='hover:underline text-blue-600' target='_blank' {...props} />,
-        p: ({ node, ...props }) => <p className='py-2' {...props} />,
+        p: ({ node, ...props }) => <p className={`py-2 ${Md3Typography.body.medium}`} {...props} />,
         ul: ({ node, ...props }) => <ul className='list-disc ml-5 my-2' {...props} />,
         ol: ({ node, ...props }) => <ol className='list-decimal ml-5 my-2' {...props} />,
         li: ({ node, ...props }) => <li className='my-1' {...props} />,

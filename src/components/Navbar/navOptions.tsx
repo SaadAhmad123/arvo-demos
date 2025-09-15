@@ -1,6 +1,6 @@
 import type { NavOption } from './types';
 import { MdHome } from 'react-icons/md';
-import { FaPuzzlePiece } from 'react-icons/fa6';
+import { FaLightbulb, FaPuzzlePiece } from 'react-icons/fa6';
 
 export const navOptions: NavOption[] = [
   {
@@ -14,5 +14,11 @@ export const navOptions: NavOption[] = [
     icon: <FaPuzzlePiece size={18} />,
     link: '/learn',
     isSelected: (location) => location.pathname.startsWith('/learn'),
+  },
+  {
+    title: 'Advanced',
+    icon: <FaLightbulb size={18} />,
+    link: '/advanced',
+    isSelected: (location) => location.pathname.startsWith('/advanced'),
   },
 ];
