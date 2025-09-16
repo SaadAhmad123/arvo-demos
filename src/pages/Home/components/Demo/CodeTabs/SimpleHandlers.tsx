@@ -1,5 +1,5 @@
 import { cleanString } from '../../../../../utils';
-import type { DemoCodePanel } from '../types';
+import type { DemoCodePanel } from '../../../../types';
 
 export const SimpleHandlersTab: DemoCodePanel = {
   heading: 'The Building Blocks',

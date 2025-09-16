@@ -1,5 +1,5 @@
 import { cleanString } from '../../../../../utils';
-import type { DemoCodePanel } from '../types';
+import type { DemoCodePanel } from '../../../../types';
 
 export const GreetingResumableTab: DemoCodePanel = {
   heading: 'Imperative Orchestration for Agentic Workflows',

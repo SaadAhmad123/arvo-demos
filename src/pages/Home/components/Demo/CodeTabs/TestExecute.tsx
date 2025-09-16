@@ -1,5 +1,5 @@
 import { cleanString } from '../../../../../utils';
-import type { DemoCodePanel } from '../types';
+import type { DemoCodePanel } from '../../../../types';
 
 const label = 'execute.test.ts';
 export const TestExecuteTab: DemoCodePanel = {

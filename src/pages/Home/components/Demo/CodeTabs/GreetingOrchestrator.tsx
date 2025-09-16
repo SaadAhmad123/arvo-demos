@@ -1,5 +1,5 @@
 import { cleanString } from '../../../../../utils';
-import type { DemoCodePanel } from '../types';
+import type { DemoCodePanel } from '../../../../types';
 
 export const GreetingOrchestratorTab: DemoCodePanel = {
   heading: 'Composing Declarative Workflows',
