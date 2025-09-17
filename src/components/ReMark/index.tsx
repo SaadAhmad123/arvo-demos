@@ -47,7 +47,7 @@ export const ReMark: React.FC<{
         tr: ({ node, ...props }) => <tr className={tableClassNames.row} {...props} />,
         blockquote: ({ node, ...props }) => (
           <blockquote
-            className='border-l-4 border-primary bg-secondary-container text-on-secondary-container p-2 my-2'
+            className='border-l-4 border-primary bg-secondary-container text-on-secondary-container p-2 mt-2 mb-4'
             {...props}
           />
         ),

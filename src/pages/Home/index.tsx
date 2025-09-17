@@ -7,7 +7,6 @@ import { Hero } from './components/Hero';
 import { Installation } from './components/Installation';
 import { Pillers } from './components/Pillars';
 import { Demo } from './components/Demo';
-import { UnderConstruction } from './UnderConstruction';
 import { Md3ContentPadding } from '../../classNames';
 import { Comparison } from './components/Comparison';
 import { PageNavigation } from '../../components/PageNavigation';
@@ -17,8 +16,6 @@ export const HomePage = withNavBar(() => {
     <main>
       <Separator padding={8} />
       <ContentContainer>
-        <UnderConstruction />
-        <Separator padding={8} />
         <section
           className='grid grid-cols-1 lg:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'
           aria-labelledby='hero-title'
