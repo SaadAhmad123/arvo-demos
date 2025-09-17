@@ -59,7 +59,7 @@ export const ReMark: React.FC<{
         hr: () => <hr className='bg-gray-200 mt-2 mb-4 h-[1px] border-none' />,
         code: ({ children, className }) => {
           if (!className)
-            return <code className='inline-block bg-surface-container-highest px-1 py-1 rounded'>{children}</code>;
+            return <code className='inline-block bg-surface-container-highest px-1 rounded'>{children}</code>;
           return (
             <div className='relative grid grid-col-1 my-4 px-4 py-2 bg-secondary text-base rounded-xl'>
               <div className='overflow-auto'>

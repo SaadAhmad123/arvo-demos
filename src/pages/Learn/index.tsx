@@ -118,7 +118,7 @@ export const LearnPage = withNavBar(() => {
               link: '/learn/arvo-resumable',
             },
           ].map((item, index) => (
-            <Link to={item.link} key={index.toString()} className={`${Md3Cards.elevated} cursor-pointer`}>
+            <Link to={item.link} key={index.toString()} className={`${Md3Cards.hoverable_filled} cursor-pointer`}>
               <div className={Md3Cards.inner.content}>
                 <div className={`mb-4 ${Md3Typography.headline.large}`}>{item.name}</div>
                 <div className={`${Md3Typography.body.medium} opacity-75`}>{item.summary}</div>

@@ -5,6 +5,9 @@ import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/404';
 import { LearnPage } from './pages/Learn';
 import { ArvoEventPage } from './pages/Learn/pages/ArvoEvent';
+import { AdvancedPage } from './pages/Advanced';
+import { ArvoEventDataFieldDeepDivePage } from './pages/Advanced/pages/ArvoEventDataFieldDeepDive';
+import { EventRoutingAndBrokersPage } from './pages/Advanced/pages/EventRoutingAndBrokers';
 
 export default () => {
   useSystemTheme();
@@ -20,7 +23,9 @@ export default () => {
       <Route path='/learn/arvo-machine' element={<LearnPage />} />
       <Route path='/learn/arvo-orchestrator' element={<LearnPage />} />
       <Route path='/learn/arvo-resumable' element={<LearnPage />} />
-      <Route path='/advanced' element={<NotFoundPage />} />
+      <Route path='/advanced' element={<AdvancedPage />} />
+      <Route path='/advanced/arvo-event-data-field-deep-dive' element={<ArvoEventDataFieldDeepDivePage />} />
+      <Route path='/advanced/event-routing-and-brokers' element={<EventRoutingAndBrokersPage />} />
       <Route path='/404' element={<NotFoundPage />} />
       <Route path='*' element={<Navigate to={'/404'} replace />} />
     </Routes>

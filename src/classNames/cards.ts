@@ -1,4 +1,15 @@
 export const Md3Cards = {
+  hoverable_filled: `
+    rounded-3xl
+    bg-surface-container-high
+    hover:bg-surface-container-highest
+    border
+    border-surface-container-highest
+    hover:border-outline
+    text-on-surface
+    transition-all duration-200
+  `,
+
   elevated: `
     rounded-3xl
     bg-surface-container-high

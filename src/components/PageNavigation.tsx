@@ -20,7 +20,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({ previous, next }
   <ContentContainer content>
     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
       {previous ? (
-        <Link to={previous.link} className={`${Md3Cards.elevated} w-full block`}>
+        <Link to={previous.link} className={`${Md3Cards.hoverable_filled} w-full block`}>
           <div className={Md3Cards.inner.content}>
             <p className='flex items-center gap-2'>
               <FaArrowLeft />
@@ -36,7 +36,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({ previous, next }
         <div />
       )}
       {next ? (
-        <Link to={next.link} className={`${Md3Cards.elevated} w-full block`}>
+        <Link to={next.link} className={`${Md3Cards.hoverable_filled} w-full block`}>
           <div className={Md3Cards.inner.content}>
             <p className='flex items-center gap-2'>
               <span>Up Next</span>

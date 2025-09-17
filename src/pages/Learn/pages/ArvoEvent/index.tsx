@@ -1,3 +1,4 @@
+import { Link } from 'react-router';
 import { Md3ContentPadding } from '../../../../classNames';
 import { Md3Buttons } from '../../../../classNames/buttons';
 import { Md3Cards } from '../../../../classNames/cards';
@@ -8,6 +9,7 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
+import { PageNavigation } from '../../../../components/PageNavigation';
 
 export const ArvoEventPage = withNavBar(() => {
   return (
@@ -128,108 +130,74 @@ export const ArvoEventPage = withNavBar(() => {
       <Separator padding={18} />
       <Demo />
       <Separator padding={18} />
+
       <ContentContainer content>
         <div className={Md3ContentPadding}>
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # The Self-Describing Event, Decentralized Routing & Event Brokers
+              # Advanced Topics
 
-              Arvo, as an event-driven toolkit that facilitates complex coordination and orchestration, requires a mechanism to
-              route events appropriately to their destinations. Traditionally, this logic is encapsulated in the event broker or 
-              the orchestrator. As a result, the broker ends up performing both orchestration and routing, creating a central 
-              bottleneck—if it fails or cannot scale, the entire system is impacted. This also couples participating services 
-              tightly to the orchestrator or broker, which undermines the goal of building an evolvable, scalable event-driven system.
-
-              Arvo introduces an approach that aligns more closely with EDA philosophy by leveraging the \`ArvoEvent\` as much as possible. 
-              This is a self-describing event containing enough information to instruct the broker where to send it for handling. The routing information is encapsulated
-              in the event's \`to\` field. In addition, metadata includes the source, contract schema, distributed telemetry, and a \`subject\` 
-              representing the overall workflow process. These elements are detailed further in the documentation. Arvo event handlers use
-              this metadata and a deterministic algorithm to decide where to send response events. The algorithm itself is described in each
-              handler's documentation.
-
-              This model transforms the event broker into a lightweight routing service that requires no complex logic or state management. 
-              It simply performs string matching to route events based on the \`to\` field, while event handlers manage the routing logic themselves.
-              The Arvo event handlers abstracts most routing complexity - developers rarely need to implement custom routing as the event
-              handlers automatically determine response destinations using deterministic algorithms. When custom routing is required, Arvo 
-              event handlers provide powerful mechanisms for implementation, which are detailed in their respective documentation.
-
-              ## The Centralized Event Broker
-
-              Arvo employs a **centralized event broker** architecture that requires only a single topic to function effectively. 
-              While the system can scale to multiple topics, brokers, or environments, its fundamental design operates through one 
-              shared communication channel. All event handlers subscribe to this topic and listen for events. When the broker 
-              encounters an event, it routes it to the appropriate handler by matching \`event.to\` with \`handler.source\`. Handlers
-              process events and emit responses back to the same topic, creating a continuous flow of event-driven communication.
-
-              This architecture supports advanced patterns through the \`event.domain\` field, which enables broadcasting events across 
-              different topics, brokers, or environments. These patterns provide flexibility for complex enterprise scenarios while
-              maintaining the simplicity of the core routing mechanism. Further details on these advanced patterns are covered in 
-              subsequent sections.
-
-              The broker-centric model eliminates direct service-to-service dependencies. Each service evolves independently within 
-              its bounded context, enhancing both maintainability and scalability.
-
-              > **Note:** While centralization may initially appear to create a potential bottleneck, this concern is mitigated by 
-              > several key factors. Modern event brokers are engineered to handle massive throughput and can scale horizontally to
-              > meet enterprise demands. Arvo further optimizes performance by requiring only lightweight string-based routing operations
-              > (\`event.to\` = \`handler.source\`), eliminating the computational overhead associated with complex routing logic 
-              > or stateful broker operations. Additionally, contemporary event broker implementations include mechanisms that deliver
-              > only relevant events to subscribed handlers (based on the matching criteria), ensuring handlers as well as the network are not
-              > overwhelmed by irrelevant traffic while the broker efficiently manages its core responsibility of high-performance 
-              > message routing.
-
-              ## Exploring ArvoEvent Discovery, Tracing & Evolution 
-
-              Arvo's centralized event broker pattern might initially raise concerns about event discovery and tracing, 
-              given that all events flow through a single topic. However, this perspective overlooks how Arvo fundamentally 
-              reimagines these challenges through its contract-first architecture.
-
-              Traditional event-driven systems struggle with discovery because events are defined at the broker level - 
-              developers must navigate broker configurations, topic structures, and message formats to understand system 
-              communication patterns. Arvo shifts this paradigm entirely. Event discovery becomes a compile-time and 
-              development-time concern rather than a runtime exploration problem. Through \`ArvoContract\`, every service
-              explicitly declares what events it accepts and emits, with full type safety and schema validation. These contracts
-              exist as JavaScript/TypeScript objects that are directly bound to event handlers, making the entire communication
-              structure explicit and discoverable through code rather than broker inspection.
-
-              This approach transforms event discovery from a documentation challenge into an enforceable specification. 
-              Arvo envisions that when developers need to understand what events a service processes or produces, they examine
-              its contract - not the broker. The contract provides complete type definitions, schema validations, and 
-              versioning information. This information isn't merely descriptive; it's enforced at both compile-time through 
-              TypeScript's type system and runtime through Zod validation. The result is a self-documenting system where 
-              the code itself becomes the source of truth for event discovery.
-
-              Regarding event tracing, Arvo's native integration with OpenTelemetry distributed tracing ensures that even 
-              with all events flowing through a single topic, the complete event flow remains observable. Every \`ArvoEvent\` 
-              carries \`traceparent\` and \`tracestate\` fields that maintain distributed tracing context across service 
-              boundaries. This means that regardless of how events are routed through the broker, the causal chain of events 
-              remains traceable from initiation through to completion. The \`subject\` field further enhances traceability by 
-              providing a workflow-level correlation identifier that links related events throughout their distributed execution
-              lifecycle. This is further enhanced by event's \`parentid\` field which establishes a direct causal link between
-              events in the system.
-
-              Event evolution, traditionally a complex broker configuration challenge, becomes a contract versioning concern in
-              Arvo. When services need to handle new event types or modified schemas, these changes are managed through the 
-              contract's semantic versioning system rather than broker reconfiguration. The \`dataschema\` field in each event 
-              explicitly identifies which contract version it conforms to, enabling services to handle multiple versions simultaneously
-              during migration periods. This approach decouples event evolution from broker infrastructure, making it a development
-              concern rather than an operational one.
-
-              > **Note:** The shift from broker-centric to contract-centric event management represents a fundamental rethinking
-              > of event-driven architecture. By making contracts the primary mechanism for discovery, validation, and evolution,
-              > Arvo creates a system where the complexity of event management scales with code complexity rather than infrastructure
-              > complexity. For detailed information on how contracts enable this transformation, see the [ArvoContract documentation](/learn/arvo-contract).
-
-              The contract-first approach doesn't eliminate the need for observability tools or monitoring - it complements them.
-              While traditional monitoring focuses on what's happening at runtime, Arvo's contracts tell you what should happen
-              by design. The combination of compile-time contract enforcement, runtime validation, and distributed tracing creates
-              multiple layers of visibility into your event-driven system, each serving a distinct purpose in maintaining system 
-              reliability and understanding.
+              As the core communication unit of the Arvo ecosystem, \`ArvoEvent\` is a 
+              powerful component. This documentation introduces its everyday usage, and 
+              Arvo provides utilities that make working with \`ArvoEvent\` straightforward. 
+              However, there are more advanced and nuanced features of this event 
+              structure that can access when needed and are discussed in the advanced patterns documentation.
             `)}
           />
         </div>
       </ContentContainer>
+      <ContentContainer content>
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+          {[
+            {
+              name: 'ArvoEvent — Data Field Deep Dive',
+              summary:
+                'Deep dive into key data field or ArvoEvent to understand the internal working of event handler and distributed tracing.',
+              link: '/advanced/arvo-event-data-field-deep-dive',
+            },
+            {
+              name: 'Event Routing & Brokers in Arvo',
+              summary:
+                'ArvoEvent, being the core unit of communication in Arvo, introduces a shift in thinking about event routing and brokering which leads to simpler and more scalable infrastructure.',
+              link: '/advanced/event-routing-and-brokers',
+            },
+          ].map((item, index) => (
+            <Link to={item.link} key={index.toString()} className={`${Md3Cards.hoverable_filled} cursor-pointer`}>
+              <div className={Md3Cards.inner.content}>
+                <div className={`mb-4 ${Md3Typography.headline.large}`}>{item.name}</div>
+                <div className={`${Md3Typography.body.medium} opacity-75`}>{item.summary}</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </ContentContainer>
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              # Learn More
+
+              Continue exploring additional concepts to deepen your understanding of Arvo and its ecosystem. The following sections build upon the foundations of \`ArvoEvent\` and introduce more advanced components and practices.
+            `)}
+          />
+        </div>
+      </ContentContainer>
+
+      <PageNavigation
+        next={{
+          heading: 'ArvoContract',
+          link: '/',
+          content:
+            'TypeScript-Zod contract system enabling contract-first development with compile-time type safety, runtime validation, and semantic versioning support.',
+        }}
+        previous={{
+          heading: 'Learn Arvo',
+          link: '/',
+          content: "Learn about Arvo's concepts and component to start building Arvo based event-driven systems",
+        }}
+      />
       <Separator padding={54} />
     </main>
   );

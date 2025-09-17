@@ -3,7 +3,7 @@ import type { DemoCodePanel } from '../../../../../types';
 
 const label = 'contract.ArvoEvent.ts';
 export const ContractArvoEventTab: DemoCodePanel = {
-  heading: 'Contract-First ArvoEvent',
+  heading: 'Contract-First Development',
   description: cleanString(`
      Arvo promotes a **contract-first approach** to event-driven system design. 
     In this model, contracts define the formal interface between event producers 
