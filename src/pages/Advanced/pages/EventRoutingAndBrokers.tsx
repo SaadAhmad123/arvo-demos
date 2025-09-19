@@ -49,11 +49,14 @@ export const EventRoutingAndBrokersPage = withNavBar(() => {
               business logic also makes systems harder to evolve as requirements change.
             `)}
           />
-          <Separator padding={18} />
+        </div>
+      </ContentContainer>
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # The Self Describing Event
+              # Self Describing Event & Decentralized Routing
 
               Arvo leverages \`ArvoEvent\` as the fundamental unit of communication between event handlers. 
               These events are engineered to carry comprehensive routing and context information within their 
@@ -62,8 +65,8 @@ export const EventRoutingAndBrokersPage = withNavBar(() => {
               handler's identifier (\`handler.source\`), providing the event broker with complete information 
               needed for accurate routing. 
 
-              > **Note:** This design puts a requirement of the architecture that during system initialization (or at some stage), 
-              > all handlers register their unique identifiers (\`handler.source\`) with the broker, which must support filtering
+              > **Note:** This design puts a requirement on the architecture that during system initialization (or at some stage), 
+              > all handlers, whole contracts are participarting in the system, register their unique identifiers (\`handler.source\`) with the broker, which must support filtering
               > and delivery capabilities based on these identifiers.
             `)}
           />
@@ -110,45 +113,53 @@ export const EventRoutingAndBrokersPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # The Centralized Event Broker
+              # The Event Broker Design
 
-              Arvo employs a **centralized event broker** architecture that requires only a single topic to function effectively. 
-              While the system can scale to multiple topics, brokers, or environments, its fundamental design operates through one 
-              shared communication channel. All event handlers subscribe to this topic and listen for events. When the broker 
-              encounters an event, it routes it to the appropriate handler by matching \`event.to\` with \`handler.source\`. Handlers
-              process events and emit responses back to the same topic, creating a continuous flow of event-driven communication.
+              With self-describing \`ArvoEvent\` structures, Arvo's event broker operational requirements simplify
+              to string-matched filtering and event delivery. The broker's primary responsibility involves comparing 
+              the \`event.to\` field with registered handler ids (\`handler.source\`) and delivering messages accordingly. 
+              This lightweight operation eliminates the need for complex routing logic, state management, or business context 
+              understanding. The broker receives events, filters and delivers them to relevant handlers, which then emit resultant
+              events back to the broker, creating a continuous processing cycle.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              This architecture supports advanced patterns through the [\`event.domain\`](/advanced/arvo-event-data-field-deep-dive) field, which enables broadcasting events across 
-              different topics, brokers, or environments. These patterns provide flexibility for complex enterprise scenarios while
-              maintaining the simplicity of the core routing mechanism. Further details on these advanced patterns are covered in 
-              subsequent sections.
+              This approach establishes straightforward architectural requirements for the event broker. Arvo, for almost all usecases, requires only
+              a centralized broker using a single communication channel where all event handlers subscribe and publish. Standard queuing mechanisms 
+              can complement this architecture on the delivery side, including dead letter queues, without requiring specialized configuration—any 
+              standard implementation should work effectively with Arvo. This architectural simplicity enables any technology with basic event 
+              filtering and delivery capabilities to serve as the underlying broker infrastructure.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              The broker-centric model eliminates direct service-to-service dependencies. Each service evolves independently within 
-              its bounded context, enhancing both maintainability and scalability.
+              State recovery and persistence are handled internally by event handlers through connections to any database
+              supporting key-value storage and retrieval operations. This design allows network components to scale horizontally 
+              without creating bottlenecks. The \`event.to === handler.source\` comparison represents a localized operation that
+              avoids distributed scaling concerns for broker implementations.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              > **Note:** While centralization may initially appear to create a potential bottleneck, this concern is mitigated by 
-              > several key factors. Modern event brokers are engineered to handle massive throughput and can scale horizontally to
-              > meet enterprise demands. Arvo further optimizes performance by requiring only lightweight string-based routing operations
-              > (\`event.to\` = \`handler.source\`), eliminating the computational overhead associated with complex routing logic 
-              > or stateful broker operations. Additionally, contemporary event broker implementations include mechanisms that deliver
-              > only relevant events to subscribed handlers (based on the matching criteria), ensuring handlers as well as the network are not
-              > overwhelmed by irrelevant traffic while the broker efficiently manages its core responsibility of high-performance 
-              > message routing.
+              Arvo's architecture supports advanced patterns through the \`domain\` field, enabling event broadcasting across different
+              topics, brokers, or environments. These capabilities provide flexibility for complex enterprise scenarios while preserving
+              the simplicity of the core routing mechanism.
+            `)}
+          />
+          <Separator padding={8} />
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              While centralized brokers may seem like bottlenecks, modern implementations handle 
+              massive throughput through horizontal scaling. Arvo's lightweight string-based routing eliminates 
+              computational overhead, and broker filtering prevents irrelevant traffic from overwhelming handlers.
             `)}
           />
         </div>
@@ -158,17 +169,73 @@ export const EventRoutingAndBrokersPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              ## Exploring Event Discovery, Tracing & Evolution 
+              # Development mindset in Arvo
 
-              Arvo's centralized event broker pattern might initially raise concerns about event discovery and tracing, 
-              given that all events flow through a single topic. However, this perspective overlooks how Arvo fundamentally 
-              reimagines these challenges through its contract-first architecture.
+              Arvo shifts the development mental model from direct service communication to 
+              event-mediated interactions. Services don't invoke each other directly; 
+              instead, they emit events that describe commands (typically denoted by \`event.type\` prefixed 
+              with \`com.<...>\`) or outcomes (\`event.type = 'evt.<...>'\`) representing what occurred, allowing
+              the system to route these events to interested parties. This indirection creates loose coupling 
+              that enables independent service evolution and deployment, while \`ArvoContract\` definitions maintain 
+              high levels of cohesion across service boundaries. 
+
+              > Arvo recognizes that system components must maintain some level of coupling to function cohesively. 
+              > Through its contract-first approach and event handler design, Arvo manages this inevitable coupling 
+              > while maximizing system cohesion. The framework's design draws from the 'direction of dependency' 
+              > principle outlined in [Balancing Choreography and Orchestration](https://youtu.be/zt9DFMkjkEA?t=1634), 
+              > which establishes the theoretical foundation for Arvo's architectural decisions around managing 
+              > inter-service relationships in distributed systems.
+            `)}
+          />
+        </div>
+      </ContentContainer>
+
+      <ContentContainer content>
+        <div className={`${Md3ContentPadding} px-0!`}>
+          <a href='/arvo-basic-concept-architecture.png' target='_blank' rel='noreferrer'>
+            <img alt='Basic Arvo Architecture Diagram' src='/dir_dep.png' className='rounded-3xl shadow' />
+          </a>
+        </div>
+      </ContentContainer>
+
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              Event handlers in Arvo are designed to be operationally stateless. Each handler processes 
+              an incoming event, executes its business logic, emits necessary response events, and then 
+              becomes idle until the next event arrives. Specialized event handlers—\`ArvoOrchestrator\` and 
+              \`ArvoResumable\`—facilitate stateful interactions while maintaining operational statelessness
+              by storing their state in pluggable key-value stores accessible through a standardized interface. 
+              These handlers don't retain internal execution state; instead, they return state objects that 
+              are externally stored and retrieved when new events arrive using the \`event.subject\` as the storage key. 
+              Arvo constrains state access to this simple key-value pattern, where the state object remains
+              a JSON-serializable, type-safe structure under complete developer control.
+              The storage also interface allows developers to implement optimistic distributed locking 
+              functions according to their standards and requirements without imposing hard constraints from Arvo. 
+              This access pattern ensuring predictable state retrieval and enabling 
+              optimistic distributed locking mechanisms when coordination across handler instances is required.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
+              This effectively stateless operational model enables horizontal scaling since any handler 
+              instance can process any event with minimal coordination overhead, supporting elastic scaling 
+              strategies where resources adjust dynamically to processing demands.
+            `)}
+          />
+        </div>
+      </ContentContainer>
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              # Discovery, Tracing & Evolution in Arvo
+
               Traditional event-driven systems struggle with discovery because events are defined at the broker level - 
               developers must navigate broker configurations, topic structures, and message formats to understand system 
               communication patterns. Arvo shifts this paradigm entirely. Event discovery becomes a compile-time and 

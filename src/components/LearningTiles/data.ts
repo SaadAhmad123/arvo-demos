@@ -61,7 +61,7 @@ export const ArvoEventDataFieldDeepDiveLearn = {
 };
 
 export const EventRoutingAndBrokerInArvoLearn = {
-  name: 'Event Routing & Brokers in Arvo',
+  name: 'Broker Design in Arvo',
   summary:
     'ArvoEvent, being the core unit of communication in Arvo, introduces a shift in thinking about event routing and brokering which leads to simpler and more scalable infrastructure.',
   link: '/advanced/event-routing-and-brokers',

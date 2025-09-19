@@ -11,6 +11,7 @@ import { Demo } from './Demo';
 import { PageNavigation } from '../../../../components/PageNavigation';
 import { LearningTiles } from '../../../../components/LearningTiles';
 import {
+  ArvoContractLearn,
   ArvoEventDataFieldDeepDiveLearn,
   EventRoutingAndBrokerInArvoLearn,
 } from '../../../../components/LearningTiles/data';
@@ -169,14 +170,13 @@ export const ArvoEventPage = withNavBar(() => {
 
       <PageNavigation
         next={{
-          heading: 'ArvoContract',
-          link: '/',
-          content:
-            'TypeScript-Zod contract system enabling contract-first development with compile-time type safety, runtime validation, and semantic versioning support.',
+          heading: ArvoContractLearn.name,
+          link: ArvoContractLearn.link,
+          content: ArvoContractLearn.summary,
         }}
         previous={{
           heading: 'Learn Arvo',
-          link: '/',
+          link: '/learn',
           content: "Learn about Arvo's concepts and component to start building Arvo based event-driven systems",
         }}
       />
