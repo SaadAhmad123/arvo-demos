@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { Md3ContentPadding } from '../../../../classNames';
 import { Md3Buttons } from '../../../../classNames/buttons';
 import { Md3Cards } from '../../../../classNames/cards';
@@ -10,6 +9,11 @@ import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
 import { PageNavigation } from '../../../../components/PageNavigation';
+import { LearningTiles } from '../../../../components/LearningTiles';
+import {
+  ArvoEventDataFieldDeepDiveLearn,
+  EventRoutingAndBrokerInArvoLearn,
+} from '../../../../components/LearningTiles/data';
 
 export const ArvoEventPage = withNavBar(() => {
   return (
@@ -148,29 +152,7 @@ export const ArvoEventPage = withNavBar(() => {
         </div>
       </ContentContainer>
       <ContentContainer content>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-          {[
-            {
-              name: 'ArvoEvent — Data Field Deep Dive',
-              summary:
-                'Deep dive into key data field or ArvoEvent to understand the internal working of event handler and distributed tracing.',
-              link: '/advanced/arvo-event-data-field-deep-dive',
-            },
-            {
-              name: 'Event Routing & Brokers in Arvo',
-              summary:
-                'ArvoEvent, being the core unit of communication in Arvo, introduces a shift in thinking about event routing and brokering which leads to simpler and more scalable infrastructure.',
-              link: '/advanced/event-routing-and-brokers',
-            },
-          ].map((item, index) => (
-            <Link to={item.link} key={index.toString()} className={`${Md3Cards.hoverable_filled} cursor-pointer`}>
-              <div className={Md3Cards.inner.content}>
-                <div className={`mb-4 ${Md3Typography.headline.large}`}>{item.name}</div>
-                <div className={`${Md3Typography.body.medium} opacity-75`}>{item.summary}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <LearningTiles data={[ArvoEventDataFieldDeepDiveLearn, EventRoutingAndBrokerInArvoLearn]} />
       </ContentContainer>
       <ContentContainer content>
         <div className={Md3ContentPadding}>

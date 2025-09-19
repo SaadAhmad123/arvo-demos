@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { Md3ContentPadding } from '../../classNames';
 import { Md3Cards } from '../../classNames/cards';
 import { Md3Typography } from '../../classNames/typography';
@@ -8,6 +7,16 @@ import { ReMark } from '../../components/ReMark';
 import { Separator } from '../../components/Separator';
 import { cleanString } from '../../utils';
 import { PageNavigation } from '../../components/PageNavigation';
+import {
+  ArvoContractLearn,
+  ArvoEventFactoryLearn,
+  ArvoEventHandlerLearn,
+  ArvoEventLearn,
+  ArvoMachineLearn,
+  ArvoOrchestratorLearn,
+  ArvoResumableLearn,
+} from '../../components/LearningTiles/data';
+import { LearningTiles } from '../../components/LearningTiles';
 
 export const LearnPage = withNavBar(() => {
   return (
@@ -73,59 +82,17 @@ export const LearnPage = withNavBar(() => {
       </ContentContainer>
       <Separator padding={18} />
       <ContentContainer content>
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-          {[
-            {
-              name: 'ArvoEvent',
-              summary:
-                'Self-describing event structure extending CloudEvents with enterprise-grade routing, observability, and validation capabilities for reliable distributed communication.',
-              link: '/learn/arvo-event',
-            },
-            {
-              name: 'ArvoContract',
-              summary:
-                'TypeScript-Zod contract system enabling contract-first development with compile-time type safety, runtime validation, and semantic versioning support.',
-              link: '/learn/arvo-contract',
-            },
-            {
-              name: 'ArvoEventFactory',
-              summary:
-                'Intelligent abstraction layer for creating contract-compliant ArvoEvents with automatic validation, OpenTelemetry integration, and streamlined event construction.',
-              link: '/learn/arvo-event-factory',
-            },
-            {
-              name: 'ArvoEventHandler',
-              summary:
-                'Basic event handler implementing request-response patterns with contract enforcement, comprehensive error handling, and consistent execution signatures.',
-              link: '/learn/arvo-event-handler',
-            },
-            {
-              name: 'ArvoMachine',
-              summary:
-                'Declarative state machine builder using XState for defining complex workflows with contract binding, synchronous execution, and domain-aware event emission.',
-              link: '/learn/arvo-machine',
-            },
-            {
-              name: 'ArvoOrchestrator',
-              summary:
-                'Specialized event handler providing robust execution environment for ArvoMachine with lifecycle management, telemetry integration, and distributed coordination.',
-              link: '/learn/arvo-orchestrator',
-            },
-            {
-              name: 'ArvoResumable',
-              summary:
-                'Imperative orchestration handler using familiar async/await patterns to manage distributed workflows with explicit control and simplified debugging.',
-              link: '/learn/arvo-resumable',
-            },
-          ].map((item, index) => (
-            <Link to={item.link} key={index.toString()} className={`${Md3Cards.hoverable_filled} cursor-pointer`}>
-              <div className={Md3Cards.inner.content}>
-                <div className={`mb-4 ${Md3Typography.headline.large}`}>{item.name}</div>
-                <div className={`${Md3Typography.body.medium} opacity-75`}>{item.summary}</div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <LearningTiles
+          data={[
+            ArvoEventLearn,
+            ArvoContractLearn,
+            ArvoEventFactoryLearn,
+            ArvoEventHandlerLearn,
+            ArvoMachineLearn,
+            ArvoOrchestratorLearn,
+            ArvoResumableLearn,
+          ]}
+        />
       </ContentContainer>
       <Separator padding={18} />
       <ContentContainer content>

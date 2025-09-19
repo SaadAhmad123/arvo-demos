@@ -4,45 +4,92 @@ import { ContentContainer } from '../../../components/ContentContainer';
 import { withNavBar } from '../../../components/Navbar/withNavBar';
 import { ReMark } from '../../../components/ReMark';
 import { Separator } from '../../../components/Separator';
+import { LearningTiles } from '../../../components/LearningTiles';
+import { ArvoContractLearn, ArvoEventHandlerLearn, ArvoEventLearn } from '../../../components/LearningTiles/data';
+import { Md3Cards } from '../../../classNames/cards';
+import { Md3Typography } from '../../../classNames/typography';
 
 export const EventRoutingAndBrokersPage = withNavBar(() => {
   return (
     <main>
+      <Separator padding={8} />
+      <ContentContainer>
+        <section
+          className='grid grid-cols-1 xl:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'
+          aria-labelledby='hero-title'
+        >
+          <div className={`${Md3Cards.filled} flex flex-col justify-center`}>
+            <div className={`${Md3Cards.inner.content}`}>
+              <h1 className={`${Md3Typography.display.large} text-on-surface`}>Broker Design in Arvo</h1>
+              <Separator padding={24} />
+              <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
+                Self-describing events, created by intelligent event handlers, route themselves through lightweight
+                brokers using deterministic algorithms.
+              </p>
+            </div>
+          </div>
+          <img
+            alt='arvo event illustration'
+            src='/broker-design-image.png'
+            className='rounded-3xl object-cover lg:h-full'
+          />
+        </section>
+      </ContentContainer>
+      <Separator padding={18} />
       <ContentContainer content>
         <div className={Md3ContentPadding}>
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # Self-Describing ArvoEvent, Decentralized Routing & Event Brokers
+              Arvo fundamentally reimagines how event-driven systems handle routing and coordination by shifting
+              intelligence from the broker to the events and event handlers themselves. Traditional event architectures
+              create bottlenecks by centralizing routing logic within brokers or orchestrators, forcing these
+              components to understand business context and manage complex state. When these central points fail or
+              reach capacity limits, entire systems become unavailable. This coupling between infrastructure and 
+              business logic also makes systems harder to evolve as requirements change.
+            `)}
+          />
+          <Separator padding={18} />
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              # The Self Describing Event
 
-              Arvo, as an event-driven toolkit that facilitates complex coordination and orchestration, requires a mechanism to
-              route events appropriately to their destinations. Traditionally, this logic is encapsulated in the event broker or 
-              the orchestrator. As a result, the broker ends up performing both orchestration and routing, creating a central 
-              bottleneck—if it fails or cannot scale, the entire system is impacted. This also couples participating services 
-              tightly to the orchestrator or broker, which undermines the goal of building an evolvable, scalable event-driven system.
+              Arvo leverages \`ArvoEvent\` as the fundamental unit of communication between event handlers. 
+              These events are engineered to carry comprehensive routing and context information within their 
+              structure, enabling both the event broker and recipient handlers to determine proper destinations 
+              and subsequent actions without external configuration. The \`to\` field contains the destination 
+              handler's identifier (\`handler.source\`), providing the event broker with complete information 
+              needed for accurate routing. 
+
+              > **Note:** This design puts a requirement of the architecture that during system initialization (or at some stage), 
+              > all handlers register their unique identifiers (\`handler.source\`) with the broker, which must support filtering
+              > and delivery capabilities based on these identifiers.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              Arvo introduces an approach that aligns more closely with EDA philosophy by leveraging the [\`ArvoEvent\`](/learn/arvo-event) as much as possible. 
-              This is a self-describing event containing enough information to instruct the broker where to send it for handling. The routing information is encapsulated
-              in the event's \`to\` field. In addition, metadata includes the source, contract schema, distributed telemetry, and a [\`subject\`](/advanced/arvo-event-data-field-deep-dive) 
-              representing the overall workflow process. These elements are detailed further in the documentation. [Arvo event handlers](/learn) use
-              this metadata and a deterministic algorithm to decide where to send response events. The algorithm itself is described in each
-              handler's documentation.
+              Beyond the \`to\` field, Arvo event handlers require additional metadata to determine the routing 
+              of resultant events. Handlers leverage their bound \`ArvoContract\` along with event fields including
+              \`subject\`, \`redirectto\`, and \`source\` to calculate next destinations through deterministic algorithms. 
+              Each handler type—\`ArvoEventHandler\`, \`ArvoOrchestrator\`, and \`ArvoResumable\`—implements specific routing
+              logic (appropriate for its scope) internally while providing mechanisms for custom routing behavior when needed. 
+              These algorithms are detailed in each handler's respective documentation, though typical usage scenarios
+              rarely require direct interaction with this routing logic.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              This model transforms the event broker into a lightweight routing service that requires no complex logic or state management. 
-              It simply performs string matching to route events based on the \`to\` field, while event handlers manage the routing logic themselves.
-              The Arvo event handlers abstracts most routing complexity - developers rarely need to implement custom routing as the event
-              handlers automatically determine response destinations using deterministic algorithms. When custom routing is required, Arvo 
-              event handlers provide powerful mechanisms for implementation, which are detailed in their respective documentation.
+              Arvo's distributed-first architecture includes native OpenTelemetry integration for comprehensive
+              observability. Distributed tracing information travels within each \`ArvoEvent\` through the 
+              \`traceparent\` and \`tracestate\` fields, enabling handlers to maintain telemetry continuity 
+              and establish proper trace relationships with parent executions. This embedded tracing context 
+              ensures that OpenTelemetry observability functions correctly regardless of deployment patterns, 
+              infrastructure choices, or distribution of services.
             `)}
           />
         </div>
@@ -192,7 +239,13 @@ export const EventRoutingAndBrokersPage = withNavBar(() => {
           />
         </div>
       </ContentContainer>
-      <Separator padding={54} />
+      <ContentContainer content>
+        <div className={`${Md3ContentPadding} pb-8!`}>
+          <ReMark content={'# Related Topics'} />
+        </div>
+        <LearningTiles data={[ArvoEventLearn, ArvoContractLearn, ArvoEventHandlerLearn]} />
+      </ContentContainer>
+      <Separator padding={72} />
     </main>
   );
 });
