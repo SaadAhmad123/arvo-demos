@@ -14,6 +14,15 @@ import { PageNavigation } from '../../components/PageNavigation';
 export const HomePage = withNavBar(() => {
   return (
     <main>
+      {/* <button
+        type='button'
+        className={Md3Buttons.filled}
+        onClick={() => {
+          testArvoDemo();
+        }}
+      >
+        Execute
+      </button> */}
       <Separator padding={8} />
       <ContentContainer>
         <section

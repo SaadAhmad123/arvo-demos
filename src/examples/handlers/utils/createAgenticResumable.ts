@@ -92,6 +92,7 @@ export const createAgenticResumable = <
       types: {
         context: {} as Context,
       },
+
       executionunits: 0,
       memory: memory,
       handler: {

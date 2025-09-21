@@ -50,38 +50,31 @@ const ARVO_PACKAGES: PkgMap = {
 
 const OTEL_BROWSER_PACKAGES: PkgMap = {
   '@opentelemetry/api': '^1.9.0',
-  '@opentelemetry/context-zone': '^2.0.1',
-  '@opentelemetry/exporter-zipkin': '^2.0.1',
-  '@opentelemetry/instrumentation': '^0.203.0',
-  '@opentelemetry/instrumentation-document-load': '^0.48.0',
-  '@opentelemetry/resources': '^2.0.1',
-  '@opentelemetry/sdk-trace-web': '^2.0.1',
-  '@opentelemetry/semantic-conventions': '^1.36.0',
+  '@opentelemetry/context-zone': '^2.1.0',
+  '@opentelemetry/exporter-trace-otlp-http': '^0.205.0',
+  '@opentelemetry/instrumentation': '^0.205.0',
+  '@opentelemetry/instrumentation-document-load': '^0.50.0',
+  '@opentelemetry/resources': '^2.1.0',
+  '@opentelemetry/sdk-trace-web': '^2.1.0',
+  '@opentelemetry/semantic-conventions': '^1.37.0',
 };
 
 const OTEL_BROWSER_CODE_SNIPPET = `
 // Run this code in your application \`index.tsx\` or equivalent. In case of NextJS
 // see NextJS Otel documentation. This code sets up the OTEL connection to the OTEL collector
-import {
-  WebTracerProvider,
-  BatchSpanProcessor,
-  ConsoleSpanExporter,
-  SimpleSpanProcessor,
-} from '@opentelemetry/sdk-trace-web';
+import { WebTracerProvider, ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-web';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
-import { ZipkinExporter } from '@opentelemetry/exporter-zipkin';
+import { OTLPTraceExporter as HTTPExporter } from '@opentelemetry/exporter-trace-otlp-http';
 
 // Setting it to false will log the telemetry data to broswer console
 const exportToJaeger = true;
 const serviceName = 'arvo-browser';
 
-// Using Zipkin HTTP exporter to export logs to Jaeger
-const httpExporter = new ZipkinExporter({
-  url: 'http://localhost:9411/api/v2/spans',
-  serviceName,
+const httpExporter = new HTTPExporter({
+  url: 'http://localhost:4318/v1/traces',   // Jaeger HTTP Trace endpoint
 });
 
 const provider = new WebTracerProvider({
@@ -89,7 +82,7 @@ const provider = new WebTracerProvider({
     [ATTR_SERVICE_NAME]: serviceName,
   }),
   spanProcessors: [
-    exportToJaeger ? new BatchSpanProcessor(httpExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
+    exportToJaeger ? new SimpleSpanProcessor(httpExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
   ],
 });
 
