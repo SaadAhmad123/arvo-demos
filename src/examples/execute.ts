@@ -1,6 +1,7 @@
 import type { ArvoEvent } from 'arvo-core';
-import { addHandler, greetingHandler, greetingOrchestrator, greetingResumable } from './demo';
+import { addHandler, greetingHandler, greetingOrchestrator, greetingResumable } from './handlers';
 import { createSimpleEventBroker, SimpleMachineMemory } from 'arvo-event-handler';
+import { testAgent } from './handlers/utils/createAgenticResumable.test';
 
 export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
   /**
@@ -19,7 +20,13 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
    * for rapid development, limited-scoped projects, and testing
    */
   const { resolve } = createSimpleEventBroker(
-    [addHandler(), greetingHandler(), greetingResumable({ memory }), greetingOrchestrator({ memory })],
+    [
+      addHandler(),
+      greetingHandler(),
+      greetingResumable({ memory }),
+      greetingOrchestrator({ memory }),
+      testAgent.handlerFactory({ memory }),
+    ],
     {
       onError: (error) => console.error(error),
     },

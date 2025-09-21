@@ -1,6 +1,7 @@
-import { createArvoEventFactory } from 'arvo-core';
-import { addContract, greetingContract, greetingOrchestratorContract, greetingResumableContract } from './demo';
+import { createArvoEventFactory, createArvoOrchestratorEventFactory } from 'arvo-core';
+import { addContract, greetingContract, greetingOrchestratorContract, greetingResumableContract } from './handlers';
 import { execute } from './execute';
+import { testAgent } from './handlers/utils/createAgenticResumable.test';
 
 const testGreetingHandler = async () => {
   console.log('Testing greeting handler');
@@ -69,6 +70,18 @@ export const testGreetingResumable = async () => {
   await execute(event).then((e) => console.log(e));
 };
 
+const testAgentic = async () => {
+  const event = createArvoOrchestratorEventFactory(testAgent.contract.version('1.0.0')).accepts({
+    source: 'test.test.test',
+    data: {
+      parentSubject$$: null,
+      message: 'I am Saad Ahmad. Greet me via the tool',
+    },
+  });
+
+  await execute(event).then((e) => console.log(e));
+};
+
 // This is just a sample script to do a quick test.
 // Actual tests should be done via actual Typescript
 // testing frameworks like jest
@@ -78,6 +91,7 @@ export const testArvoDemo = async () => {
     await testGreetingHandler();
     await testGreetingOrchestrator();
     await testGreetingResumable();
+    await testAgentic();
   } catch (e) {
     console.log(e);
   }
