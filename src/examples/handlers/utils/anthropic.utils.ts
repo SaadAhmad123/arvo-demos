@@ -2,7 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { ANTHROPIC_API_KEY } from '../../../config';
 import type { CallAgenticLLMOutput, CallAgenticLLMParam } from './types';
 import type { AnyVersionedContract } from '../types';
-
+import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
 /**
  * Converts Arvo event type names to Anthropic-compatible tool names.
  *
@@ -55,8 +55,8 @@ const reverseToolNameFormatter = (formattedName: string) => formattedName.replac
  * @throws {Error} When Claude provides neither a response nor tool requests
  */
 export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedContract>>(
-  param: Pick<CallAgenticLLMParam<TTools>, 'type' | 'messages' | 'tools'> & { system?: string },
-) => Promise<CallAgenticLLMOutput<TTools>> = async ({ messages, tools, system }) => {
+  param: Pick<CallAgenticLLMParam<TTools>, 'type' | 'messages' | 'tools' | 'span'> & { system?: string },
+) => Promise<CallAgenticLLMOutput<TTools>> = async ({ messages, tools, system, span }) => {
   /**
    * Convert Arvo contracts to Anthropic tool definitions.
    *
@@ -65,6 +65,23 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
    * - Converts tool names to underscore format
    * - Preserves contract descriptions and validation schemas
    */
+  const llmModel: Anthropic.Messages.Model = 'claude-sonnet-4-0';
+  const llmInvocationParams = {
+    temperature: 0.5,
+    maxTokens: 1024,
+  };
+
+  // Setting up took OpenInference Attributes
+  span.setAttributes({
+    [OpenInferenceSemanticConventions.LLM_PROVIDER]: 'anthropic',
+    [OpenInferenceSemanticConventions.LLM_SYSTEM]: 'anthropic',
+    [OpenInferenceSemanticConventions.LLM_MODEL_NAME]: llmModel,
+    [OpenInferenceSemanticConventions.LLM_INVOCATION_PARAMETERS]: JSON.stringify({
+      temperature: llmInvocationParams.temperature,
+      max_tokens: llmInvocationParams.maxTokens,
+    }),
+  });
+
   const toolDef = Object.values(tools).map((item) => {
     const inputSchema = item.toJsonSchema().accepts.schema;
     // @ts-ignore
@@ -117,8 +134,9 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
   });
 
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-0',
-    max_tokens: 1024,
+    model: llmModel,
+    max_tokens: llmInvocationParams.maxTokens,
+    temperature: llmInvocationParams.temperature,
     system: system,
     // biome-ignore lint/suspicious/noExplicitAny: Any is fine here for now
     tools: toolDef as any,
@@ -175,6 +193,12 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
     toolRequests: toolRequests.length ? toolRequests : null,
     response: finalResponse,
     toolTypeCount,
+    usage: {
+      tokens: {
+        prompt: message.usage.input_tokens,
+        completion: message.usage.output_tokens,
+      },
+    },
   };
 
   /**

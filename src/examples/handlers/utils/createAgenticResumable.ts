@@ -3,6 +3,8 @@ import {
   type ArvoOrchestratorContract,
   createArvoOrchestratorContract,
   type ArvoSemanticVersion,
+  ArvoOpenTelemetry,
+  exceptionToSpan,
 } from 'arvo-core';
 import {
   ConfigViolation,
@@ -11,8 +13,14 @@ import {
   type IMachineMemory,
 } from 'arvo-event-handler';
 import { z } from 'zod';
-import type { CallAgenticLLMParam, CreateAgenticResumableParams } from './types';
+import type { CallAgenticLLMOutput, CallAgenticLLMParam, CreateAgenticResumableParams } from './types';
 import type { AnyVersionedContract } from '../types';
+import { openInferenceSpanInitAttributesSetter, openInferenceSpanOutputAttributesSetter } from './otel.helpers';
+import {
+  SemanticConventions as OpenInferenceSemanticConventions,
+  OpenInferenceSpanKind,
+} from '@arizeai/openinference-semantic-conventions';
+import { SpanStatusCode } from '@opentelemetry/api';
 
 /**
  * Validates that service contracts for agentic resumables meet required structure.
@@ -204,7 +212,8 @@ export const createAgenticResumable = <
       executionunits: 0,
       memory: memory,
       handler: {
-        '1.0.0': async ({ contracts, service, input, context, collectedEvents, metadata }) => {
+        '1.0.0': async ({ contracts, service, input, context, collectedEvents, metadata, span }) => {
+          span.setAttribute(OpenInferenceSemanticConventions.OPENINFERENCE_SPAN_KIND, OpenInferenceSpanKind.AGENT);
           // Handle service errors by throwing error (which will result in the system error event)
           if (
             service?.type &&
@@ -216,6 +225,45 @@ export const createAgenticResumable = <
             );
           }
 
+          // Wrap the agentic llm caller in a function which can create a new
+          // OTEL span for enhanced observability. It can only happen here in
+          // the handler function as it only has the most recent OTEL span
+          const otelAgenticLLMCaller: (
+            param: Omit<CallAgenticLLMParam<TService, TPrompts>, 'span'>,
+          ) => Promise<CallAgenticLLMOutput<TService>> = async (params) => {
+            // This function automatically inherits from the parent span
+            return await ArvoOpenTelemetry.getInstance().startActiveSpan({
+              name: 'Agentic LLM Call',
+              disableSpanManagement: true,
+              fn: async (span) => {
+                try {
+                  openInferenceSpanInitAttributesSetter({
+                    ...params,
+                    span,
+                  });
+                  const result = await agenticLLMCaller({
+                    ...params,
+                    span,
+                  });
+                  openInferenceSpanOutputAttributesSetter({
+                    ...result,
+                    span,
+                  });
+                  return result;
+                } catch (e) {
+                  exceptionToSpan(e as Error, span);
+                  span.setStatus({
+                    code: SpanStatusCode.ERROR,
+                    message: (e as Error)?.message ?? 'Something went wrong',
+                  });
+                  throw e;
+                } finally {
+                  span.end();
+                }
+              },
+            });
+          };
+
           // Handle initialization: Handler the original message
           if (input) {
             const messages: CallAgenticLLMParam['messages'] = [
@@ -225,7 +273,7 @@ export const createAgenticResumable = <
               },
             ];
 
-            const { toolRequests, toolTypeCount, response } = await agenticLLMCaller({
+            const { toolRequests, toolTypeCount, response } = await otelAgenticLLMCaller({
               type: 'init',
               messages,
               tools: contracts.services,
@@ -252,6 +300,7 @@ export const createAgenticResumable = <
               for (let i = 0; i < toolRequests.length; i++) {
                 if (toolRequests[i].data && typeof toolRequests[i].data === 'object') {
                   toolRequests[i].data.toolUseId$$ = toolRequests[i].id;
+                  toolRequests[i].data.parentSubject$$ = input.subject;
                 }
                 const { type, id, data } = toolRequests[i];
                 const { toolUseId$$, ...toolInputData } = data;
@@ -314,7 +363,7 @@ export const createAgenticResumable = <
             }
           }
 
-          const { response, toolRequests, toolTypeCount } = await agenticLLMCaller({
+          const { response, toolRequests, toolTypeCount } = await otelAgenticLLMCaller({
             type: 'tool_results',
             messages,
             tools: contracts.services,
@@ -343,6 +392,25 @@ export const createAgenticResumable = <
 
           // LLM requested more tools - continue the conversation cycle
           if (toolRequests) {
+            for (let i = 0; i < toolRequests.length; i++) {
+              if (toolRequests[i].data && typeof toolRequests[i].data === 'object') {
+                toolRequests[i].data.toolUseId$$ = toolRequests[i].id;
+                toolRequests[i].data.parentSubject$$ = context.currentSubject;
+              }
+              const { type, id, data } = toolRequests[i];
+              const { toolUseId$$, ...toolInputData } = data;
+              messages.push({
+                role: 'assistant',
+                content: [
+                  {
+                    type: 'tool_use',
+                    id: id,
+                    name: type,
+                    input: toolInputData,
+                  },
+                ],
+              });
+            }
             return {
               context: {
                 ...context,

@@ -1,5 +1,6 @@
 import type { InferVersionedArvoContract } from 'arvo-core';
 import type { AnyVersionedContract } from '../types';
+import type { Span } from '@opentelemetry/api';
 
 /**
  * Message content representing the result of a completed tool execution.
@@ -95,6 +96,9 @@ export type CallAgenticLLMParam<
 
   /** Collection of prompt template functions for different conversation scenarios */
   prompts: TPrompts;
+
+  /** The current OTEL span to record logs to. */
+  span: Span;
 };
 
 /**
@@ -140,6 +144,13 @@ export type CallAgenticLLMOutput<
    * all expected tool responses are collected before proceeding.
    */
   toolTypeCount: Record<string, number>;
+
+  usage?: {
+    tokens: {
+      prompt: number;
+      completion: number;
+    };
+  };
 };
 
 /**
@@ -182,9 +193,6 @@ export type CreateAgenticResumableParams<
 
   /**
    * Function implementing the LLM service integration.
-   *
-   * Should handle conversation context, tool selection, and return
-   * either direct responses or tool execution requests.
    */
   agenticLLMCaller: CallAgenticLLM<TServices, TPrompts>;
 
@@ -200,8 +208,7 @@ export type CreateAgenticResumableParams<
    * Optional domain routing configuration for services.
    *
    * Maps service event types to specific processing domains,
-   * enabling advanced routing patterns like external integrations
-   * or specialized processing pipelines.
+   * enabling advanced routing patterns
    */
   serviceDomains?: Record<{ [K in keyof TServices]: TServices[K]['accepts']['type'] }[keyof TServices], string[]>;
 

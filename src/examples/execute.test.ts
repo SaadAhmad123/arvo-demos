@@ -75,7 +75,8 @@ const testAgentic = async () => {
     source: 'test.test.test',
     data: {
       parentSubject$$: null,
-      message: 'I am Saad Ahmad. Greet me via the tool',
+      message:
+        'I am Saad Ahmad, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
     },
   });
 

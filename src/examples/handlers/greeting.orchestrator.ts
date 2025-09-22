@@ -16,6 +16,8 @@ import type { Persistable } from './types';
 export const greetingOrchestratorContract = createArvoOrchestratorContract({
   uri: '#/demo/orc/greeting',
   name: 'greeting', // -> type = 'arvo.orc.greeting' as the type creation here is 'arvo.core.${name}'
+  description:
+    'This service takes an age and name and returns the result after performing operations specific to this orchestrator',
   versions: {
     '1.0.0': {
       init: z.object({

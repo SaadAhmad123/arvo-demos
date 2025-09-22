@@ -10,6 +10,8 @@ import type { Persistable } from './types';
 export const greetingResumableContract = createArvoOrchestratorContract({
   uri: '#/demo/resumable/greeting', // Must always be unique across all orchestrator contracts,
   name: 'greeting.resumable', // Must always be unique across all orchestrator contracts,
+  description:
+    'An imperative orchestrator function which can call the state chart based greeting orchestrator and imperatively performs similar operations and then compares the two outputs',
   versions: {
     '1.0.0': {
       init: z.object({
