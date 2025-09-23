@@ -15,24 +15,11 @@ export const openInferenceSpanInitAttributesSetter = (param: {
     [OpenInferenceSemanticConventions.OPENINFERENCE_SPAN_KIND]: OpenInferenceSpanKind.LLM,
   });
 
-  const toolDef = Object.values(param.tools).map((item) => {
-    const inputSchema = item.toJsonSchema().accepts.schema;
-    // @ts-ignore
-    const { toolUseId$$, parentSubject$$, ...cleanedProperties } = inputSchema?.properties ?? {};
-    // @ts-ignore
-    const cleanedRequired = (inputSchema?.required ?? []).filter(
-      (item: string) => item !== 'toolUseId$$' && item !== 'parentSubject$$',
-    );
-    return {
-      name: item.accepts.type,
-      description: item.description,
-      input_schema: {
-        ...inputSchema,
-        properties: cleanedProperties,
-        required: cleanedRequired,
-      },
-    };
-  });
+  const toolDef = Object.values(param.tools).map((item) => ({
+    name: item.accepts.type,
+    description: item.description,
+    input_schema: item.toJsonSchema().accepts.schema,
+  }));
 
   param.span.setAttributes(
     Object.fromEntries(
@@ -119,10 +106,7 @@ export const openInferenceSpanOutputAttributesSetter = ({
           ],
           [
             `${OpenInferenceSemanticConventions.LLM_OUTPUT_MESSAGES}.0.${OpenInferenceSemanticConventions.MESSAGE_TOOL_CALLS}.${index}.${OpenInferenceSemanticConventions.TOOL_CALL_FUNCTION_ARGUMENTS_JSON}`,
-            JSON.stringify({
-              ...item.data,
-              toolUseId$$: item.id,
-            }),
+            JSON.stringify(item.data),
           ],
         ]),
       ),

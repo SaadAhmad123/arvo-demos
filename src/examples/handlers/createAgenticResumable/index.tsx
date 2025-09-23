@@ -13,8 +13,12 @@ import {
   type IMachineMemory,
 } from 'arvo-event-handler';
 import { z } from 'zod';
-import type { CallAgenticLLMOutput, CallAgenticLLMParam, CreateAgenticResumableParams } from './types';
-import type { AnyVersionedContract } from '../types';
+import type {
+  CallAgenticLLMOutput,
+  CallAgenticLLMParam,
+  CreateAgenticResumableParams,
+  AnyVersionedContract,
+} from './types';
 import { openInferenceSpanInitAttributesSetter, openInferenceSpanOutputAttributesSetter } from './otel.helpers';
 import {
   SemanticConventions as OpenInferenceSemanticConventions,
@@ -23,23 +27,15 @@ import {
 import { SpanStatusCode } from '@opentelemetry/api';
 
 /**
- * Validates that service contracts for agentic resumables meet required structure.
+ * [Utility] Validates that service contracts for agentic resumables meet required structure.
  *
  * Ensures that:
  * - All orchestrator contracts include the required `parentSubject$$` field
- * - All service contracts include `toolUseId$$` in both accepts and emits schemas
+ * - All service contracts include `toolUseId$$` in both accepts and emits schemas. This
+ * is because all LLMs require tool call coorelation id and these ids need to be propagated.
  *
  * @param contracts - Record of service contracts to validate
  * @throws {ConfigViolation} When contracts don't meet agentic resumable requirements
- *
- * @example
- * ```typescript
- * const contracts = {
- *   userService: userContract.version('1.0.0'),
- *   paymentService: paymentContract.version('1.0.0')
- * };
- * validateServiceContract(contracts); // Throws if validation fails
- * ```
  */
 const validateServiceContract = (contracts: Record<string, AnyVersionedContract>) => {
   for (const [contractKey, contract] of Object.entries(contracts)) {
@@ -64,21 +60,10 @@ const validateServiceContract = (contracts: Record<string, AnyVersionedContract>
 };
 
 /**
- * Compares expected event counts with actual collected event counts.
+ * [Utility] Compares expected event counts with actual collected event counts.
  *
  * Used to determine if all expected service responses have been received
  * before proceeding with the next step in the agentic workflow.
- *
- * @param target - Expected count of events by type
- * @param current - Actual count of collected events by type
- * @returns True if all expected events have been collected
- *
- * @example
- * ```typescript
- * const expected = { 'user.created': 1, 'payment.processed': 2 };
- * const actual = { 'user.created': 1, 'payment.processed': 2 };
- * const complete = compareCollectedEventCounts(expected, actual); // true
- * ```
  */
 const compareCollectedEventCounts = (target: Record<string, number>, current: Record<string, number>) => {
   const sumTarget = Object.values(target).reduce((acc, cur) => acc + cur, 0);
@@ -99,10 +84,6 @@ const compareCollectedEventCounts = (target: Record<string, number>, current: Re
  * The resulting orchestrator follows the standard Arvo resumable pattern but is specifically
  * designed for AI agent workflows where LLMs make decisions about which tools to use based
  * on conversation context.
- *
- * @template TName - String literal type for the agent name
- * @template TService - Record of available service contracts the agent can invoke
- * @template TPrompts - Record of prompt functions for different scenarios
  *
  * @param params - Configuration object for the agentic resumable
  * @param params.name - Unique name for this agent (used in contract URI)
@@ -299,8 +280,8 @@ export const createAgenticResumable = <
             if (toolRequests) {
               for (let i = 0; i < toolRequests.length; i++) {
                 if (toolRequests[i].data && typeof toolRequests[i].data === 'object') {
-                  toolRequests[i].data.toolUseId$$ = toolRequests[i].id;
-                  toolRequests[i].data.parentSubject$$ = input.subject;
+                  toolRequests[i].data.toolUseId$$ = toolRequests[i].id; // To coordination tool calls for the LLM
+                  toolRequests[i].data.parentSubject$$ = input.subject; // To coordination nested orchestration/agentic invocations
                 }
                 const { type, id, data } = toolRequests[i];
                 const { toolUseId$$, ...toolInputData } = data;

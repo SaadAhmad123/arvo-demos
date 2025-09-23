@@ -5,7 +5,11 @@ import { withNavBar } from '../../components/Navbar/withNavBar';
 import { Separator } from '../../components/Separator';
 import { Md3ContentPadding } from '../../classNames';
 import { LearningTiles } from '../../components/LearningTiles';
-import { ArvoEventDataFieldDeepDiveLearn, EventRoutingAndBrokerInArvoLearn } from '../../components/LearningTiles/data';
+import {
+  AgenticResumableDesign,
+  ArvoEventDataFieldDeepDiveLearn,
+  EventRoutingAndBrokerInArvoLearn,
+} from '../../components/LearningTiles/data';
 
 export const AdvancedPage = withNavBar(() => {
   return (
@@ -42,7 +46,9 @@ export const AdvancedPage = withNavBar(() => {
       </ContentContainer>
       <Separator padding={18} />
       <ContentContainer content>
-        <LearningTiles data={[EventRoutingAndBrokerInArvoLearn, ArvoEventDataFieldDeepDiveLearn]} />
+        <LearningTiles
+          data={[EventRoutingAndBrokerInArvoLearn, ArvoEventDataFieldDeepDiveLearn, AgenticResumableDesign]}
+        />
       </ContentContainer>
       <Separator padding={72} />
     </main>

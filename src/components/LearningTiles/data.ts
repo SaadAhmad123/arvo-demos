@@ -66,3 +66,10 @@ export const EventRoutingAndBrokerInArvoLearn = {
     'ArvoEvent, being the core unit of communication in Arvo, introduces a shift in thinking about event routing and brokering which leads to simpler and more scalable infrastructure.',
   link: '/advanced/event-routing-and-brokers',
 };
+
+export const AgenticResumableDesign = {
+  name: 'Agentic AI Paradigm',
+  summary:
+    'See how ArvoResumables naturally unlock agentic ecosystems—where AIs, services, workflows, and humans collaborate seamlessly.',
+  link: '/advanced/arvo-agentic-resumables',
+};

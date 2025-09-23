@@ -1,6 +1,9 @@
 import type { InferVersionedArvoContract } from 'arvo-core';
-import type { AnyVersionedContract } from '../types';
 import type { Span } from '@opentelemetry/api';
+import type { VersionedArvoContract } from 'arvo-core';
+
+// biome-ignore lint/suspicious/noExplicitAny: Needs to be general
+export type AnyVersionedContract = VersionedArvoContract<any, any>;
 
 /**
  * Message content representing the result of a completed tool execution.

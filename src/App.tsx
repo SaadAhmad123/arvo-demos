@@ -8,6 +8,7 @@ import { ArvoEventPage } from './pages/Learn/pages/ArvoEvent';
 import { AdvancedPage } from './pages/Advanced';
 import { ArvoEventDataFieldDeepDivePage } from './pages/Advanced/pages/ArvoEventDataFieldDeepDive';
 import { EventRoutingAndBrokersPage } from './pages/Advanced/pages/EventRoutingAndBrokers';
+import { ArvoAgenticParadigmPage } from './pages/Advanced/pages/ArvoAgenticParadigm';
 
 export default () => {
   useSystemTheme();
@@ -26,6 +27,7 @@ export default () => {
       <Route path='/advanced' element={<AdvancedPage />} />
       <Route path='/advanced/arvo-event-data-field-deep-dive' element={<ArvoEventDataFieldDeepDivePage />} />
       <Route path='/advanced/event-routing-and-brokers' element={<EventRoutingAndBrokersPage />} />
+      <Route path='/advanced/arvo-agentic-resumables' element={<ArvoAgenticParadigmPage />} />
       <Route path='/404' element={<NotFoundPage />} />
       <Route path='*' element={<Navigate to={'/404'} replace />} />
     </Routes>

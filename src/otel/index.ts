@@ -21,7 +21,7 @@ const arizePhoenixExporter = new ProtoBufExporter({
 const provider = new WebTracerProvider({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: serviceName,
-    [SEMRESATTRS_PROJECT_NAME]: 'openai-service',
+    [SEMRESATTRS_PROJECT_NAME]: serviceName,
   }),
   spanProcessors:
     collectorType !== 'console'

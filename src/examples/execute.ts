@@ -1,7 +1,7 @@
 import type { ArvoEvent } from 'arvo-core';
 import { addHandler, greetingHandler, greetingOrchestrator, greetingResumable } from './handlers';
 import { createSimpleEventBroker, SimpleMachineMemory } from 'arvo-event-handler';
-import { testAgent } from './handlers/utils/createAgenticResumable.test';
+import { testAgent } from './handlers/agent.test.resumable';
 
 export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
   /**

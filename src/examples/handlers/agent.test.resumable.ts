@@ -1,7 +1,7 @@
-import { greetingContract } from '../greeting.handler';
-import { greetingOrchestratorContract } from '../greeting.orchestrator';
-import { greetingResumableContract } from '../greeting.resumable';
-import { anthropicLLMCaller } from './anthropic.utils';
+import { greetingContract } from './greeting.handler';
+import { greetingOrchestratorContract } from './greeting.orchestrator';
+import { greetingResumableContract } from './greeting.resumable';
+import { anthropicLLMCaller } from './createAgenticResumable/integrations/anthropic';
 import { createAgenticResumable } from './createAgenticResumable';
 
 export const testAgent = createAgenticResumable({

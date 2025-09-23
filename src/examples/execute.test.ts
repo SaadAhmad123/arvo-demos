@@ -1,7 +1,7 @@
 import { createArvoEventFactory, createArvoOrchestratorEventFactory } from 'arvo-core';
 import { addContract, greetingContract, greetingOrchestratorContract, greetingResumableContract } from './handlers';
 import { execute } from './execute';
-import { testAgent } from './handlers/utils/createAgenticResumable.test';
+import { testAgent } from './handlers/agent.test.resumable';
 
 const testGreetingHandler = async () => {
   console.log('Testing greeting handler');
@@ -71,6 +71,8 @@ export const testGreetingResumable = async () => {
 };
 
 const testAgentic = async () => {
+  console.log('Testing agentic resumable');
+
   const event = createArvoOrchestratorEventFactory(testAgent.contract.version('1.0.0')).accepts({
     source: 'test.test.test',
     data: {

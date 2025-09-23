@@ -1,31 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { ANTHROPIC_API_KEY } from '../../../config';
-import type { CallAgenticLLMOutput, CallAgenticLLMParam } from './types';
-import type { AnyVersionedContract } from '../types';
+import { ANTHROPIC_API_KEY } from '../../../../config';
+import type { CallAgenticLLMOutput, CallAgenticLLMParam } from '../types';
+import type { AnyVersionedContract } from '../../types';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
 /**
  * Converts Arvo event type names to Anthropic-compatible tool names.
- *
- * @param name - Original Arvo event type (e.g., 'com.user.create')
- * @returns Formatted name for Anthropic API (e.g., 'com_user_create')
- *
- * @example
- * ```typescript
- * toolNameFormatter('com.user.lookup') // Returns: 'com_user_lookup'
- * ```
  */
 const toolNameFormatter = (name: string) => name.replaceAll('.', '_');
 
 /**
  * Converts Anthropic tool names back to original Arvo event types.
- *
- * @param formattedName - Anthropic-formatted tool name (e.g., 'com_user_create')
- * @returns Original Arvo event type (e.g., 'com.user.create')
- *
- * @example
- * ```typescript
- * reverseToolNameFormatter('com_user_lookup') // Returns: 'com.user.lookup'
- * ```
  */
 const reverseToolNameFormatter = (formattedName: string) => formattedName.replaceAll('_', '.');
 
