@@ -2,37 +2,39 @@ import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const SettingUpArvoAgentic: DemoCodePanel = {
-  heading: 'Building AI Agents with ArvoResumable',
+  heading: 'AI Agent Factory with ArvoResumable',
   description: cleanString(`
-    As demonstrated above, \`ArvoResumable\` provides the ideal foundation for 
-    developing AI-enabled agents. Let's explore how to build such agents by first 
-    establishing reusable scaffolding that streamlines agent development across 
-    your entire system.
+    As shown above, \`ArvoResumable\` is a solid base for building AI-enabled agents. 
+    This section outlines a **reusable scaffolding pattern** that **standardizes** how **agents** are created 
+    and operated across the Arvo system. This reusable **factory** pattern, for building AI agents, builds 
+    on top of Arvo's event-driven foundation. It abstracts away 
+    common operational concerns—such as validation, context management, and 
+    observability—so developers can focus on defining each agent’s unique 
+    responsibilities.
 
-    The \`createAgenticResumable\` factory function, built here, serves as a bridge between 
-    any LLM provider and Arvo's event-driven architecture. It internally constructs 
-    a properly configured \`ArvoResumable\` event handler with shared logic common 
-    to all agents, while allowing you to define each agent's operational scope through 
-    \`ArvoContract\` definitions. These contract specifications become available to 
-    your LLM integration as callable tools, creating a seamless interface between 
-    natural language processing and structured system interactions. Furthermore, it integrates
-    the LLM calls with OpenTelemetry and also integrates OpenInference data to the OTEL
-    span which enable indepth LLM observability.
+    The \`createAgenticResumable\` factory acts as a bridge between any LLM provider 
+    and Arvo's event-driven architecture. It constructs a correctly configured 
+    \`ArvoResumable\` handler with common logic for all agents, while letting **you define 
+    each agent's scope via \`ArvoContract\`, prompts, and the LLM integrations**. Those contracts are exposed to 
+    your LLM integration as callable tools—creating a clean interface between LLM reasoning and structured system capabilities. 
+    The factory also wires LLM calls into OpenTelemetry and enriches spans with OpenInference attributes, enabling 
+    deep, end-to-end LLM observability.
 
-    This factory establishes a natural language \`ArvoContract\` for the agentic 
-    system itself, enabling human users to interact with agents through conversational 
-    interfaces. The pattern returns both the contract definition and the event handler 
-    factory, allowing seamless integration with existing Arvo services and natural 
-    participation in your broader event-driven ecosystem.
+    Furthermore, this factory establishes an \`ArvoContract\` for the AI Agent
+    itself, enabling users to interact with the generated agents through a well
+    defined interface. The factory returns both the contract and the event-handler builder, making it easy 
+    to plug agents into existing Arvo services and participate in the broader event 
+    ecosystem with minimal ceremony.
 
     > **A Quick Note:** Arvo is fundamentally an event-driven systems toolkit, 
     > not an AI agent framework. While the implementation demonstrated here showcases 
     > sophisticated capabilities, it's built entirely from Arvo primitives and 
     > intentionally remains outside the core package. The AI landscape evolves at 
     > breakneck speed, and embedding agent-specific logic would lock Arvo into 
-    > constant version churn. 
+    > constant version churn as well as expand the scope of the Arvo packages which will
+    > result in Arvo's scope dilution. 
     >
-    > Instead, Arvo embraces the **shadcn philosophy** for agentic patterns: it provides
+    > Here Arvo embraces the **shadcn philosophy** for agentic patterns: it provides
     > production-ready example code that you can copy, adapt, and integrate in ways 
     > that best serve your specific context and requirements. This approach gives you 
     > complete control over your agent implementations while benefiting from proven 

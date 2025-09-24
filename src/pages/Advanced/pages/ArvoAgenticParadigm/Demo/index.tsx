@@ -6,13 +6,14 @@ import { Md3Cards } from '../../../../../classNames/cards';
 import { ReMark } from '../../../../../components/ReMark';
 import CodeBlock from '../../../../../components/CodeBlock';
 import { SettingUpArvoAgentic } from './CodeTabs/SettingUpArvoAgentic';
+import { PreparingDependencies } from './CodeTabs/PerparingDependencies';
 
 export const Demo: React.FC = () => {
   return (
     <>
       <ContentContainer>
         <div className='grid grid-cols-1 xl:grid-cols-2 gap-4'>
-          {[SettingUpArvoAgentic].map((item, index) => (
+          {[PreparingDependencies, SettingUpArvoAgentic].map((item, index) => (
             <React.Fragment key={index.toString()}>
               <div className={Md3Cards.filled}>
                 <div className={Md3Cards.inner.content}>

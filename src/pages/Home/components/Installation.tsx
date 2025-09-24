@@ -7,22 +7,22 @@ import { Separator } from '../../../components/Separator';
 import { Label } from '../../../components/Label';
 import { Md3ContentPadding } from '../../../classNames';
 
-type PkgMap = Record<string, string>;
-type PkgManager = 'pnpm' | 'npm' | 'yarn';
+export type PkgMap = Record<string, string>;
+export type PkgManager = 'pnpm' | 'npm' | 'yarn';
 
-const PM_INSTALL_PREFIX: Record<PkgManager, { dev: string; prod: string }> = {
+export const PM_INSTALL_PREFIX: Record<PkgManager, { dev: string; prod: string }> = {
   pnpm: { dev: 'pnpm i --save-dev', prod: 'pnpm i' },
   npm: { dev: 'npm i --save-dev', prod: 'npm i' },
   yarn: { dev: 'yarn add -D', prod: 'yarn add' },
 };
 
-const withContinuations = (items: string[]) =>
+export const withContinuations = (items: string[]) =>
   items.map((line, i) => ` ${line}${i === items.length - 1 ? '' : '\\\n'}`).join('');
 
-const mapToPkgLines = (pkgs: PkgMap, { forceVersion = true } = {}) =>
+export const mapToPkgLines = (pkgs: PkgMap, { forceVersion = true } = {}) =>
   Object.entries(pkgs).map(([name, ver]) => (ver || !forceVersion ? `${name}${ver ? `@${ver}` : ''}` : name));
 
-const buildInstallTabs = (
+export const buildInstallTabs = (
   pkgs: PkgMap,
   params: { showNodeVersion?: boolean; dev?: boolean; titleSuffix?: string } = {},
 ) => {
@@ -35,12 +35,12 @@ const buildInstallTabs = (
   }));
 };
 
-const PREPARATION_PACKAGES: PkgMap = {
+export const PREPARATION_PACKAGES: PkgMap = {
   typescript: '',
   '@biomejs/biome': '',
 };
 
-const ARVO_PACKAGES: PkgMap = {
+export const ARVO_PACKAGES: PkgMap = {
   'arvo-core': '^3.0.6',
   'arvo-event-handler': '^3.0.6',
   zod: '^3.25.67',
@@ -48,7 +48,7 @@ const ARVO_PACKAGES: PkgMap = {
   'zod-to-json-schema': '^3.24.5',
 };
 
-const OTEL_BROWSER_PACKAGES: PkgMap = {
+export const OTEL_BROWSER_PACKAGES: PkgMap = {
   '@opentelemetry/api': '^1.9.0',
   '@opentelemetry/context-zone': '^2.1.0',
   '@opentelemetry/exporter-trace-otlp-http': '^0.205.0',
@@ -95,7 +95,7 @@ registerInstrumentations({
 });
 `;
 
-const OTEL_SERVER_PACKAGES: PkgMap = {
+export const OTEL_SERVER_PACKAGES: PkgMap = {
   '@opentelemetry/api': '^1.9.0',
   '@opentelemetry/auto-instrumentations-node': '^0.62.1',
   '@opentelemetry/exporter-trace-otlp-grpc': '^0.203.0',
