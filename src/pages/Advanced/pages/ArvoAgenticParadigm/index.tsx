@@ -17,6 +17,9 @@ import { Demo } from './Demo';
 export const ArvoAgenticParadigmPage = withNavBar(() => {
   return (
     <main>
+      {/* <button onClick={() => testArvoDemo()} type='button'>
+        Execute
+      </button> */}
       <Separator padding={8} />
       <ContentContainer>
         <section
@@ -28,7 +31,8 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               <h1 className={`${Md3Typography.display.large} text-on-surface`}>Agentic AI Paradigm</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
-                Arvo's paradigm enables genuine agents with enterprise-grade flexibility, reliability, and scale.
+                In Arvo, agents are simply event handlers. They communicate with the same reliability guarantees as any
+                other service, and no longer face architectural barriers to participating in distributed workflows.
               </p>
             </div>
           </div>

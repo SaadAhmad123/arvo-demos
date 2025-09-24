@@ -41,14 +41,6 @@ const reverseToolNameFormatter = (formattedName: string) => formattedName.replac
 export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedContract>>(
   param: Pick<CallAgenticLLMParam<TTools>, 'type' | 'messages' | 'tools' | 'span'> & { system?: string },
 ) => Promise<CallAgenticLLMOutput<TTools>> = async ({ messages, tools, system, span }) => {
-  /**
-   * Convert Arvo contracts to Anthropic tool definitions.
-   *
-   * Extracts JSON schema from each contract and formats it for Anthropic's API:
-   * - Removes Arvo-specific fields (toolUseId$$, parentSubject$$)
-   * - Converts tool names to underscore format
-   * - Preserves contract descriptions and validation schemas
-   */
   const llmModel: Anthropic.Messages.Model = 'claude-sonnet-4-0';
   const llmInvocationParams = {
     temperature: 0.5,
@@ -66,11 +58,19 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
     }),
   });
 
+  /**
+   * Convert Arvo contracts to Anthropic tool definitions.
+   *
+   * Extracts JSON schema from each contract and formats it for Anthropic's API:
+   * - Removes Arvo-specific fields (toolUseId$$, parentSubject$$)
+   * - Converts tool names to underscore format
+   * - Preserves contract descriptions and validation schemas
+   */
   const toolDef = Object.values(tools).map((item) => {
     const inputSchema = item.toJsonSchema().accepts.schema;
-    // @ts-ignore
+    // @ts-ignore - The 'properties' field exists in there but is not pick up by typescript compiler
     const { toolUseId$$, parentSubject$$, ...cleanedProperties } = inputSchema?.properties ?? {};
-    // @ts-ignore
+    // @ts-ignore - The 'required' field exists in there but is not pick up by typescript compiler
     const cleanedRequired = (inputSchema?.required ?? []).filter(
       (item: string) => item !== 'toolUseId$$' && item !== 'parentSubject$$',
     );
@@ -142,10 +142,8 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
       if (item.type === 'tool_use') {
         const actualType = reverseToolNameFormatter(item.name); // The system understands the original tool name no the AI tool name
         toolRequests.push({
-          // @ts-ignore - Type assertion needed for dynamic tool type mapping
           type: actualType,
           id: item.id,
-          // @ts-ignore - Claude's input format matches Arvo's data expectations - This can be further imposed explicitly
           data: item.input as unknown as object,
         });
         // Track tool usage for workflow management

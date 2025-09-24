@@ -1,7 +1,8 @@
 import { createArvoEventFactory, createArvoOrchestratorEventFactory } from 'arvo-core';
 import { addContract, greetingContract, greetingOrchestratorContract, greetingResumableContract } from './handlers';
 import { execute } from './execute';
-import { testAgent } from './handlers/agent.test.resumable';
+import { testAnthropicAgent } from './handlers/agent.test.anthropic';
+import { testOpenaiAgent } from './handlers/agent.test.openai';
 
 const testGreetingHandler = async () => {
   console.log('Testing greeting handler');
@@ -70,15 +71,30 @@ export const testGreetingResumable = async () => {
   await execute(event).then((e) => console.log(e));
 };
 
-const testAgentic = async () => {
-  console.log('Testing agentic resumable');
+const testAnthropicAgentic = async () => {
+  console.log('Testing agentic Anthropic resumable');
 
-  const event = createArvoOrchestratorEventFactory(testAgent.contract.version('1.0.0')).accepts({
+  const event = createArvoOrchestratorEventFactory(testAnthropicAgent.contract.version('1.0.0')).accepts({
     source: 'test.test.test',
     data: {
       parentSubject$$: null,
       message:
-        'I am Saad Ahmad, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
+        'I am John Doe, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
+    },
+  });
+
+  await execute(event).then((e) => console.log(e));
+};
+
+const testOpenaiAgentic = async () => {
+  console.log('Testing agentic OpenAI resumable');
+
+  const event = createArvoOrchestratorEventFactory(testOpenaiAgent.contract.version('1.0.0')).accepts({
+    source: 'test.test.test',
+    data: {
+      parentSubject$$: null,
+      message:
+        'I am John Doe, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
     },
   });
 
@@ -94,7 +110,8 @@ export const testArvoDemo = async () => {
     await testGreetingHandler();
     await testGreetingOrchestrator();
     await testGreetingResumable();
-    await testAgentic();
+    await testOpenaiAgentic();
+    await testAnthropicAgentic();
   } catch (e) {
     console.log(e);
   }

@@ -26,19 +26,24 @@ export const SettingUpArvoAgentic: DemoCodePanel = {
     to plug agents into existing Arvo services and participate in the broader event 
     ecosystem with minimal ceremony.
 
-    > **A Quick Note:** Arvo is fundamentally an event-driven systems toolkit, 
-    > not an AI agent framework. While the implementation demonstrated here showcases 
-    > sophisticated capabilities, it's built entirely from Arvo primitives and 
-    > intentionally remains outside the core package. The AI landscape evolves at 
-    > breakneck speed, and embedding agent-specific logic would lock Arvo into 
-    > constant version churn as well as expand the scope of the Arvo packages which will
-    > result in Arvo's scope dilution. 
-    >
-    > Here Arvo embraces the **shadcn philosophy** for agentic patterns: it provides
-    > production-ready example code that you can copy, adapt, and integrate in ways 
-    > that best serve your specific context and requirements. This approach gives you 
-    > complete control over your agent implementations while benefiting from proven 
-    > patterns and battle-tested foundations.
+    **Best Practice Demonstration:** This implementation highlights a critical best practice 
+    in Arvo by **anticipating the challenges of distributed system deployment**. In such environments, \`ArvoResumable\` 
+    acquires an **optimistic lock** on the execution to ensure events are processed with consistent state, 
+    thereby **preventing corruption**. However, large language models **(LLMs) introduce high and variable latency**, 
+    which can result in prolonged and unpredictable lock durations and failed event processing due to 
+    lock contention, **leading to complex retries**. To mitigate this, Arvo recommends collecting 
+    all tool responses before initiating LLM inference, ensuring that no other events are expected 
+    during execution. Because registering tool responses takes only milliseconds, the lock is held 
+    briefly, **significantly reducing operational complexity while preserving consistency and reliability**.
+
+
+    > **A Quick Note:** Arvo is fundamentally an event-driven systems toolkit, **not an AI agent framework**. 
+    > The implementation shown here demonstrates advanced capabilities but is built entirely from Arvo 
+    > primitives and intentionally kept outside the core package. Embedding agent-specific logic would 
+    > tie Arvo to constant version churn and unnecessarily expand its scope. Instead, Arvo embraces the 
+    > **shadcn philosophy** for agentic patterns by providing production-ready example code that you can 
+    > copy, adapt, and integrate to fit your specific context. This approach gives you full control over 
+    > your agent implementations while benefiting from proven patterns and robust, battle-tested foundations.
   `),
   tabs: [
     {
@@ -358,7 +363,18 @@ export const SettingUpArvoAgentic: DemoCodePanel = {
       
                 if (!context) throw new Error('The context is not properly set. Faulty initialization');
       
-                // Check if all expected tool responses have been collected
+                // BEST PRACTICE --
+                // Verify that all expected tool responses have been received before proceeding
+                // This pattern ensures optimal performance in distributed Arvo's event-driven architecture
+                // by collecting all tool responses prior to LLM inference. In the distributed scenario,
+                // execution of this function will require acquiring an optimistic lock on the 
+                // state during event processing. Since LLM inference operations have significant 
+                // latency, initiating inference while still awaiting tool responses would unnecessarily 
+                // extend the lock duration and block processing of subsequent tool response events. 
+                // By confirming all expected responses are collected first (which take minimal time), we 
+                // ensure the execution context is complete and can safely maintain the lock for the
+                // duration of the inference operation.
+                // BEST PRACTICE --
                 const haveAllEventsBeenCollected = compareCollectedEventCounts(
                   context.toolTypeCount,
                   Object.fromEntries(

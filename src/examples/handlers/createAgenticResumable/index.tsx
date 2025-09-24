@@ -143,12 +143,13 @@ export const createAgenticResumable = <
    * history along with the final response.
    */
   const contract = createArvoOrchestratorContract({
-    uri: `#/demo/resumable/agent/${name}`,
+    uri: `#/demo/resumable/agent/${name.replaceAll('.', '/')}`,
     name: `agent.${name}` as `agent.${TName}`,
     versions: {
       '1.0.0': {
         init: z.object({
           message: z.string(),
+          toolUseId$$: z.string().optional(),
         }),
         complete: z.object({
           messages: z
@@ -158,6 +159,7 @@ export const createAgenticResumable = <
             })
             .array(),
           response: z.string(),
+          toolUseId$$: z.string().optional(),
         }),
       },
     },
@@ -167,6 +169,7 @@ export const createAgenticResumable = <
     currentSubject: string;
     messages: CallAgenticLLMParam['messages'];
     toolTypeCount: Record<string, number>;
+    toolUseId$$: string | null;
   };
 
   /**
@@ -272,6 +275,7 @@ export const createAgenticResumable = <
                 output: {
                   messages,
                   response: response,
+                  toolUseId$$: input.data.toolUseId$$,
                 },
               };
             }
@@ -303,6 +307,7 @@ export const createAgenticResumable = <
                   messages,
                   toolTypeCount,
                   currentSubject: input.subject,
+                  toolUseId$$: input.data.toolUseId$$ ?? null,
                 },
                 services: toolRequests.map((item) =>
                   item.type in (serviceDomains ?? {}) ? { ...item, domain: serviceDomains?.[item.type] } : item,
@@ -367,6 +372,7 @@ export const createAgenticResumable = <
               output: {
                 messages,
                 response: response,
+                toolUseId$$: context.toolUseId$$ ?? undefined,
               },
             };
           }
