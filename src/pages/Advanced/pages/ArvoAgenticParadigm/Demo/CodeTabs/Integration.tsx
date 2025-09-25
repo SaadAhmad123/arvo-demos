@@ -87,5 +87,75 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
 
     `,
     },
+    {
+      title: 'execute.test.ts',
+      lang: 'ts',
+      code: `
+import { createArvoEventFactory, createArvoOrchestratorEventFactory } from 'arvo-core';
+import { greetingOrchestratorContract } from './handlers';
+import { execute } from './execute';
+import { testAnthropicAgent } from './handlers/agent.test.anthropic';
+import { testOpenaiAgent } from './handlers/agent.test.openai';
+
+export const testGreetingOrchestrator = async () => {
+  console.log('Testing greeting orchestrator');
+  const event = createArvoEventFactory(greetingOrchestratorContract.version('1.0.0')).accepts({
+    source: 'test.test.test',
+    data: {
+      /**
+       * A field specific to orchestrators and resumables to identify the parent
+       * process id (subject). This enable context stitching for nested orchestrations.
+       * A 'null' value means that this is the root orchestration and for 99.99% of the
+       * cases developer will be marking it as 'null'.
+       */
+      parentSubject$$: null,
+      name: 'John Doe',
+      age: 45,
+    },
+  });
+  await execute(event).then((e) => console.log(e));
+};
+
+const testAnthropicAgentic = async () => {
+  console.log('Testing agentic Anthropic resumable');
+  const event = createArvoEventFactory(testAnthropicAgent.contract.version('1.0.0')).accepts({
+    source: 'test.test.test',
+    data: {
+      parentSubject$$: null,
+      message:
+        'I am John Doe, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
+    },
+  });
+  await execute(event).then((e) => console.log(e));
+};
+
+const testOpenaiAgentic = async () => {
+  console.log('Testing agentic OpenAI resumable');
+  const event = createArvoEventFactory(testOpenaiAgent.contract.version('1.0.0')).accepts({
+    source: 'test.test.test',
+    data: {
+      parentSubject$$: null,
+      message:
+        'I am John Doe, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
+    },
+  });
+  await execute(event).then((e) => console.log(e));
+};
+
+// This is just a sample script to do a quick test.
+// Actual tests should be done via actual Typescript
+// testing frameworks like jest
+export const testArvoDemo = async () => {
+  try {
+    await testGreetingOrchestrator();
+    await testOpenaiAgentic();
+    await testAnthropicAgentic();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+    `,
+    },
   ],
 };
