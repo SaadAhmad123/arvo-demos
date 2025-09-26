@@ -3,19 +3,24 @@ import { createAgenticResumable } from './createAgenticResumable';
 import { openaiLLMCaller } from './createAgenticResumable/integrations/openai';
 import { testAnthropicAgent } from './agent.test.anthropic';
 
+/**
+ * Test implementation of an OpenAI-powered agentic resumable orchestrator.
+ *
+ * ## Inter-Agent Communication Architecture
+ * This implementation highlights two critical communication patterns:
+ * - **Agent-to-Workflow**: Direct integration with state machine-based orchestrators
+ * - **Agent-to-Agent**: Seamless communication between different AI agents
+ */
 export const testOpenaiAgent = createAgenticResumable({
   name: 'test.openai',
+  // Available service contracts demonstrating universal communication patterns.
   services: {
-    // This demonstrates that the agent can easily communicate with workflows with the same communication infrastrucutre i.e. ArvoEvent over any event broker
-    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'),
-    // This demonstrates that then agent can easily communicate with other Agents with the same communication infrastrucutre i.e. ArvoEvent over any event broker
-    anthropicAgent: testAnthropicAgent.contract.version('1.0.0'),
+    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // Workflow orchestration via ArvoEvent
+    anthropicAgent: testAnthropicAgent.contract.version('1.0.0'), // Agent-to-agent communication via ArvoEvent
   },
-  prompts: {},
-  agenticLLMCaller: async (param) => {
-    return await openaiLLMCaller({
-      ...param,
-      system: undefined,
-    });
-  },
+  // System prompt generator defining the agent's operational guidelines.
+  systemPrompt: () => 'You are a helpful agent...',
+  // Enables comprehensive conversation history to be returned in agent responses.
+  enableMessageHistoryInResponse: true,
+  agenticLLMCaller: openaiLLMCaller,
 });

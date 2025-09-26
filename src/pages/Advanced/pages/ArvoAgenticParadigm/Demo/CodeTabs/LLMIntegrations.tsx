@@ -29,9 +29,10 @@ export const LLMIntegrations: DemoCodePanel = {
       title: 'createArvoResumable/integrations/anthropic.ts',
       lang: 'ts',
       code: `
+// This code and all the files associated with it are supposed to be directly copy-pasted into your project.
 import Anthropic from '@anthropic-ai/sdk';
-import type { CallAgenticLLMOutput, CallAgenticLLMParam } from '../types';
-import type { AnyVersionedContract } from '../../types';
+import { ANTHROPIC_API_KEY } from '../../../../config';
+import type { CallAgenticLLM, CallAgenticLLMOutput } from '../types';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
 
 /**
@@ -45,34 +46,37 @@ const toolNameFormatter = (name: string) => name.replaceAll('.', '_');
 const reverseToolNameFormatter = (formattedName: string) => formattedName.replaceAll('_', '.');
 
 /**
- * Anthropic Claude integration for agentic LLM calls within Arvo Agentic Resumable.
+ * Anthropic Claude integration for agentic LLM calls within Arvo orchestrators.
  *
- * This function bridges Arvo's contract-based event system with Anthropic's Claude API,
- * enabling AI agents to make decisions about tool usage and generate responses within
- * Arvo's event-driven architecture.
- * @template TTools - Record of Arvo service contracts available as tools
+ * Bridges Arvo's contract-based event system with Anthropic's Claude API, enabling
+ * AI agents to make intelligent tool decisions and generate responses within Arvo's
+ * event-driven architecture. Handles message formatting, tool name conversion, and
+ * response parsing for seamless integration.
  *
- * @param param - Configuration object for the LLM call
- * @param param.messages - Conversation history in agentic message format
- * @param param.tools - Available Arvo service contracts to expose as tools
- * @param param.system - Optional system prompt to guide Claude's behavior
- * @param param.span - The OpenTelemetry span for the exection
+ * ## Tool Name Conversion
+ * Arvo event types use dot notation (e.g., \`user.lookup\`) but Anthropic requires
+ * underscore format (e.g., \`user_lookup\`). This function handles the conversion
+ * automatically while preserving the original semantics.
  *
  * @returns Promise resolving to structured LLM response with either text response or tool requests
  *
  * @throws {Error} When Claude provides neither a response nor tool requests
  */
-export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedContract>>(
-  param: Pick<CallAgenticLLMParam<TTools>, 'type' | 'messages' | 'tools' | 'span'> & { system?: string },
-) => Promise<CallAgenticLLMOutput<TTools>> = async ({ messages, tools, system, span }) => {
-  // Setting up model parameters
+export const anthropicLLMCaller: CallAgenticLLM = async ({
+  messages,
+  outputFormat,
+  toolDefinitions,
+  systemPrompt,
+  services,
+  span,
+}) => {
   const llmModel: Anthropic.Messages.Model = 'claude-sonnet-4-0';
   const llmInvocationParams = {
     temperature: 0.5,
     maxTokens: 1024,
   };
 
-  // Setting up the LLM integration specific OpenInference span attributes
+  // Configure OpenTelemetry attributes for observability
   span.setAttributes({
     [OpenInferenceSemanticConventions.LLM_PROVIDER]: 'anthropic',
     [OpenInferenceSemanticConventions.LLM_SYSTEM]: 'anthropic',
@@ -83,40 +87,12 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
     }),
   });
 
-  /**
-   * Convert Arvo contracts to Anthropic tool definitions.
-   *
-   * Extracts JSON schema from each contract and formats it for Anthropic's API:
-   * - Removes Arvo-specific fields (toolUseId$$, parentSubject$$)
-   * - Converts tool names to underscore format
-   * - Preserves contract descriptions and validation schemas
-   */
-  const toolDef = Object.values(tools).map((item) => {
-    const inputSchema = item.toJsonSchema().accepts.schema;
-    // @ts-ignore - The 'properties' field exists in there but is not pick up by typescript compiler
-    const { toolUseId$$, parentSubject$$, ...cleanedProperties } = inputSchema?.properties ?? {};
-    // @ts-ignore - The 'required' field exists in there but is not pick up by typescript compiler
-    const cleanedRequired = (inputSchema?.required ?? []).filter(
-      (item: string) => item !== 'toolUseId$$' && item !== 'parentSubject$$',
-    );
-    return {
-      name: toolNameFormatter(item.accepts.type),
-      description: item.description,
-      input_schema: {
-        ...inputSchema,
-        properties: cleanedProperties,
-        required: cleanedRequired,
-      },
-    };
-  });
+  // Convert tool names to Anthropic-compatible format
+  const toolDef = toolDefinitions.map((item) => ({ ...item, name: toolNameFormatter(item.name) }));
 
   /**
-   * Format conversation messages for Anthropic's API.
-   *
-   * Converts agentic message format to Anthropic's expected structure:
-   * - Maps text content to Anthropic's text format
-   * - Converts tool_use messages with proper name formatting
-   * - Preserves tool_result messages as-is for context
+   * Converts agentic message format to Anthropic's expected structure.
+   * Maps content types and ensures tool names are properly formatted.
    */
   const formattedMessages = messages.map((item) => ({
     ...item,
@@ -138,14 +114,15 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
   }));
 
   const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
+    apiKey: ANTHROPIC_API_KEY,
+    dangerouslyAllowBrowser: true,
   });
 
   const message = await anthropic.messages.create({
     model: llmModel,
     max_tokens: llmInvocationParams.maxTokens,
     temperature: llmInvocationParams.temperature,
-    system: system,
+    system: systemPrompt ?? undefined,
     // biome-ignore lint/suspicious/noExplicitAny: Any is fine here for now
     tools: toolDef as any,
     // biome-ignore lint/suspicious/noExplicitAny: Any is fine here for now
@@ -153,12 +130,10 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
   });
 
   /**
-   * Parse tool requests from Claude's response.
-   *
-   * When Claude decides to use tools, extract the requests and convert
-   * them back to Arvo event format with proper typing.
+   * Extracts and processes tool requests from Claude's response.
+   * Converts tool names back to Arvo format and tracks usage counts.
    */
-  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof tools>['toolRequests']> = [];
+  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof services>['toolRequests']> = [];
   const toolTypeCount: Record<string, number> = {};
 
   if (message.stop_reason === 'tool_use') {
@@ -180,24 +155,18 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
   }
 
   /**
-   * Extract direct text response if Claude provided one.
-   *
-   * When Claude doesn't need tools, it provides a direct text response
-   * that can be returned to the user immediately.
+   * Extracts direct text response when Claude doesn't request tools.
+   * Handles structured output parsing if an output format is specified.
    */
   let finalResponse: string | null = null;
   if (message.stop_reason === 'end_turn') {
     finalResponse = message.content[0]?.type === 'text' ? message.content[0].text : 'No final response';
   }
 
-  /**
-   * Structure the response according to Arvo's agentic LLM output format.
-   *
-   * Remember - Final response is prefered over tool requests
-   */
-  const data: CallAgenticLLMOutput<typeof tools> = {
+  // Structure response according to Arvo's agentic LLM output format
+  const data: CallAgenticLLMOutput<typeof services> = {
     toolRequests: toolRequests.length ? toolRequests : null,
-    response: finalResponse,
+    response: finalResponse ? (outputFormat ? outputFormat.parse(JSON.parse(finalResponse)) : finalResponse) : null,
     toolTypeCount,
     usage: {
       tokens: {
@@ -207,12 +176,7 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
     },
   };
 
-  /**
-   * Validate that Claude provided a usable response.
-   *
-   * Claude should always provide either a direct response or tool requests.
-   * If neither is present, something went wrong with the API call.
-   */
+  // Validate that Claude provided a usable response
   if (!data.response && !data.toolRequests) {
     throw new Error('Something went wrong. No response or tool request');
   }
@@ -220,17 +184,22 @@ export const anthropicLLMCaller: <TTools extends Record<string, AnyVersionedCont
   return data;
 };
 
-
+      
       `,
     },
     {
       title: 'createArvoResumable/integrations/openai.ts',
       lang: 'ts',
       code: `
+// This code and all the files associated with it are supposed to be directly copy-pasted into your project.
 import OpenAI from 'openai';
 import { OPENAI_API_KEY } from '../../../../config';
-import type { AgenticToolResultMessageContent, CallAgenticLLMOutput, CallAgenticLLMParam } from '../types';
-import type { AnyVersionedContract } from '../../types';
+import type {
+  AgenticToolResultMessageContent,
+  CallAgenticLLM,
+  CallAgenticLLMOutput,
+  CallAgenticLLMParam,
+} from '../types';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
 import type { ChatModel } from 'openai/resources/shared.mjs';
 import type { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/index.mjs';
@@ -246,17 +215,17 @@ const toolNameFormatter = (name: string) => name.replaceAll('.', '_');
 const reverseToolNameFormatter = (formattedName: string) => formattedName.replaceAll('_', '.');
 
 /**
- * Converts Arvo agentic messages to OpenAI-compatible chat completion messages.
+ * Converts Arvo agentic messages to OpenAI-compatible chat completion format.
  *
- * This function performs several critical transformations:
+ * Performs critical transformations required by OpenAI's API:
  * - Injects system prompts as developer role messages (OpenAI's preferred approach)
  * - Flattens Arvo's nested content arrays into individual messages
- * - Maps agentic message roles and content types to OpenAI's schema
- * - Ensures tool calls are immediately followed by their results (OpenAI requirement)
- * - Handles different content types: text, tool_use, and tool_result
+ * - Ensures tool calls are immediately followed by their results (strict OpenAI requirement)
+ * - Maps agentic message types to OpenAI's schema while preserving conversation flow
  *
- * The function maintains message order while restructuring the conversation history
- * to meet OpenAI's specific formatting requirements, particularly around tool interactions.
+ * @param messages - Conversation history in agentic message format
+ * @param systemPrompt - Optional system prompt to inject as developer message
+ * @returns Array of OpenAI-compatible chat completion messages
  */
 const formatMessagesForOpenAI = (
   messages: CallAgenticLLMParam['messages'],
@@ -341,36 +310,31 @@ const formatMessagesForOpenAI = (
 };
 
 /**
- * OpenAI GPT integration for agentic LLM calls within Arvo Agentic Resumable.
+ * OpenAI ChatGPT integration for agentic LLM calls within Arvo orchestrators.
  *
- * This function connects Arvo’s contract-based event system with OpenAI’s GPT models,
- * enabling AI agents to make tool usage decisions and generate responses in
- * Arvo’s event-driven architecture.
+ * Bridges Arvo's contract-based event system with OpenAI's GPT models, enabling
+ * AI agents to make intelligent tool decisions and generate responses within Arvo's
+ * event-driven architecture. Handles the complex message formatting and tool
+ * conversion required for OpenAI's API while maintaining Arvo's type safety.
  *
- * Key features:
- * - Converts Arvo contracts into OpenAI-compatible tool definitions
- * - Applies tool name formatting for API compatibility
- * - Cleans JSON schemas by removing Arvo-specific metadata fields
- * - Formats agentic messages for OpenAI’s API
- * - Handles both direct text responses and tool invocation requests
- * - Tracks tool usage frequency for workflow management
- *
- * @template TTools - Record of Arvo service contracts available as tools
- *
- * @param param - Configuration object for the LLM call
- * @param param.messages - Conversation history in agentic format
- * @param param.tools - Available Arvo service contracts to expose as tools
- * @param param.system - Optional system prompt for guiding model behavior
- * @param param.span - OpenInference span for tracing and observability
+ * ## OpenAI-Specific Handling
+ * - Tool calls must be immediately followed by their results in message history
+ * - Function names cannot contain dots, requiring automatic name conversion
+ * - System prompts are injected as developer role messages for better adherence
  *
  * @returns Promise resolving to structured LLM output with either
  * a direct text response or tool requests
  *
  * @throws {Error} If OpenAI provides neither a response nor tool requests
  */
-export const openaiLLMCaller: <TTools extends Record<string, AnyVersionedContract>>(
-  param: Pick<CallAgenticLLMParam<TTools>, 'type' | 'messages' | 'tools' | 'span'> & { system?: string },
-) => Promise<CallAgenticLLMOutput<TTools>> = async ({ messages, tools, system, span }) => {
+export const openaiLLMCaller: CallAgenticLLM = async ({
+  messages,
+  toolDefinitions,
+  systemPrompt,
+  services,
+  span,
+  outputFormat,
+}) => {
   /**
    * Configure model and invocation parameters.
    */
@@ -380,7 +344,7 @@ export const openaiLLMCaller: <TTools extends Record<string, AnyVersionedContrac
     maxTokens: 1024,
   };
 
-  // Attach OpenInference metadata for observability
+  // Configure OpenTelemetry attributes for observability
   span.setAttributes({
     [OpenInferenceSemanticConventions.LLM_PROVIDER]: 'openai',
     [OpenInferenceSemanticConventions.LLM_SYSTEM]: 'openai',
@@ -391,39 +355,20 @@ export const openaiLLMCaller: <TTools extends Record<string, AnyVersionedContrac
     }),
   });
 
-  /**
-   * Convert Arvo contracts to OpenAI tool definitions.
-   *
-   * - Extracts JSON schema
-   * - Removes Arvo-specific fields (toolUseId$$, parentSubject$$)
-   * - Preserves descriptions and required fields
-   */
-  const toolDef: ChatCompletionTool[] = Object.values(tools).map((item) => {
-    const inputSchema = item.toJsonSchema().accepts.schema;
-    // @ts-ignore - Properties exist but TS may not infer correctly
-    const { toolUseId$$, parentSubject$$, ...cleanedProperties } = inputSchema?.properties ?? {};
-    // @ts-ignore - Required exists but TS may not infer correctly
-    const cleanedRequired = (inputSchema?.required ?? []).filter(
-      (item: string) => item !== 'toolUseId$$' && item !== 'parentSubject$$',
-    );
+  // Convert tool definitions to OpenAI function format
+  const toolDef: ChatCompletionTool[] = toolDefinitions.map((item) => {
     return {
       type: 'function',
       function: {
-        name: toolNameFormatter(item.accepts.type),
+        name: toolNameFormatter(item.name),
         description: item.description,
-        parameters: {
-          ...inputSchema,
-          properties: cleanedProperties,
-          required: cleanedRequired,
-        },
+        parameters: item.input_schema,
       },
     } as ChatCompletionTool;
   });
 
-  /**
-   * Format conversation history for OpenAI.
-   */
-  const formattedMessages = formatMessagesForOpenAI(messages, system);
+  // Format conversation history for OpenAI's specific requirements
+  const formattedMessages = formatMessagesForOpenAI(messages, systemPrompt ?? undefined);
 
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
@@ -439,13 +384,10 @@ export const openaiLLMCaller: <TTools extends Record<string, AnyVersionedContrac
   });
 
   /**
-   * Process and structure tool invocation requests from OpenAI's response.
-   *
-   * Multiple tool calls may be requested in a single response. Each tool call
-   * includes a unique ID, the function name, and the structured arguments.
-   * Convert these back to Arvo's event-driven format while tracking usage statistics.
+   * Extracts and processes tool requests from OpenAI's response.
+   * Converts function calls back to Arvo event format and tracks usage.
    */
-  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof tools>['toolRequests']> = [];
+  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof services>['toolRequests']> = [];
   const toolTypeCount: Record<string, number> = {};
 
   if (
@@ -467,19 +409,18 @@ export const openaiLLMCaller: <TTools extends Record<string, AnyVersionedContrac
   }
 
   /**
-   * Extract direct text response if OpenAI provided one.
+   * Extracts direct text response when OpenAI doesn't request tools.
+   * Handles structured output parsing if an output format is specified.
    */
   let finalResponse: string | null = null;
   if (message?.choices?.[0]?.finish_reason === 'stop') {
     finalResponse = message.choices[0].message.content;
   }
 
-  /**
-   * Structure the response according to Arvo’s agentic LLM output format.
-   */
-  const data: CallAgenticLLMOutput<typeof tools> = {
+  // Structure response according to Arvo's agentic LLM output format
+  const data: CallAgenticLLMOutput<typeof services> = {
     toolRequests: toolRequests.length ? toolRequests : null,
-    response: finalResponse,
+    response: finalResponse ? (outputFormat ? outputFormat.parse(JSON.parse(finalResponse)) : finalResponse) : null,
     toolTypeCount,
     usage: {
       tokens: {
@@ -489,11 +430,7 @@ export const openaiLLMCaller: <TTools extends Record<string, AnyVersionedContrac
     },
   };
 
-  /**
-   * Validate that OpenAI provided a usable response.
-   *
-   * Must always have either a text response or tool requests.
-   */
+  // Validate that OpenAI provided a usable response
   if (!data.response && !data.toolRequests) {
     throw new Error('Something went wrong. No response or tool request');
   }

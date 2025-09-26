@@ -1,25 +1,29 @@
 import type { Span } from '@opentelemetry/api';
-import type { AnyVersionedContract } from '../types';
 import {
   SemanticConventions as OpenInferenceSemanticConventions,
   OpenInferenceSpanKind,
 } from '@arizeai/openinference-semantic-conventions';
-import type { CallAgenticLLMOutput, CallAgenticLLMParam } from './types';
+import type { AgenticMessageContent, AgenticToolDefinition, CallAgenticLLMOutput, CallAgenticLLMParam } from './types';
 
+/**
+ * Sets OpenInference-compliant attributes on an OpenTelemetry span for LLM input tracking.
+ *
+ * Configures detailed observability attributes following the OpenInference specification
+ * for monitoring LLM operations. This function captures all input parameters sent to
+ * the LLM including conversation history, available tools, and system prompts, enabling
+ * comprehensive tracing and debugging of agentic workflows.
+ */
 export const openInferenceSpanInitAttributesSetter = (param: {
   span: Span;
-  tools: Record<string, AnyVersionedContract>;
+  tools: AgenticToolDefinition[];
   messages: CallAgenticLLMParam['messages'];
+  systemPrompt: string | null;
 }) => {
   param.span.setAttributes({
     [OpenInferenceSemanticConventions.OPENINFERENCE_SPAN_KIND]: OpenInferenceSpanKind.LLM,
   });
 
-  const toolDef = Object.values(param.tools).map((item) => ({
-    name: item.accepts.type,
-    description: item.description,
-    input_schema: item.toJsonSchema().accepts.schema,
-  }));
+  const toolDef = param.tools;
 
   param.span.setAttributes(
     Object.fromEntries(
@@ -34,7 +38,17 @@ export const openInferenceSpanInitAttributesSetter = (param: {
 
   param.span.setAttributes(
     Object.fromEntries(
-      param.messages.flatMap((item, index) => {
+      [
+        ...(param.systemPrompt
+          ? [
+              {
+                role: 'system',
+                content: [{ type: 'text', content: param.systemPrompt ?? '' }] as AgenticMessageContent[],
+              },
+            ]
+          : []),
+        ...param.messages,
+      ].flatMap((item, index) => {
         const attrs = [
           [
             `${OpenInferenceSemanticConventions.LLM_INPUT_MESSAGES}.${index}.${OpenInferenceSemanticConventions.MESSAGE_ROLE}`,
@@ -79,6 +93,14 @@ export const openInferenceSpanInitAttributesSetter = (param: {
   );
 };
 
+/**
+ * Sets OpenInference-compliant attributes on an OpenTelemetry span for LLM output tracking.
+ *
+ * Configures observability attributes for LLM response data following the OpenInference
+ * specification. This function captures the complete LLM output including direct responses,
+ * tool execution requests, and usage statistics, providing comprehensive visibility into
+ * LLM decision-making and resource consumption.
+ */
 export const openInferenceSpanOutputAttributesSetter = ({
   span,
   response,
@@ -92,7 +114,7 @@ export const openInferenceSpanOutputAttributesSetter = ({
   if (response) {
     span.setAttributes({
       [`${OpenInferenceSemanticConventions.LLM_OUTPUT_MESSAGES}.0.${OpenInferenceSemanticConventions.MESSAGE_CONTENT}`]:
-        response ?? '',
+        typeof response === 'string' ? response : JSON.stringify(response),
     });
   }
 

@@ -50,30 +50,46 @@ import { greetingOrchestratorContract } from './greeting.orchestrator';
 import { greetingResumableContract } from './greeting.resumable';
 import { createAgenticResumable } from './createAgenticResumable';
 import { anthropicLLMCaller } from './createAgenticResumable/integrations/anthropic';
+import { z } from 'zod';
 
+/**
+ * Test implementation of an Anthropic-powered agentic resumable orchestrator.
+ *
+ * Demonstrates the creation of an AI agent that can interact with multiple types
+ * of Arvo event handlers while maintaining a modular, loosely-coupled architecture.
+ * The agent has access to different handler patterns (event handlers, orchestrators,
+ * and resumables) and can intelligently select which services to invoke based on
+ * conversation context.
+ */
 export const testAnthropicAgent = createAgenticResumable({
   name: 'test.anthropic',
+  /**
+   * Available service contracts that define the agent's tool ecosystem.
+   *
+   * These contracts represent the full spectrum of Arvo event handlers,
+   * demonstrating that agents can seamlessly communicate with any handler
+   * type without requiring specialized integration protocols. The modular
+   * design ensures high cohesion within services and loose coupling between
+   * the agent and the broader system architecture.
+   */
   services: {
-    // Define the scope of the services the AI Agent can
-    // access. These are not tool (i.e. functions) rather
-    // these are the contracts of the event handler available
-    // in the eco-system. This keeps the entire architecture
-    // full modular, highly cohesive and least coupled
-    // This demonstrates that the Agent can communicate with
-    // all the kinds of event handlers in Arvo without any special
-    // communication protocol.
-    greeting: greetingContract.version('1.0.0'), // ArvoEventHandler
-    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // ArvoOrchestrator (state machine based declarative workflow)
-    greetingResumable: greetingResumableContract.version('1.0.0'), // ArvoResumable (some imperative orchestrator)
+    greeting: greetingContract.version('1.0.0'), // ArvoEventHandler for simple operations
+    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // ArvoOrchestrator for state-based workflows
+    greetingResumable: greetingResumableContract.version('1.0.0'), // ArvoResumable for imperative orchestration
   },
-  prompts: {},
-  agenticLLMCaller: async (param) => {
-    return await anthropicLLMCaller({
-      ...param,
-      system: undefined,
-    });
-  },
+  /**
+   * Structured output schema defining the agent's response format.
+   * When not provided, agents default to simple string responses.
+   */
+  outputFormat: z.object({
+    response: z.string().describe('The final response string'),
+    thoughts: z.string().describe('Elaborate why you made this response'),
+  }),
+  // System prompt generator that defines the agent's behavioral guidelines.
+  systemPrompt: () => 'You are a helpful agent...',
+  agenticLLMCaller: anthropicLLMCaller,
 });
+
 
 
     `,
@@ -87,26 +103,28 @@ import { createAgenticResumable } from './createAgenticResumable';
 import { openaiLLMCaller } from './createAgenticResumable/integrations/openai';
 import { testAnthropicAgent } from './agent.test.anthropic';
 
+/**
+ * Test implementation of an OpenAI-powered agentic resumable orchestrator.
+ *
+ * ## Inter-Agent Communication Architecture
+ * This implementation highlights two critical communication patterns:
+ * - **Agent-to-Workflow**: Direct integration with state machine-based orchestrators
+ * - **Agent-to-Agent**: Seamless communication between different AI agents
+ */
 export const testOpenaiAgent = createAgenticResumable({
   name: 'test.openai',
+  // Available service contracts demonstrating universal communication patterns.
   services: {
-    // This demonstrates that the agent can easily communicate 
-    // with workflows with the same communication infrastrucutre 
-    // i.e. ArvoEvent over any event broker
-    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'),
-    // This demonstrates that then agent can easily communicate 
-    // with other Agents with the same communication infrastrucutre 
-    // i.e. ArvoEvent over any event broker
-    anthropicAgent: testAnthropicAgent.contract.version('1.0.0'),
+    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // Workflow orchestration via ArvoEvent
+    anthropicAgent: testAnthropicAgent.contract.version('1.0.0'), // Agent-to-agent communication via ArvoEvent
   },
-  prompts: {},
-  agenticLLMCaller: async (param) => {
-    return await openaiLLMCaller({
-      ...param,
-      system: undefined,
-    });
-  },
+  // System prompt generator defining the agent's operational guidelines.
+  systemPrompt: () => 'You are a helpful agent...',
+  // Enables comprehensive conversation history to be returned in agent responses.
+  enableMessageHistoryInResponse: true,
+  agenticLLMCaller: openaiLLMCaller,
 });
+
 
     `,
     },

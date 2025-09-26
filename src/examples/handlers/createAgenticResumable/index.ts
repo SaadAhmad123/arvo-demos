@@ -13,19 +13,22 @@ import {
   type IMachineMemory,
 } from 'arvo-event-handler';
 import { z } from 'zod';
-import {
-  type CallAgenticLLMOutput,
-  type CallAgenticLLMParam,
-  type CreateAgenticResumableParams,
-  type AnyVersionedContract,
-  AgenticMessageContentSchema,
+import type {
+  CallAgenticLLMOutput,
+  CallAgenticLLMParam,
+  CreateAgenticResumableParams,
+  AnyVersionedContract,
+  AgenticToolDefinition,
 } from './types';
-import { openInferenceSpanInitAttributesSetter, openInferenceSpanOutputAttributesSetter } from './otel.helpers';
+import { openInferenceSpanInitAttributesSetter, openInferenceSpanOutputAttributesSetter } from './helpers.otel';
 import {
   SemanticConventions as OpenInferenceSemanticConventions,
   OpenInferenceSpanKind,
 } from '@arizeai/openinference-semantic-conventions';
 import { SpanStatusCode } from '@opentelemetry/api';
+import { AgenticMessageContentSchema } from './schemas';
+import { jsonUsageIntentPrompt } from './helpers.prompt';
+import zodToJsonSchema from 'zod-to-json-schema';
 
 /**
  * [Utility] Validates that service contracts for agentic resumables meet required structure.
@@ -72,72 +75,97 @@ const compareCollectedEventCounts = (target: Record<string, number>, current: Re
   return sumCurrent === sumTarget;
 };
 
+/**
+ * Default output format for agents that don't specify a custom output schema.
+ * Provides a simple string response format for basic conversational agents.
+ */
 const DEFAULT_AGENT_OUTPUT_FORMAT = z.object({ response: z.string() });
 
 /**
- * Creates an agentic resumable orchestrator that integrates LLM capabilities with ArvoResumable event handler.
+ * Creates an agentic resumable orchestrator that integrates LLM capabilities with Arvo's event-driven architecture.
  *
- * This factory creates a resumable imperative orchestrator that can:
- * - Accept natural language input messages
- * - Call LLM services for reasoning and tool selection
- * - Execute tool calls as Arvo service events
- * - Manage conversation context and tool responses
- * - Return structured conversation history and final responses
+ * This factory function creates a resumable orchestrator specifically designed for AI agent workflows.
+ * The resulting agent can engage in multi-turn conversations, intelligently select and execute tools
+ * based on context, and maintain conversation state across tool executions.
  *
- * The resulting orchestrator follows the standard Arvo resumable pattern but is specifically
- * designed for AI agent workflows where LLMs make decisions about which tools to use based
- * on conversation context.
+ * ## Core Capabilities
+ * - **Natural Language Processing**: Accepts user messages and generates contextually appropriate responses
+ * - **Intelligent Tool Selection**: Uses LLM reasoning to determine which tools to invoke and when
+ * - **Parallel Tool Execution**: Can execute multiple tools concurrently (it is event driven) and wait for all results
+ * - **Conversation Management**: Maintains full conversation history and context across interactions
+ * - **Type-Safe Tool Integration**: Leverages Arvo contracts for compile-time type safety
+ * - **Structured Output Support**: Can return structured data instead of just text responses
+ * - **Observability Integration**: Full OpenTelemetry tracing for debugging and monitoring
  *
- * @param params - Configuration object for the agentic resumable
- * @param params.name - Unique name for this agent (used in contract URI)
- * @param params.agenticLLMCaller - Function to call LLM with conversation context and available tools
- * @param params.services - [Optional] Service contracts available as tools for the LLM
- * @param params.serviceDomains - [Optional] domain routing for specific services
- * @param params.prompts - [Optional] Prompt functions for different conversation scenarios
+ * ## Service Contract Requirements
+ * All service contracts must include:
+ * - `toolUseId$$`: Required for correlating LLM tool calls with service responses
+ * - `parentSubject$$`: Required for orchestrator contracts to enable nested orchestration
  *
- * @returns Object containing the generated contract and handler factory
+ * @returns Object containing the generated Arvo contract and handler factory for deployment
  *
- * @throws {ConfigViolation} When service contracts don't meet agentic requirements
+ * @throws {ConfigViolation} When service contracts don't meet agentic resumable requirements
  *
  * @example
  * ```typescript
- * const agent = createAgenticResumable({
- *   name: 'customer-support',
+ * // Create a customer support agent with tool access
+ * const supportAgent = createAgenticResumable({
+ *   name: 'customer.support', // The name must be a-z, A-Z, .
  *   services: {
  *     userLookup: userContract.version('1.0.0'),
- *     ticketCreation: ticketContract.version('1.0.0')
+ *     ticketCreation: ticketContract.version('1.0.0'),
+ *     knowledgeBase: kbContract.version('1.0.0')
  *   },
  *   agenticLLMCaller: async (params) => {
- *     // Call your LLM service (OpenAI, Anthropic, etc.)
- *     return await callLLM(params);
+ *     // TODO - Integrate with your preferred LLM provider
+ *   },
+ *   systemPrompt: ({ type, messages }) => {
+ *     const basePrompt = "You are a helpful customer support agent...";
+ *     if (type === 'tool_results') {
+ *       return basePrompt + "\nProcess the tool results and provide a comprehensive response.";
+ *     }
+ *     return basePrompt;
  *   },
  *   serviceDomains: {
- *     'com.human.review': ['human.in.loop']
+ *     'com.human.review': ['human-review-domain'] // Route sensitive operations to human review
  *   },
- *   prompts: {
- *     systemPrompt: () => "You are a helpful customer support agent..."
+ *   enableMessageHistoryInResponse: true // Include full conversation in response
+ * });
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Create a data extraction agent with structured output
+ * const extractorAgent = createAgenticResumable({
+ *   name: 'data.extractor',
+ *   outputFormat: z.object({
+ *     entities: z.array(z.object({
+ *       name: z.string(),
+ *       type: z.enum(['person', 'organization', 'location']),
+ *       confidence: z.number()
+ *     })),
+ *     summary: z.string()
+ *   }),
+ *   agenticLLMCaller: async (params) => {
+ *     // TODO - Integrate with your preferred LLM provider
+ *     // TODO - LLM must return structured JSON matching the outputFormat schema
  *   }
  * });
- *
- * // Use the agent in your event system
- * const handler = agent.handlerFactory({ memory });
- * const result = await handler.execute(userMessageEvent);
  * ```
  */
 export const createAgenticResumable = <
   TName extends string,
   TService extends Record<string, AnyVersionedContract>,
-  // biome-ignore lint/suspicious/noExplicitAny: Needs to be general
-  TPrompts extends Record<string, (...args: any[]) => string>,
   TOutput extends z.AnyZodObject = typeof DEFAULT_AGENT_OUTPUT_FORMAT,
 >({
   name,
   services,
   agenticLLMCaller,
   serviceDomains,
-  prompts,
+  systemPrompt,
   outputFormat,
-}: CreateAgenticResumableParams<TName, TService, TPrompts, TOutput>) => {
+  enableMessageHistoryInResponse,
+}: CreateAgenticResumableParams<TName, TService, TOutput>) => {
   validateServiceContract(services ?? {});
 
   /**
@@ -145,7 +173,7 @@ export const createAgenticResumable = <
    *
    * Defines the interface for starting conversations (init) and completing them (complete).
    * The init event accepts a message string, and completion returns the full conversation
-   * history along with the final response.
+   * history (optionally) along with the final response.
    */
   const contract = createArvoOrchestratorContract({
     uri: `#/demo/resumable/agent/${name.replaceAll('.', '/')}`,
@@ -157,12 +185,16 @@ export const createAgenticResumable = <
           toolUseId$$: z.string().optional(),
         }),
         complete: z.object({
-          messages: z
-            .object({
-              role: z.enum(['user', 'assistant']),
-              content: AgenticMessageContentSchema.array(),
-            })
-            .array(),
+          ...(enableMessageHistoryInResponse
+            ? {
+                messages: z
+                  .object({
+                    role: z.enum(['user', 'assistant']),
+                    content: AgenticMessageContentSchema.array(),
+                  })
+                  .array(),
+              }
+            : {}),
           output: (outputFormat ?? DEFAULT_AGENT_OUTPUT_FORMAT) as TOutput,
           toolUseId$$: z.string().optional(),
         }),
@@ -170,6 +202,12 @@ export const createAgenticResumable = <
     },
   });
 
+  /**
+   * Internal context type for managing conversation state across resumptions.
+   *
+   * Tracks the conversation history, tool execution counts, and coordination
+   * identifiers needed for proper agent operation in the Arvo ecosystem.
+   */
   type Context = {
     currentSubject: string;
     messages: CallAgenticLLMParam['messages'];
@@ -180,13 +218,24 @@ export const createAgenticResumable = <
   /**
    * Event handler factory that creates the agentic resumable instance.
    *
-   * The handler manages the conversation flow:
-   * 1. On init: Call LLM with user message, either respond directly or request tools
-   * 2. On tool responses: Collect responses, call LLM again with results
-   * 3. Continue until LLM provides final response without tool requests
+   * ## Conversation Flow Management
+   * 1. **Initialization Phase**: Process initial user message and determine response strategy
+   * 2. **Tool Execution Phase**: Execute requested tools as Arvo service events
+   * 3. **Result Processing Phase**: Collect tool responses and feed back to LLM
+   * 4. **Response Generation**: Generate final response or continue tool execution cycle
    *
-   * @param dependencies - Required dependencies including memory for state persistence
-   * @returns Configured ArvoResumable instance for handling agentic conversations
+   * ## State Management
+   * - Maintains conversation context across resumptions using the provided memory system
+   * - Tracks tool execution counts to ensure all parallel operations complete
+   * - Preserves tool correlation IDs for proper request/response mapping
+   *
+   * ## Error Handling
+   * - Service errors are propagated as system errors to maintain conversation integrity
+   * - LLM errors are traced and reported through OpenTelemetry spans
+   * - ViolationErrors result in immediate failure with descriptive messages
+   *
+   * @param dependencies - Required dependencies including memory provider for state persistence
+   * @returns Configured ArvoResumable instance ready for deployment in the event system
    */
   const handlerFactory: EventHandlerFactory<{ memory: IMachineMemory<Record<string, unknown>> }> = ({ memory }) =>
     createArvoResumable({
@@ -197,7 +246,6 @@ export const createAgenticResumable = <
       types: {
         context: {} as Context,
       },
-
       executionunits: 0,
       memory: memory,
       handler: {
@@ -214,11 +262,44 @@ export const createAgenticResumable = <
             );
           }
 
-          // Wrap the agentic llm caller in a function which can create a new
-          // OTEL span for enhanced observability. It can only happen here in
-          // the handler function as it only has the most recent OTEL span
+          /**
+           * Converts Arvo service contracts to LLM-compatible tool definitions.
+           *
+           * Transforms contract schemas by:
+           * - Extracting JSON schema representations from Arvo contracts
+           * - Removing Arvo-specific coordination fields (toolUseId$$, parentSubject$$)
+           * - Preserving contract descriptions and input validation schemas
+           */
+          const toolDef: AgenticToolDefinition[] = Object.values(contracts.services).map((item) => {
+            const inputSchema = item.toJsonSchema().accepts.schema;
+            // @ts-ignore - The 'properties' field exists in there but is not pick up by typescript compiler
+            const { toolUseId$$, parentSubject$$, ...cleanedProperties } = inputSchema?.properties ?? {};
+            // @ts-ignore - The 'required' field exists in there but is not pick up by typescript compiler
+            const cleanedRequired = (inputSchema?.required ?? []).filter(
+              (item: string) => item !== 'toolUseId$$' && item !== 'parentSubject$$',
+            );
+            return {
+              name: item.accepts.type,
+              description: item.description,
+              input_schema: {
+                ...inputSchema,
+                properties: cleanedProperties,
+                required: cleanedRequired,
+              },
+            };
+          });
+
+          /**
+           * Wraps the LLM caller with OpenTelemetry observability and system prompt generation.
+           *
+           * Creates a new OTEL span for each LLM call, handles prompt composition,
+           * and ensures proper error tracking. The wrapper combines user-provided
+           * system prompts with structured output instructions when applicable.
+           */
           const otelAgenticLLMCaller: (
-            param: Omit<CallAgenticLLMParam<TService, TPrompts>, 'span'>,
+            param: Omit<CallAgenticLLMParam<TService, TOutput>, 'span' | 'systemPrompt'> & {
+              systemPrompt: string | null;
+            },
           ) => Promise<CallAgenticLLMOutput<TService>> = async (params) => {
             // This function automatically inherits from the parent span
             return await ArvoOpenTelemetry.getInstance().startActiveSpan({
@@ -226,13 +307,25 @@ export const createAgenticResumable = <
               disableSpanManagement: true,
               fn: async (span) => {
                 try {
+                  const finalSystemPrompt =
+                    [
+                      ...(systemPrompt ? [`# Instructions:\n${systemPrompt}`] : []),
+                      ...(outputFormat
+                        ? [`# JSON Response Requirements:\n${jsonUsageIntentPrompt(zodToJsonSchema(outputFormat))}`]
+                        : []),
+                    ]
+                      .join('\n\n')
+                      .trim() || null; // This is not null-coelese because I want it to become undefined on empty string
+
                   openInferenceSpanInitAttributesSetter({
-                    ...params,
+                    messages: params.messages,
+                    systemPrompt: finalSystemPrompt,
+                    tools: toolDef,
                     span,
                   });
                   const result = await agenticLLMCaller({
                     ...params,
-                    outputFormat: (outputFormat ?? DEFAULT_AGENT_OUTPUT_FORMAT) as TOutput,
+                    systemPrompt: finalSystemPrompt ?? null,
                     span,
                   });
                   openInferenceSpanOutputAttributesSetter({
@@ -254,7 +347,7 @@ export const createAgenticResumable = <
             });
           };
 
-          // Handle initialization: Handler the original message
+          // Handle conversation initialization with the user's initial message
           if (input) {
             const messages: CallAgenticLLMParam['messages'] = [
               {
@@ -266,11 +359,19 @@ export const createAgenticResumable = <
             const { toolRequests, toolTypeCount, response } = await otelAgenticLLMCaller({
               type: 'init',
               messages,
-              tools: contracts.services,
-              prompts: (prompts ?? {}) as TPrompts,
+              services: contracts.services,
+              toolDefinitions: toolDef,
+              systemPrompt:
+                systemPrompt?.({
+                  messages,
+                  services: contracts.services,
+                  toolDefinitions: toolDef,
+                  type: 'init',
+                }) ?? null,
+              outputFormat: outputFormat ?? null,
             });
 
-            // LLM provided direct response without needing tools
+            // LLM provided direct response without needing tools - complete immediately
             if (response) {
               messages.push({
                 role: 'assistant',
@@ -280,6 +381,12 @@ export const createAgenticResumable = <
               });
 
               return {
+                context: {
+                  messages,
+                  toolTypeCount: {},
+                  currentSubject: input.subject,
+                  toolUseId$$: input.data.toolUseId$$ ?? null,
+                },
                 output: {
                   messages,
                   output: typeof response === 'string' ? { response } : response,
@@ -326,7 +433,7 @@ export const createAgenticResumable = <
 
           if (!context) throw new Error('The context is not properly set. Faulty initialization');
 
-          // Check if all expected tool responses have been collected
+          // Check if all expected tool responses have been collected before proceeding [Arvo Best Practice]
           const haveAllEventsBeenCollected = compareCollectedEventCounts(
             context.toolTypeCount,
             Object.fromEntries(
@@ -335,11 +442,12 @@ export const createAgenticResumable = <
           );
 
           // Wait for more tool responses if not all have arrived
+          // Event collection is done automatically by the ArvoResumable
           if (!haveAllEventsBeenCollected) {
             return;
           }
 
-          // All tool responses received - add them to conversation and call LLM
+          // All tool responses received - integrate them into conversation and call LLM
           const messages = [...context.messages];
 
           for (const eventList of Object.values(metadata?.events?.expected ?? {})) {
@@ -360,8 +468,16 @@ export const createAgenticResumable = <
           const { response, toolRequests, toolTypeCount } = await otelAgenticLLMCaller({
             type: 'tool_results',
             messages,
-            tools: contracts.services,
-            prompts: (prompts ?? {}) as TPrompts,
+            services: contracts.services,
+            toolDefinitions: toolDef,
+            systemPrompt:
+              systemPrompt?.({
+                messages,
+                services: contracts.services,
+                toolDefinitions: toolDef,
+                type: 'tool_results',
+              }) ?? null,
+            outputFormat: outputFormat ?? null,
           });
 
           // LLM provided final response - complete the conversation
@@ -385,7 +501,7 @@ export const createAgenticResumable = <
             };
           }
 
-          // LLM requested more tools - continue the conversation cycle
+          // LLM requested more tools - continue the processing cycle additional tool execution
           if (toolRequests) {
             for (let i = 0; i < toolRequests.length; i++) {
               if (toolRequests[i].data && typeof toolRequests[i].data === 'object') {
