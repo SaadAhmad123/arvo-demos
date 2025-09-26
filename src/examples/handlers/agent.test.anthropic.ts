@@ -3,6 +3,7 @@ import { greetingOrchestratorContract } from './greeting.orchestrator';
 import { greetingResumableContract } from './greeting.resumable';
 import { createAgenticResumable } from './createAgenticResumable';
 import { anthropicLLMCaller } from './createAgenticResumable/integrations/anthropic';
+import { z } from 'zod';
 
 export const testAnthropicAgent = createAgenticResumable({
   name: 'test.anthropic',
@@ -19,7 +20,7 @@ export const testAnthropicAgent = createAgenticResumable({
     greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // ArvoOrchestrator (state machine based declarative workflow)
     greetingResumable: greetingResumableContract.version('1.0.0'), // ArvoResumable (some imperative orchestrator)
   },
-  prompts: {},
+  outputFormat: z.object({ name: z.string().describe('THen name odf the person') }),
   agenticLLMCaller: async (param) => {
     return await anthropicLLMCaller({
       ...param,

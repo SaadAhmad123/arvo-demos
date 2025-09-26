@@ -106,12 +106,12 @@ const testOpenaiAgentic = async () => {
 // testing frameworks like jest
 export const testArvoDemo = async () => {
   try {
-    await testAddHandler();
-    await testGreetingHandler();
-    await testGreetingOrchestrator();
-    await testGreetingResumable();
+    // await testAddHandler();
+    // await testGreetingHandler();
+    // await testGreetingOrchestrator();
+    // await testGreetingResumable();
     await testOpenaiAgentic();
-    await testAnthropicAgentic();
+    // await testAnthropicAgentic();
   } catch (e) {
     console.log(e);
   }

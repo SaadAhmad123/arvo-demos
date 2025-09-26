@@ -13,11 +13,12 @@ import {
   type IMachineMemory,
 } from 'arvo-event-handler';
 import { z } from 'zod';
-import type {
-  CallAgenticLLMOutput,
-  CallAgenticLLMParam,
-  CreateAgenticResumableParams,
-  AnyVersionedContract,
+import {
+  type CallAgenticLLMOutput,
+  type CallAgenticLLMParam,
+  type CreateAgenticResumableParams,
+  type AnyVersionedContract,
+  AgenticMessageContentSchema,
 } from './types';
 import { openInferenceSpanInitAttributesSetter, openInferenceSpanOutputAttributesSetter } from './otel.helpers';
 import {
@@ -71,6 +72,8 @@ const compareCollectedEventCounts = (target: Record<string, number>, current: Re
   return sumCurrent === sumTarget;
 };
 
+const DEFAULT_AGENT_OUTPUT_FORMAT = z.object({ response: z.string() });
+
 /**
  * Creates an agentic resumable orchestrator that integrates LLM capabilities with ArvoResumable event handler.
  *
@@ -87,10 +90,10 @@ const compareCollectedEventCounts = (target: Record<string, number>, current: Re
  *
  * @param params - Configuration object for the agentic resumable
  * @param params.name - Unique name for this agent (used in contract URI)
- * @param params.services - Service contracts available as tools for the LLM
- * @param params.serviceDomains - Optional domain routing for specific services
- * @param params.prompts - Prompt functions for different conversation scenarios
  * @param params.agenticLLMCaller - Function to call LLM with conversation context and available tools
+ * @param params.services - [Optional] Service contracts available as tools for the LLM
+ * @param params.serviceDomains - [Optional] domain routing for specific services
+ * @param params.prompts - [Optional] Prompt functions for different conversation scenarios
  *
  * @returns Object containing the generated contract and handler factory
  *
@@ -126,14 +129,16 @@ export const createAgenticResumable = <
   TService extends Record<string, AnyVersionedContract>,
   // biome-ignore lint/suspicious/noExplicitAny: Needs to be general
   TPrompts extends Record<string, (...args: any[]) => string>,
+  TOutput extends z.AnyZodObject = typeof DEFAULT_AGENT_OUTPUT_FORMAT,
 >({
   name,
   services,
   agenticLLMCaller,
   serviceDomains,
   prompts,
-}: CreateAgenticResumableParams<TName, TService, TPrompts>) => {
-  validateServiceContract(services);
+  outputFormat,
+}: CreateAgenticResumableParams<TName, TService, TPrompts, TOutput>) => {
+  validateServiceContract(services ?? {});
 
   /**
    * Auto-generated orchestrator contract for the agentic resumable.
@@ -155,10 +160,10 @@ export const createAgenticResumable = <
           messages: z
             .object({
               role: z.enum(['user', 'assistant']),
-              content: z.object({}).array(),
+              content: AgenticMessageContentSchema.array(),
             })
             .array(),
-          response: z.string(),
+          output: (outputFormat ?? DEFAULT_AGENT_OUTPUT_FORMAT) as TOutput,
           toolUseId$$: z.string().optional(),
         }),
       },
@@ -187,7 +192,7 @@ export const createAgenticResumable = <
     createArvoResumable({
       contracts: {
         self: contract,
-        services: services ?? {},
+        services: (services ?? {}) as TService,
       },
       types: {
         context: {} as Context,
@@ -227,6 +232,7 @@ export const createAgenticResumable = <
                   });
                   const result = await agenticLLMCaller({
                     ...params,
+                    outputFormat: (outputFormat ?? DEFAULT_AGENT_OUTPUT_FORMAT) as TOutput,
                     span,
                   });
                   openInferenceSpanOutputAttributesSetter({
@@ -261,20 +267,22 @@ export const createAgenticResumable = <
               type: 'init',
               messages,
               tools: contracts.services,
-              prompts,
+              prompts: (prompts ?? {}) as TPrompts,
             });
 
             // LLM provided direct response without needing tools
             if (response) {
               messages.push({
                 role: 'assistant',
-                content: [{ type: 'text', content: response }],
+                content: [
+                  { type: 'text', content: typeof response === 'string' ? response : JSON.stringify(response) },
+                ],
               });
 
               return {
                 output: {
                   messages,
-                  response: response,
+                  output: typeof response === 'string' ? { response } : response,
                   toolUseId$$: input.data.toolUseId$$,
                 },
               };
@@ -353,14 +361,14 @@ export const createAgenticResumable = <
             type: 'tool_results',
             messages,
             tools: contracts.services,
-            prompts,
+            prompts: (prompts ?? {}) as TPrompts,
           });
 
           // LLM provided final response - complete the conversation
           if (response) {
             messages.push({
               role: 'assistant',
-              content: [{ type: 'text', content: response }],
+              content: [{ type: 'text', content: typeof response === 'string' ? response : JSON.stringify(response) }],
             });
 
             return {
@@ -371,7 +379,7 @@ export const createAgenticResumable = <
               },
               output: {
                 messages,
-                response: response,
+                output: typeof response === 'string' ? { response } : response,
                 toolUseId$$: context.toolUseId$$ ?? undefined,
               },
             };
