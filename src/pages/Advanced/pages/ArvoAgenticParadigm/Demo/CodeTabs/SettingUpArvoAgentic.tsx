@@ -253,6 +253,9 @@ export const createAgenticResumable = <
         }),
       },
     },
+    metadata: {
+      contractSpecificType: 'AgenticResumable'
+    }
   });
 
   /**
