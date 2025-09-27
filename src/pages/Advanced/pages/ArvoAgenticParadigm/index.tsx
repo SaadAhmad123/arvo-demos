@@ -72,6 +72,12 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               - **Social Ability:** Agents are inherently collaborative; they can communicate and coordinate with other agents, systems, and humans, and can delegate tasks when needed.  
               - **Reactivity:** Agents perceive and respond to changes in their environment, using memory and context to determine when and how to act.  
               - **Goal Orientation:** Beyond reactivity, agents pursue well-defined goals, balancing short-term actions with long-term objectives.  
+            
+              > **Note:** Arvo is **not an agent framework** in the traditional sense. It is an **event-driven systems toolkit** where agents are 
+               simply another form of event handler. **Arvo's belief is that event-driven agents provide the most stable and scalable architecture
+               for AI Agents**. Remember even for AI Agents Arvo's mental model remains the same i.e. all communication happens through \`ArvoEvent\`, 
+               these events are processed by event handler functions, and \`ArvoContract\` defines cohesion, reliability and event validation across
+               event handlers.
             `)}
           />
           <Separator padding={8} />
@@ -187,6 +193,49 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
         </div>
       </ContentContainer>
       <Demo />
+      <ContentContainer>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              # The Agentic Approach in Arvo
+
+              Arvo takes a pragmatic stance on agentic development. **AI agents are not the centerpiece of the system**, but 
+              rather one of many composable tools for delivering value to users. The focus remains **value-centric, with agents 
+              treated as standard components** that seamlessly integrate into broader workflows.
+            `)}
+          />
+          <Separator padding={8} />
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              Arvo believes that your AI Agent must become a part of the system rather than making the system a part of the Agent.
+              The \`createAgenticResumable\` factory and LLM integration patterns may initially appear sophisticated, but they are 
+              intentionally designed for ease of use and flexibility. They are specifically designed so that you as developer can copy 
+              them directly into your projects, gaining both immediate productivity and full transparency over the internal architecture. 
+              This approach avoids constant version churn and gives you complete control to adapt agents as AI technologies evolve.
+            `)}
+          />
+          <Separator padding={8} />
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              A key strength of this Agent design approach is its uniformity. These Arvo-based agents interoperate with other Arvo-based agents, 
+              orchestrators, and event handlers using the same communication patterns—without special protocols or bespoke infrastructure. 
+              This consistency reduces architectural overhead, simplifies integration, and increases system reliability.
+              Furthermore, just like the rest of Arvo, this agentic factory is built with developer experience and operational robustness in mind. 
+            `)}
+          />
+          <Separator padding={8} />
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              In the following sections, we will explore practical agentic patterns you can adopt to build software that delivers meaningful 
+              value—where agents enhance your system naturally, not as an afterthought.
+            `)}
+          />
+        </div>
+      </ContentContainer>
 
       <Separator padding={72} />
     </main>
