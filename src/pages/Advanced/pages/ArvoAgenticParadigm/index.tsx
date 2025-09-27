@@ -7,12 +7,16 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { Md3ContentPadding } from '../../../../classNames';
 import {
+  AgenticSystemExampleLearn,
   ArvoEventHandlerLearn,
   ArvoMachineLearn,
   ArvoOrchestratorLearn,
   ArvoResumableLearn,
+  EventRoutingAndBrokerInArvoLearn,
 } from '../../../../components/LearningTiles/data';
 import { Demo } from './Demo';
+import { PageNavigation } from '../../../../components/PageNavigation';
+import { Md3Buttons } from '../../../../classNames/buttons';
 
 export const ArvoAgenticParadigmPage = withNavBar(() => {
   return (
@@ -34,6 +38,15 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
                 In Arvo, agents are simply event handlers. They communicate with the same reliability guarantees as any
                 other service, and no longer face architectural barriers to participating in distributed workflows.
               </p>
+              <Separator padding={24} />
+              <a
+                href='https://seanfalconer.medium.com/ai-agents-must-act-not-wait-a-case-for-event-driven-multi-agent-design-d8007b50081f'
+                target='_blank'
+                rel='noreferrer'
+                className={Md3Buttons.filled}
+              >
+                Read, <i>"AI Agents Must Act; Not Wait"</i>
+              </a>
             </div>
           </div>
           <img
@@ -188,12 +201,22 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               integrations, all through the same unified \`ArvoEvent\` data structure and event-driven communication paradigm. 
               This creates a heterogeneous agent network where specialized capabilities combine 
               to solve complex, multi-faceted problems that no single agent could address alone.
+
+              > **Note:** The code provided in this section follows the *shadcn* philosophy. It is intended to be 
+              > **production-ready yet easily adaptable**. It is design so that you can copy it directly into your 
+              > project without modification, but you retain full control to customize as needed.  
+              >  
+              > **To get started quickly:**
+              > 1. Install the listed dependencies in Section 1.  
+              > 2. Copy the code from Sections 2 and 3 into your project using the same directory structure.  
+              >  
+              > This approach balances speed of adoption with long-term flexibility—enabling you to bootstrap agent development rapidly while maintaining transparency and extensibility over the implementation.
             `)}
           />
         </div>
       </ContentContainer>
       <Demo />
-      <ContentContainer>
+      <ContentContainer content>
         <div className={Md3ContentPadding}>
           <ReMark
             bodyTextSize='large'
@@ -230,13 +253,25 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              In the following sections, we will explore practical agentic patterns you can adopt to build software that delivers meaningful 
-              value—where agents enhance your system naturally, not as an afterthought.
+              In further sections, we will explore practical agentic patterns you can adopt to build software that delivers meaningful 
+              value—where agents enhance your system naturally.
             `)}
           />
         </div>
       </ContentContainer>
-
+      <Separator padding={18} />
+      <PageNavigation
+        previous={{
+          link: EventRoutingAndBrokerInArvoLearn.link,
+          heading: EventRoutingAndBrokerInArvoLearn.name,
+          content: EventRoutingAndBrokerInArvoLearn.summary,
+        }}
+        next={{
+          link: AgenticSystemExampleLearn.link,
+          heading: AgenticSystemExampleLearn.name,
+          content: AgenticSystemExampleLearn.summary,
+        }}
+      />
       <Separator padding={72} />
     </main>
   );

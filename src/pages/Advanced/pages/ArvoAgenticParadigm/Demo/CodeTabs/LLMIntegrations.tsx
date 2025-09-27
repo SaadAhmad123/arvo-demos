@@ -26,14 +26,15 @@ export const LLMIntegrations: DemoCodePanel = {
   `),
   tabs: [
     {
-      title: 'createArvoResumable/integrations/anthropic.ts',
+      title: 'agentFactory/integrations/anthropic.ts',
       lang: 'ts',
       code: `
 // This code and all the files associated with it are supposed to be directly copy-pasted into your project.
+
 import Anthropic from '@anthropic-ai/sdk';
 import { ANTHROPIC_API_KEY } from '../../../../config';
-import type { CallAgenticLLM, CallAgenticLLMOutput } from '../types';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
+import type { LLMIntegrationOutput, LLMIntergration } from './types';
 
 /**
  * Converts Arvo event type names to Anthropic-compatible tool names.
@@ -62,12 +63,11 @@ const reverseToolNameFormatter = (formattedName: string) => formattedName.replac
  *
  * @throws {Error} When Claude provides neither a response nor tool requests
  */
-export const anthropicLLMCaller: CallAgenticLLM = async ({
+export const anthropicLLMCaller: LLMIntergration = async ({
   messages,
   outputFormat,
   toolDefinitions,
   systemPrompt,
-  services,
   span,
 }) => {
   const llmModel: Anthropic.Messages.Model = 'claude-sonnet-4-0';
@@ -133,7 +133,7 @@ export const anthropicLLMCaller: CallAgenticLLM = async ({
    * Extracts and processes tool requests from Claude's response.
    * Converts tool names back to Arvo format and tracks usage counts.
    */
-  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof services>['toolRequests']> = [];
+  const toolRequests: NonNullable<LLMIntegrationOutput['toolRequests']> = [];
   const toolTypeCount: Record<string, number> = {};
 
   if (message.stop_reason === 'tool_use') {
@@ -164,7 +164,7 @@ export const anthropicLLMCaller: CallAgenticLLM = async ({
   }
 
   // Structure response according to Arvo's agentic LLM output format
-  const data: CallAgenticLLMOutput<typeof services> = {
+  const data: LLMIntegrationOutput = {
     toolRequests: toolRequests.length ? toolRequests : null,
     response: finalResponse ? (outputFormat ? outputFormat.parse(JSON.parse(finalResponse)) : finalResponse) : null,
     toolTypeCount,
@@ -188,21 +188,16 @@ export const anthropicLLMCaller: CallAgenticLLM = async ({
       `,
     },
     {
-      title: 'createArvoResumable/integrations/openai.ts',
+      title: 'agentFactory/integrations/openai.ts',
       lang: 'ts',
       code: `
-// This code and all the files associated with it are supposed to be directly copy-pasted into your project.
 import OpenAI from 'openai';
 import { OPENAI_API_KEY } from '../../../../config';
-import type {
-  AgenticToolResultMessageContent,
-  CallAgenticLLM,
-  CallAgenticLLMOutput,
-  CallAgenticLLMParam,
-} from '../types';
+import type { AgenticToolResultMessageContent, CallAgenticLLMParam } from '../types';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
 import type { ChatModel } from 'openai/resources/shared.mjs';
 import type { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/index.mjs';
+import type { LLMIntegrationOutput, LLMIntergration } from './types';
 
 /**
  * Converts Arvo event type names to OpenAI-compatible tool names.
@@ -327,11 +322,10 @@ const formatMessagesForOpenAI = (
  *
  * @throws {Error} If OpenAI provides neither a response nor tool requests
  */
-export const openaiLLMCaller: CallAgenticLLM = async ({
+export const openaiLLMCaller: LLMIntergration = async ({
   messages,
   toolDefinitions,
   systemPrompt,
-  services,
   span,
   outputFormat,
 }) => {
@@ -387,7 +381,7 @@ export const openaiLLMCaller: CallAgenticLLM = async ({
    * Extracts and processes tool requests from OpenAI's response.
    * Converts function calls back to Arvo event format and tracks usage.
    */
-  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof services>['toolRequests']> = [];
+  const toolRequests: NonNullable<LLMIntegrationOutput['toolRequests']> = [];
   const toolTypeCount: Record<string, number> = {};
 
   if (
@@ -418,7 +412,7 @@ export const openaiLLMCaller: CallAgenticLLM = async ({
   }
 
   // Structure response according to Arvo's agentic LLM output format
-  const data: CallAgenticLLMOutput<typeof services> = {
+  const data: LLMIntegrationOutput = {
     toolRequests: toolRequests.length ? toolRequests : null,
     response: finalResponse ? (outputFormat ? outputFormat.parse(JSON.parse(finalResponse)) : finalResponse) : null,
     toolTypeCount,
@@ -439,6 +433,62 @@ export const openaiLLMCaller: CallAgenticLLM = async ({
 };
 
 
+      `,
+    },
+    {
+      title: 'agentFactory/types.ts',
+      lang: 'ts',
+      code: `
+import type { z } from 'zod';
+import type { AnyVersionedContract, CallAgenticLLMOutput, CallAgenticLLMParam } from '../types';
+
+/**
+ * Parameters for an LLM integration that plugs into the agentic orchestrator.
+ */
+export type LLMIntegrationParam = Omit<
+  CallAgenticLLMParam<Record<string, AnyVersionedContract>, z.AnyZodObject>,
+  'services'
+>;
+
+/**
+ * Normalized result produced by an LLM integration call.
+ *
+ * Mirrors {@link CallAgenticLLMOutput} but simplifies the \`toolRequests\`
+ * field to a generic array of \`{ type, data, id }\` items so that consumers
+ * do not need access to the service contract types when parsing results.
+ *
+ * - When \`toolRequests\` is non-null, \`response\` must be \`null\`.
+ * - When \`toolRequests\` is \`null\`, \`response\` contains either plain text or
+ *   structured JSON (when \`outputFormat\` was provided).
+ *
+ * \`toolTypeCount\` aggregates counts of requested tools by their \`type\` for
+ * quick diagnostics and analytics.
+ */
+export type LLMIntegrationOutput = Omit<CallAgenticLLMOutput, 'toolRequests'> & {
+  toolRequests: Array<{
+    type: string;
+    data: object;
+    id: string;
+  }> | null;
+};
+
+/**
+ * Function signature every LLM integration must implement.
+ *
+ * Given conversation context, available tool definitions, and optional
+ * structured-output constraints, the integration must return either:
+ *
+ * 1. A set of tool requests (\`toolRequests\`) when the LLM decides external
+ *    actions are required, or
+ * 2. A direct \`response\` (text or structured object) when no tools are needed.
+ *
+ * Implementations should ensure mutual exclusivity between \`toolRequests\`
+ * and \`response\` (i.e., one is \`null\` while the other is populated).
+ */
+export type LLMIntergration = (param: LLMIntegrationParam) => Promise<LLMIntegrationOutput>;
+
+
+      
       `,
     },
   ],

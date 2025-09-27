@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { ANTHROPIC_API_KEY } from '../../../../config';
-import type { CallAgenticLLM, CallAgenticLLMOutput } from '../types';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
+import type { LLMIntegrationOutput, LLMIntergration } from './types';
 
 /**
  * Converts Arvo event type names to Anthropic-compatible tool names.
@@ -30,12 +30,11 @@ const reverseToolNameFormatter = (formattedName: string) => formattedName.replac
  *
  * @throws {Error} When Claude provides neither a response nor tool requests
  */
-export const anthropicLLMCaller: CallAgenticLLM = async ({
+export const anthropicLLMCaller: LLMIntergration = async ({
   messages,
   outputFormat,
   toolDefinitions,
   systemPrompt,
-  services,
   span,
 }) => {
   const llmModel: Anthropic.Messages.Model = 'claude-sonnet-4-0';
@@ -101,7 +100,7 @@ export const anthropicLLMCaller: CallAgenticLLM = async ({
    * Extracts and processes tool requests from Claude's response.
    * Converts tool names back to Arvo format and tracks usage counts.
    */
-  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof services>['toolRequests']> = [];
+  const toolRequests: NonNullable<LLMIntegrationOutput['toolRequests']> = [];
   const toolTypeCount: Record<string, number> = {};
 
   if (message.stop_reason === 'tool_use') {
@@ -132,7 +131,7 @@ export const anthropicLLMCaller: CallAgenticLLM = async ({
   }
 
   // Structure response according to Arvo's agentic LLM output format
-  const data: CallAgenticLLMOutput<typeof services> = {
+  const data: LLMIntegrationOutput = {
     toolRequests: toolRequests.length ? toolRequests : null,
     response: finalResponse ? (outputFormat ? outputFormat.parse(JSON.parse(finalResponse)) : finalResponse) : null,
     toolTypeCount,

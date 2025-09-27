@@ -1,14 +1,10 @@
 import OpenAI from 'openai';
 import { OPENAI_API_KEY } from '../../../../config';
-import type {
-  AgenticToolResultMessageContent,
-  CallAgenticLLM,
-  CallAgenticLLMOutput,
-  CallAgenticLLMParam,
-} from '../types';
+import type { AgenticToolResultMessageContent, CallAgenticLLMParam } from '../types';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
 import type { ChatModel } from 'openai/resources/shared.mjs';
 import type { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/index.mjs';
+import type { LLMIntegrationOutput, LLMIntergration } from './types';
 
 /**
  * Converts Arvo event type names to OpenAI-compatible tool names.
@@ -133,11 +129,10 @@ const formatMessagesForOpenAI = (
  *
  * @throws {Error} If OpenAI provides neither a response nor tool requests
  */
-export const openaiLLMCaller: CallAgenticLLM = async ({
+export const openaiLLMCaller: LLMIntergration = async ({
   messages,
   toolDefinitions,
   systemPrompt,
-  services,
   span,
   outputFormat,
 }) => {
@@ -193,7 +188,7 @@ export const openaiLLMCaller: CallAgenticLLM = async ({
    * Extracts and processes tool requests from OpenAI's response.
    * Converts function calls back to Arvo event format and tracks usage.
    */
-  const toolRequests: NonNullable<CallAgenticLLMOutput<typeof services>['toolRequests']> = [];
+  const toolRequests: NonNullable<LLMIntegrationOutput['toolRequests']> = [];
   const toolTypeCount: Record<string, number> = {};
 
   if (
@@ -224,7 +219,7 @@ export const openaiLLMCaller: CallAgenticLLM = async ({
   }
 
   // Structure response according to Arvo's agentic LLM output format
-  const data: CallAgenticLLMOutput<typeof services> = {
+  const data: LLMIntegrationOutput = {
     toolRequests: toolRequests.length ? toolRequests : null,
     response: finalResponse ? (outputFormat ? outputFormat.parse(JSON.parse(finalResponse)) : finalResponse) : null,
     toolTypeCount,

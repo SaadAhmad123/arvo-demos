@@ -53,23 +53,30 @@ export const ArvoResumableLearn: LearningTileData = {
   link: '/learn/arvo-resumable',
 };
 
-export const ArvoEventDataFieldDeepDiveLearn = {
+export const ArvoEventDataFieldDeepDiveLearn: LearningTileData = {
   name: 'ArvoEvent — Data Field Deep Dive',
   summary:
     'Deep dive into key data field or ArvoEvent to understand the internal working of event handler and distributed tracing.',
   link: '/advanced/arvo-event-data-field-deep-dive',
 };
 
-export const EventRoutingAndBrokerInArvoLearn = {
+export const EventRoutingAndBrokerInArvoLearn: LearningTileData = {
   name: 'Broker Design in Arvo',
   summary:
     'ArvoEvent, being the core unit of communication in Arvo, introduces a shift in thinking about event routing and brokering which leads to simpler and more scalable infrastructure.',
   link: '/advanced/event-routing-and-brokers',
 };
 
-export const AgenticResumableDesign = {
+export const AgenticResumableDesignLearn: LearningTileData = {
   name: 'Agentic AI Paradigm',
   summary:
     'See how ArvoResumables naturally unlock agentic ecosystems—where AIs, services, workflows, and humans collaborate seamlessly.',
   link: '/advanced/arvo-agentic-resumables',
+};
+
+export const AgenticSystemExampleLearn: LearningTileData = {
+  name: 'Agentic Patterns',
+  summary:
+    'Discover foundational agentic software patterns that address the most common use cases. While Arvo Agents can go far beyond these examples, they serve as a practical starting point for building adaptable, intelligent systems.',
+  link: '/advanced/arvo-agentic-patterns',
 };

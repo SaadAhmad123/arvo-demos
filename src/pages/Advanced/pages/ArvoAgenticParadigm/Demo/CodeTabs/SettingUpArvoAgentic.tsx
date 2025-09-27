@@ -47,7 +47,7 @@ export const SettingUpArvoAgentic: DemoCodePanel = {
   `),
   tabs: [
     {
-      title: 'createArvoResumable/index.ts',
+      title: 'agentFactory/createAgenticResumable.ts',
       lang: 'ts',
       code: `
 // This code and all the files associated with it are supposed to be directly copy-pasted into your project.
@@ -599,7 +599,7 @@ export const createAgenticResumable = <
       `,
     },
     {
-      title: 'createAgenticResumable/schemas.ts',
+      title: 'agentFactory/schemas.ts',
       lang: 'ts',
       code: `
 import { z } from 'zod';
@@ -665,7 +665,7 @@ export const AgenticMessageContentSchema = z.discriminatedUnion('type', [
       `,
     },
     {
-      title: 'createAgenticResumable/types.ts',
+      title: 'agentFactory/types.ts',
       lang: 'ts',
       code: `
 import type { InferVersionedArvoContract } from 'arvo-core';
@@ -923,7 +923,7 @@ export type CreateAgenticResumableParams<
       `,
     },
     {
-      title: 'createAgenticResumable/helpers.prompt.ts',
+      title: 'agentFactory/helpers.prompt.ts',
       lang: 'ts',
       code: `
 // Generates a structured JSON output instruction prompt for LLM services.
@@ -948,7 +948,7 @@ Return the final response in the following format:
       `,
     },
     {
-      title: 'createAgenticResumable/helpers.otel.ts',
+      title: 'agentFactory/helpers.otel.ts',
       lang: 'ts',
       code: `
 import type { Span } from '@opentelemetry/api';

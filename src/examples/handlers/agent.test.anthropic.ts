@@ -1,9 +1,10 @@
 import { greetingContract } from './greeting.handler';
 import { greetingOrchestratorContract } from './greeting.orchestrator';
 import { greetingResumableContract } from './greeting.resumable';
-import { createAgenticResumable } from './createAgenticResumable';
-import { anthropicLLMCaller } from './createAgenticResumable/integrations/anthropic';
+import { createAgenticResumable } from './agentFactory/createAgenticResumable';
+import { anthropicLLMCaller } from './agentFactory/integrations/anthropic';
 import { z } from 'zod';
+import type { CallAgenticLLM } from './agentFactory/types';
 
 /**
  * Test implementation of an Anthropic-powered agentic resumable orchestrator.
@@ -40,5 +41,5 @@ export const testAnthropicAgent = createAgenticResumable({
   }),
   // System prompt generator that defines the agent's behavioral guidelines.
   systemPrompt: () => 'You are a helpful agent...',
-  agenticLLMCaller: anthropicLLMCaller,
+  agenticLLMCaller: anthropicLLMCaller as CallAgenticLLM,
 });

@@ -3,7 +3,7 @@ import { Md3Cards } from '../../../classNames/cards';
 import { Md3Typography } from '../../../classNames/typography';
 import { Separator } from '../../../components/Separator';
 import { HiCheckCircle, HiLightningBolt, HiCube } from 'react-icons/hi';
-import { AgenticResumableDesign } from '../../../components/LearningTiles/data';
+import { AgenticResumableDesignLearn } from '../../../components/LearningTiles/data';
 
 export const Hero = () => (
   <div className={`${Md3Cards.filled} flex flex-col justify-center`}>
@@ -13,7 +13,7 @@ export const Hero = () => (
       <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
         Build <strong>enterprise-grade</strong> event-driven services,{' '}
         <strong>
-          <Link to={AgenticResumableDesign.link} className='underline hover:text-blue-500'>
+          <Link to={AgenticResumableDesignLearn.link} className='underline hover:text-blue-500'>
             Agentic AI
           </Link>
         </strong>{' '}

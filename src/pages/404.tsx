@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 export const NotFoundPage: React.FC = () => {
   return (
     <ContentContainer>
-      <div className='flex flex-col items-center justify-center'>
+      <div className='flex flex-col items-center justify-center text-on-background'>
         <Separator padding={48} />
         <img src={imageUrl} alt='Page not found' className='max-w-[400px] h-auto' />
         <Separator padding={32} />
@@ -28,7 +28,7 @@ export const NotFoundPage: React.FC = () => {
             href='https://m3.material.io/sadada'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-blue-800 hover:underline'
+            className='text-blue-500 hover:underline'
           >
             Material Design
           </a>

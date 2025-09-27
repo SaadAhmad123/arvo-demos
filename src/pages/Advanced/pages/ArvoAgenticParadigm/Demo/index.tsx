@@ -21,7 +21,9 @@ export const Demo: React.FC = () => {
               <React.Fragment key={index.toString()}>
                 <div className={Md3Cards.filled}>
                   <div className={Md3Cards.inner.content}>
-                    <h2 className={Md3Typography.headline.large}>{item.heading}</h2>
+                    <h2 className={Md3Typography.headline.large}>
+                      {index + 1}. {item.heading}
+                    </h2>
                     <Separator padding={8} />
                     <ReMark content={item.description} />
                   </div>

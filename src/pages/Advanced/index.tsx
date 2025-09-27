@@ -6,7 +6,8 @@ import { Separator } from '../../components/Separator';
 import { Md3ContentPadding } from '../../classNames';
 import { LearningTiles } from '../../components/LearningTiles';
 import {
-  AgenticResumableDesign,
+  AgenticResumableDesignLearn,
+  AgenticSystemExampleLearn,
   ArvoEventDataFieldDeepDiveLearn,
   EventRoutingAndBrokerInArvoLearn,
 } from '../../components/LearningTiles/data';
@@ -47,7 +48,12 @@ export const AdvancedPage = withNavBar(() => {
       <Separator padding={18} />
       <ContentContainer content>
         <LearningTiles
-          data={[EventRoutingAndBrokerInArvoLearn, ArvoEventDataFieldDeepDiveLearn, AgenticResumableDesign]}
+          data={[
+            EventRoutingAndBrokerInArvoLearn,
+            ArvoEventDataFieldDeepDiveLearn,
+            AgenticResumableDesignLearn,
+            AgenticSystemExampleLearn,
+          ]}
         />
       </ContentContainer>
       <Separator padding={72} />
