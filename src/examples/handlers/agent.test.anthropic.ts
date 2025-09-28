@@ -17,6 +17,7 @@ import type { CallAgenticLLM } from './agentFactory/types';
  */
 export const testAnthropicAgent = createAgenticResumable({
   name: 'test.anthropic',
+  description: 'A test agent with access to many tools to generate greetings',
   /**
    * Available service contracts that define the agent's tool ecosystem.
    *

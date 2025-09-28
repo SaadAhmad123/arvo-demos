@@ -3,6 +3,7 @@ import { addHandler, greetingHandler, greetingOrchestrator, greetingResumable } 
 import { createSimpleEventBroker, SimpleMachineMemory } from 'arvo-event-handler';
 import { testAnthropicAgent } from './handlers/agent.test.anthropic';
 import { testOpenaiAgent } from './handlers/agent.test.openai';
+import { testMcpAnthropicAgent } from './handlers/agent.mcp.test.anthropic';
 
 export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
   /**
@@ -28,6 +29,7 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
       greetingOrchestrator({ memory }),
       testAnthropicAgent.handlerFactory({ memory }),
       testOpenaiAgent.handlerFactory({ memory }),
+      testMcpAnthropicAgent.handlerFactory(),
     ],
     {
       onError: (error) => console.error(error),

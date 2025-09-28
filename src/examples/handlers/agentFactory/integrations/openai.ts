@@ -7,16 +7,6 @@ import type { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/reso
 import type { LLMIntegrationOutput, LLMIntergration } from './types';
 
 /**
- * Converts Arvo event type names to OpenAI-compatible tool names.
- */
-const toolNameFormatter = (name: string) => name.replaceAll('.', '_');
-
-/**
- * Converts OpenAI tool names back to original Arvo event types.
- */
-const reverseToolNameFormatter = (formattedName: string) => formattedName.replaceAll('_', '.');
-
-/**
  * Converts Arvo agentic messages to OpenAI-compatible chat completion format.
  *
  * Performs critical transformations required by OpenAI's API:
@@ -31,6 +21,7 @@ const reverseToolNameFormatter = (formattedName: string) => formattedName.replac
  */
 const formatMessagesForOpenAI = (
   messages: CallAgenticLLMParam['messages'],
+  toolNameToFormattedMap: Record<string, string>,
   systemPrompt?: string,
 ): ChatCompletionMessageParam[] => {
   const formatedMessages: ChatCompletionMessageParam[] = [];
@@ -92,7 +83,7 @@ const formatMessagesForOpenAI = (
               type: 'function',
               id: item.content.id,
               function: {
-                name: toolNameFormatter(item.content.name),
+                name: toolNameToFormattedMap[item.content.name],
                 arguments: JSON.stringify(item.content.input),
               },
             },
@@ -157,19 +148,25 @@ export const openaiLLMCaller: LLMIntergration = async ({
   });
 
   // Convert tool definitions to OpenAI function format
-  const toolDef: ChatCompletionTool[] = toolDefinitions.map((item) => {
-    return {
+  const toolDef: ChatCompletionTool[] = [];
+  const toolNameToFormattedMap: Record<string, string> = {};
+  const formattedToToolNameMap: Record<string, string> = {};
+  for (const item of toolDefinitions) {
+    const formatted = item.name.replaceAll('.', '_');
+    toolNameToFormattedMap[item.name] = formatted;
+    formattedToToolNameMap[formatted] = item.name;
+    toolDef.push({
       type: 'function',
       function: {
-        name: toolNameFormatter(item.name),
+        name: toolNameToFormattedMap[item.name],
         description: item.description,
         parameters: item.input_schema,
       },
-    } as ChatCompletionTool;
-  });
+    } as ChatCompletionTool);
+  }
 
   // Format conversation history for OpenAI's specific requirements
-  const formattedMessages = formatMessagesForOpenAI(messages, systemPrompt ?? undefined);
+  const formattedMessages = formatMessagesForOpenAI(messages, toolNameToFormattedMap, systemPrompt ?? undefined);
 
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
@@ -197,7 +194,7 @@ export const openaiLLMCaller: LLMIntergration = async ({
   ) {
     for (const item of message.choices[0]?.message.tool_calls ?? []) {
       if (item.type === 'function') {
-        const actualType = reverseToolNameFormatter(item.function.name);
+        const actualType = formattedToToolNameMap[item.function.name];
         toolRequests.push({
           type: actualType,
           id: item.id,

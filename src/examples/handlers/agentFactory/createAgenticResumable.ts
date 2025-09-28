@@ -5,6 +5,7 @@ import {
   type ArvoSemanticVersion,
   ArvoOpenTelemetry,
   exceptionToSpan,
+  type OpenTelemetryHeaders,
 } from 'arvo-core';
 import {
   ConfigViolation,
@@ -165,6 +166,7 @@ export const createAgenticResumable = <
   systemPrompt,
   outputFormat,
   enableMessageHistoryInResponse,
+  description,
 }: CreateAgenticResumableParams<TName, TService, TOutput>) => {
   validateServiceContract(services ?? {});
 
@@ -178,6 +180,7 @@ export const createAgenticResumable = <
   const contract = createArvoOrchestratorContract({
     uri: `#/demo/resumable/agent/${name.replaceAll('.', '/')}`,
     name: `agent.${name}` as `agent.${TName}`,
+    description: description,
     versions: {
       '1.0.0': {
         init: z.object({
@@ -253,6 +256,12 @@ export const createAgenticResumable = <
       memory: memory,
       handler: {
         '1.0.0': async ({ contracts, service, input, context, collectedEvents, metadata, span }) => {
+          // Manually crafting parent otel header to prevent potential span corruption
+          const parentSpanOtelHeaders: OpenTelemetryHeaders = {
+            traceparent: `00-${span.spanContext().traceId}-${span.spanContext().spanId}-01`,
+            tracestate: null,
+          };
+
           span.setAttribute(OpenInferenceSemanticConventions.OPENINFERENCE_SPAN_KIND, OpenInferenceSpanKind.AGENT);
           // Handle service errors by throwing error (which will result in the system error event)
           if (
@@ -308,13 +317,19 @@ export const createAgenticResumable = <
             return await ArvoOpenTelemetry.getInstance().startActiveSpan({
               name: 'Agentic LLM Call',
               disableSpanManagement: true,
+              context: {
+                inheritFrom: 'TRACE_HEADERS',
+                traceHeaders: parentSpanOtelHeaders,
+              },
               fn: async (span) => {
                 try {
                   const finalSystemPrompt =
                     [
-                      ...(systemPrompt ? [`# Instructions:\n${systemPrompt}`] : []),
-                      ...(outputFormat
-                        ? [`# JSON Response Requirements:\n${jsonUsageIntentPrompt(zodToJsonSchema(outputFormat))}`]
+                      ...(params.systemPrompt ? [`# Instructions:\n${params.systemPrompt}`] : []),
+                      ...(params.outputFormat
+                        ? [
+                            `# JSON Response Requirements:\n${jsonUsageIntentPrompt(zodToJsonSchema(params.outputFormat))}`,
+                          ]
                         : []),
                     ]
                       .join('\n\n')

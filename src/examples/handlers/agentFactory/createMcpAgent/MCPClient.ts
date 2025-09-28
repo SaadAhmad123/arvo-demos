@@ -1,8 +1,10 @@
 import type { AgenticToolDefinition } from '../types';
-import { ArvoOpenTelemetry, exceptionToSpan, logToSpan } from 'arvo-core';
-import type { Tool, ListToolsResult } from '@modelcontextprotocol/sdk/types.js';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { ArvoOpenTelemetry, exceptionToSpan, logToSpan, type OpenTelemetryHeaders } from 'arvo-core';
+import type { Tool, ListToolsResult } from '@modelcontextprotocol/sdk/types.d.ts';
+import { Client } from '@modelcontextprotocol/sdk/client';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { SpanStatusCode } from '@opentelemetry/api';
 
 /**
  * MCP ([Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro)) SSE client for integrating external tool capabilities with Arvo agents.
@@ -12,29 +14,26 @@ import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
  * seamless access to external services while maintaining Arvo's observability and error handling
  * patterns through OpenTelemetry tracing.
  */
-export class McpSseClient {
+export class McpClient {
   /** MCP server endpoint URL */
   public readonly serverUrl: string;
 
-  /** Underlying MCP SDK client instance */
   private client: Client | null;
-
-  /** Tracks whether the client is currently connected */
   private isConnected: boolean;
-
-  /** List of tools available from the connected MCP server */
   private availableTools: Tool[];
+  private parentOtelHeaders: OpenTelemetryHeaders | null;
 
   /**
    * Creates a new instance of McpSseClient.
    *
    * @param serverUrl - Full URL of the target MCP server
    */
-  constructor(serverUrl: string) {
+  constructor(serverUrl: string, parentOtelHeaders?: OpenTelemetryHeaders) {
     this.serverUrl = serverUrl;
     this.availableTools = [];
     this.client = null;
     this.isConnected = false;
+    this.parentOtelHeaders = parentOtelHeaders ?? null;
   }
 
   /**
@@ -51,9 +50,17 @@ export class McpSseClient {
     return await ArvoOpenTelemetry.getInstance().startActiveSpan({
       name: `McpSseClient.connect<${this.serverUrl}>`,
       disableSpanManagement: true,
+      context: this.parentOtelHeaders
+        ? {
+            inheritFrom: 'TRACE_HEADERS',
+            traceHeaders: this.parentOtelHeaders,
+          }
+        : undefined,
       fn: async (span) => {
         try {
-          const transport = new SSEClientTransport(new URL(this.serverUrl));
+          const transport = this.serverUrl.includes('/mcp')
+            ? new StreamableHTTPClientTransport(new URL(this.serverUrl))
+            : new SSEClientTransport(new URL(this.serverUrl));
           this.client = new Client(
             {
               name: 'arvo-mcp-client',
@@ -66,21 +73,34 @@ export class McpSseClient {
             },
           );
           await this.client.connect(transport);
-          logToSpan({
-            level: 'INFO',
-            message: 'Connected to MCP Server',
-          });
+          logToSpan(
+            {
+              level: 'INFO',
+              message: 'Connected to MCP Server',
+            },
+            span,
+          );
           const tools: ListToolsResult = await this.client.listTools();
           this.availableTools = tools.tools;
           this.isConnected = true;
-          logToSpan({
-            level: 'INFO',
-            message: 'Available MCP tools:',
-            tools: JSON.stringify(this.availableTools.map((t: Tool) => t.name)),
-          });
+          logToSpan(
+            {
+              level: 'INFO',
+              message: 'Available MCP tools:',
+              tools: JSON.stringify(
+                this.availableTools.map((t: Tool) => ({ name: t.name, description: t.description })),
+              ),
+            },
+            span,
+          );
+          span.end();
           return this.isConnected;
         } catch (error) {
-          exceptionToSpan(error as Error);
+          exceptionToSpan(error as Error, span);
+          span.setStatus({
+            code: SpanStatusCode.ERROR,
+            message: (error as Error)?.message,
+          });
           this.isConnected = false;
           return this.isConnected;
         } finally {
@@ -135,15 +155,38 @@ export class McpSseClient {
    * @returns A promise that resolves when the client has been disconnected.
    */
   async disconnect(): Promise<void> {
-    if (this.client && this.isConnected) {
-      await this.client.close();
-      this.isConnected = false;
-      this.client = null;
-      logToSpan({
-        level: 'INFO',
-        message: 'Disconnected from MCP server',
-      });
-    }
+    return await ArvoOpenTelemetry.getInstance().startActiveSpan({
+      name: `McpSseClient.disconnect<${this.serverUrl}>`,
+      disableSpanManagement: true,
+      context: this.parentOtelHeaders
+        ? {
+            inheritFrom: 'TRACE_HEADERS',
+            traceHeaders: this.parentOtelHeaders,
+          }
+        : undefined,
+      fn: async (span) => {
+        if (this.client && this.isConnected) {
+          await this.client.close();
+          this.isConnected = false;
+          this.client = null;
+          logToSpan(
+            {
+              level: 'INFO',
+              message: 'Disconnected from MCP server',
+            },
+            span,
+          );
+        } else {
+          logToSpan(
+            {
+              level: 'INFO',
+              message: 'MCP server already disconnected',
+            },
+            span,
+          );
+        }
+      },
+    });
   }
 
   /**
@@ -160,12 +203,21 @@ export class McpSseClient {
     return await ArvoOpenTelemetry.getInstance().startActiveSpan({
       name: `McpSseClient.invokeTool<${toolName}@${this.serverUrl}>`,
       disableSpanManagement: true,
+      context: this.parentOtelHeaders
+        ? {
+            inheritFrom: 'TRACE_HEADERS',
+            traceHeaders: this.parentOtelHeaders,
+          }
+        : undefined,
       fn: async (span) => {
-        logToSpan({
-          level: 'INFO',
-          message: 'Invoking tool with arguments',
-          args: JSON.stringify(args),
-        });
+        logToSpan(
+          {
+            level: 'INFO',
+            message: 'Invoking tool with arguments',
+            args: JSON.stringify(args),
+          },
+          span,
+        );
         try {
           if (!this.isConnected || !this.client) {
             throw new Error('MCP client not connected');
@@ -181,7 +233,11 @@ export class McpSseClient {
             const err = new Error(
               `Error occured while invoking MCP tool <${toolName}@${this.serverUrl}> -> ${(error as Error)?.message ?? 'Something went wrong'}`,
             );
-            exceptionToSpan(err);
+            exceptionToSpan(err, span);
+            span.setStatus({
+              code: SpanStatusCode.ERROR,
+              message: err.message,
+            });
             throw err;
           }
         } finally {

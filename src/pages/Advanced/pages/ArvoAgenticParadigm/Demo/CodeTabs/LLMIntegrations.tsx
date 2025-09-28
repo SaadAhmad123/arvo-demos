@@ -29,22 +29,11 @@ export const LLMIntegrations: DemoCodePanel = {
       title: 'agentFactory/integrations/anthropic.ts',
       lang: 'ts',
       code: `
-// This code and all the files associated with it are supposed to be directly copy-pasted into your project.
-
 import Anthropic from '@anthropic-ai/sdk';
 import { ANTHROPIC_API_KEY } from '../../../../config';
 import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizeai/openinference-semantic-conventions';
 import type { LLMIntegrationOutput, LLMIntergration } from './types';
-
-/**
- * Converts Arvo event type names to Anthropic-compatible tool names.
- */
-const toolNameFormatter = (name: string) => name.replaceAll('.', '_');
-
-/**
- * Converts Anthropic tool names back to original Arvo event types.
- */
-const reverseToolNameFormatter = (formattedName: string) => formattedName.replaceAll('_', '.');
+import type { AgenticToolDefinition } from '../types';
 
 /**
  * Anthropic Claude integration for agentic LLM calls within Arvo orchestrators.
@@ -55,8 +44,8 @@ const reverseToolNameFormatter = (formattedName: string) => formattedName.replac
  * response parsing for seamless integration.
  *
  * ## Tool Name Conversion
- * Arvo event types use dot notation (e.g., \`user.lookup\`) but Anthropic requires
- * underscore format (e.g., \`user_lookup\`). This function handles the conversion
+ * Arvo event types use dot notation (e.g., 'user.lookup') but Anthropic requires
+ * underscore format (e.g., 'user_lookup'). This function handles the conversion
  * automatically while preserving the original semantics.
  *
  * @returns Promise resolving to structured LLM response with either text response or tool requests
@@ -88,7 +77,15 @@ export const anthropicLLMCaller: LLMIntergration = async ({
   });
 
   // Convert tool names to Anthropic-compatible format
-  const toolDef = toolDefinitions.map((item) => ({ ...item, name: toolNameFormatter(item.name) }));
+  const toolDef: AgenticToolDefinition[] = [];
+  const toolNameToFormattedMap: Record<string, string> = {};
+  const formattedToToolNameMap: Record<string, string> = {};
+  for (const item of toolDefinitions) {
+    const formatted = item.name.replaceAll('.', '_');
+    toolNameToFormattedMap[item.name] = formatted;
+    formattedToToolNameMap[formatted] = item.name;
+    toolDef.push({ ...item, name: toolNameToFormattedMap[item.name] });
+  }
 
   /**
    * Converts agentic message format to Anthropic's expected structure.
@@ -106,7 +103,7 @@ export const anthropicLLMCaller: LLMIntergration = async ({
       if (c.type === 'tool_use') {
         return {
           ...c,
-          name: toolNameFormatter(c.name),
+          name: toolNameToFormattedMap[c.name],
         };
       }
       return c;
@@ -139,7 +136,7 @@ export const anthropicLLMCaller: LLMIntergration = async ({
   if (message.stop_reason === 'tool_use') {
     for (const item of message.content) {
       if (item.type === 'tool_use') {
-        const actualType = reverseToolNameFormatter(item.name); // The system understands the original tool name no the AI tool name
+        const actualType = formattedToToolNameMap[item.name]; // The system understands the original tool name no the AI tool name
         toolRequests.push({
           type: actualType,
           id: item.id,
@@ -184,7 +181,7 @@ export const anthropicLLMCaller: LLMIntergration = async ({
   return data;
 };
 
-      
+
       `,
     },
     {
@@ -198,16 +195,6 @@ import { SemanticConventions as OpenInferenceSemanticConventions } from '@arizea
 import type { ChatModel } from 'openai/resources/shared.mjs';
 import type { ChatCompletionMessageParam, ChatCompletionTool } from 'openai/resources/index.mjs';
 import type { LLMIntegrationOutput, LLMIntergration } from './types';
-
-/**
- * Converts Arvo event type names to OpenAI-compatible tool names.
- */
-const toolNameFormatter = (name: string) => name.replaceAll('.', '_');
-
-/**
- * Converts OpenAI tool names back to original Arvo event types.
- */
-const reverseToolNameFormatter = (formattedName: string) => formattedName.replaceAll('_', '.');
 
 /**
  * Converts Arvo agentic messages to OpenAI-compatible chat completion format.
@@ -224,6 +211,7 @@ const reverseToolNameFormatter = (formattedName: string) => formattedName.replac
  */
 const formatMessagesForOpenAI = (
   messages: CallAgenticLLMParam['messages'],
+  toolNameToFormattedMap: Record<string, string>,
   systemPrompt?: string,
 ): ChatCompletionMessageParam[] => {
   const formatedMessages: ChatCompletionMessageParam[] = [];
@@ -285,7 +273,7 @@ const formatMessagesForOpenAI = (
               type: 'function',
               id: item.content.id,
               function: {
-                name: toolNameFormatter(item.content.name),
+                name: toolNameToFormattedMap[item.content.name],
                 arguments: JSON.stringify(item.content.input),
               },
             },
@@ -350,19 +338,25 @@ export const openaiLLMCaller: LLMIntergration = async ({
   });
 
   // Convert tool definitions to OpenAI function format
-  const toolDef: ChatCompletionTool[] = toolDefinitions.map((item) => {
-    return {
+  const toolDef: ChatCompletionTool[] = [];
+  const toolNameToFormattedMap: Record<string, string> = {};
+  const formattedToToolNameMap: Record<string, string> = {};
+  for (const item of toolDefinitions) {
+    const formatted = item.name.replaceAll('.', '_');
+    toolNameToFormattedMap[item.name] = formatted;
+    formattedToToolNameMap[formatted] = item.name;
+    toolDef.push({
       type: 'function',
       function: {
-        name: toolNameFormatter(item.name),
+        name: toolNameToFormattedMap[item.name],
         description: item.description,
         parameters: item.input_schema,
       },
-    } as ChatCompletionTool;
-  });
+    } as ChatCompletionTool);
+  }
 
   // Format conversation history for OpenAI's specific requirements
-  const formattedMessages = formatMessagesForOpenAI(messages, systemPrompt ?? undefined);
+  const formattedMessages = formatMessagesForOpenAI(messages, toolNameToFormattedMap, systemPrompt ?? undefined);
 
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
@@ -390,7 +384,7 @@ export const openaiLLMCaller: LLMIntergration = async ({
   ) {
     for (const item of message.choices[0]?.message.tool_calls ?? []) {
       if (item.type === 'function') {
-        const actualType = reverseToolNameFormatter(item.function.name);
+        const actualType = formattedToToolNameMap[item.function.name];
         toolRequests.push({
           type: actualType,
           id: item.id,
@@ -433,6 +427,7 @@ export const openaiLLMCaller: LLMIntergration = async ({
 };
 
 
+      
       `,
     },
     {

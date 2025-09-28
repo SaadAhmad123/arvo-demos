@@ -1,8 +1,9 @@
-import { createArvoEventFactory, createArvoOrchestratorEventFactory } from 'arvo-core';
+import { createArvoEventFactory } from 'arvo-core';
 import { addContract, greetingContract, greetingOrchestratorContract, greetingResumableContract } from './handlers';
 import { execute } from './execute';
 import { testAnthropicAgent } from './handlers/agent.test.anthropic';
 import { testOpenaiAgent } from './handlers/agent.test.openai';
+import { testMcpAnthropicAgent } from './handlers/agent.mcp.test.anthropic';
 
 const testGreetingHandler = async () => {
   console.log('Testing greeting handler');
@@ -74,7 +75,7 @@ export const testGreetingResumable = async () => {
 const testAnthropicAgentic = async () => {
   console.log('Testing agentic Anthropic resumable');
 
-  const event = createArvoOrchestratorEventFactory(testAnthropicAgent.contract.version('1.0.0')).accepts({
+  const event = createArvoEventFactory(testAnthropicAgent.contract.version('1.0.0')).accepts({
     source: 'test.test.test',
     data: {
       parentSubject$$: null,
@@ -89,12 +90,26 @@ const testAnthropicAgentic = async () => {
 const testOpenaiAgentic = async () => {
   console.log('Testing agentic OpenAI resumable');
 
-  const event = createArvoOrchestratorEventFactory(testOpenaiAgent.contract.version('1.0.0')).accepts({
+  const event = createArvoEventFactory(testOpenaiAgent.contract.version('1.0.0')).accepts({
     source: 'test.test.test',
     data: {
       parentSubject$$: null,
       message:
         'I am John Doe, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
+    },
+  });
+
+  await execute(event).then((e) => console.log(e));
+};
+
+const testMcpAnthropicAgentic = async () => {
+  console.log('Testing agentic MCP OpenAI event handler');
+
+  const event = createArvoEventFactory(testMcpAnthropicAgent.contract.version('1.0.0')).accepts({
+    source: 'test.test.test',
+    data: {
+      message:
+        'What are the tools available to you? And what can you do with it. Also create a sample, call a tool and then show the results',
     },
   });
 
@@ -112,6 +127,7 @@ export const testArvoDemo = async () => {
     await testGreetingResumable();
     await testOpenaiAgentic();
     await testAnthropicAgentic();
+    await testMcpAnthropicAgentic();
   } catch (e) {
     console.log(e);
   }

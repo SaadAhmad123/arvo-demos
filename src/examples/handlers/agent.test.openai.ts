@@ -14,6 +14,7 @@ import type { CallAgenticLLM } from './agentFactory/types';
  */
 export const testOpenaiAgent = createAgenticResumable({
   name: 'test.openai',
+  description: 'A test agent with access to many tools a greeting agent and a greeting tool',
   // Available service contracts demonstrating universal communication patterns.
   services: {
     greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // Workflow orchestration via ArvoEvent
