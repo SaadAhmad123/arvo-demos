@@ -46,10 +46,13 @@ export const Integration: DemoCodePanel = {
       lang: 'ts',
       code: `
 import type { ArvoEvent } from 'arvo-core';
-import { addHandler, greetingHandler, greetingOrchestrator, greetingResumable } from './handlers';
 import { createSimpleEventBroker, SimpleMachineMemory } from 'arvo-event-handler';
-import { testAnthropicAgent } from './handlers/agent.test.anthropic';
-import { testOpenaiAgent } from './handlers/agent.test.openai';
+import { findDomainMcpAgent } from './handlers/agent.mcp.findadomain.js';
+import { calculatorAgent } from './handlers/agent.calculator.js';
+import { calculatorHandler } from './handlers/calculator.handler.js';
+import { webInfoAgent } from './handlers/agent.webinfo.js';
+import { astroDocsMcpAgent } from './handlers/agent.mcp.astro.docs.js';
+import { fibonacciHandler } from './handlers/fibonacci.handler.js';
 
 export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
   /**
@@ -67,20 +70,14 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
    * This pattern enables event brokering without requiring external message brokers and is helpful
    * for rapid development, limited-scoped projects, and testing
    */
-  const { resolve } = createSimpleEventBroker(
-    [
-      addHandler(),
-      greetingHandler(),
-      greetingResumable({ memory }),
-      greetingOrchestrator({ memory }),
-      // Same integration pattern for agents as the other handlers
-      testAnthropicAgent.handlerFactory({ memory }),
-      testOpenaiAgent.handlerFactory({ memory }),
-    ],
-    {
-      onError: (error) => console.error(error),
-    },
-  );
+  const { resolve } = createSimpleEventBroker([
+    calculatorHandler(),
+    findDomainMcpAgent.handlerFactory(),
+    calculatorAgent.handlerFactory({ memory }),
+    astroDocsMcpAgent.handlerFactory(),
+    webInfoAgent.handlerFactory({ memory }),
+    fibonacciHandler(),
+  ]);
   return await resolve(event);
 };
 
@@ -91,52 +88,44 @@ export const execute = async (event: ArvoEvent): Promise<ArvoEvent | null> => {
       title: 'execute.test.ts',
       lang: 'ts',
       code: `
-import { createArvoEventFactory, createArvoOrchestratorEventFactory } from 'arvo-core';
-import { greetingOrchestratorContract } from './handlers';
-import { execute } from './execute';
-import { testAnthropicAgent } from './handlers/agent.test.anthropic';
-import { testOpenaiAgent } from './handlers/agent.test.openai';
+import { createArvoEventFactory } from 'arvo-core';
+import { execute } from './execute.js';
+import { findDomainMcpAgent } from './handlers/agent.mcp.findadomain.js';
+import { calculatorAgent } from './handlers/agent.calculator.js';
+import { webInfoAgent } from './handlers/agent.webinfo.js';
 
-export const testGreetingOrchestrator = async () => {
-  console.log('Testing greeting orchestrator');
-  const event = createArvoEventFactory(greetingOrchestratorContract.version('1.0.0')).accepts({
+export const testFindDomainMcpAgent = async () => {
+  console.log('Testing Find A Domain MCP Agent');
+  const event = createArvoEventFactory(findDomainMcpAgent.contract.version('1.0.0')).accepts({
     source: 'test.test.test',
     data: {
-      /**
-       * A field specific to orchestrators and resumables to identify the parent
-       * process id (subject). This enable context stitching for nested orchestrations.
-       * A 'null' value means that this is the root orchestration and for 99.99% of the
-       * cases developer will be marking it as 'null'.
-       */
-      parentSubject$$: null,
-      name: 'John Doe',
-      age: 45,
+      message:
+        'I want to register the domain http://arvo.land. If that is taken can you give me similar domains that are open?',
     },
   });
   await execute(event).then((e) => console.log(e));
 };
 
-const testAnthropicAgentic = async () => {
-  console.log('Testing agentic Anthropic resumable');
-  const event = createArvoEventFactory(testAnthropicAgent.contract.version('1.0.0')).accepts({
+export const testCalculatorAgent = async () => {
+  console.log('Testing Calculator Agent');
+  const event = createArvoEventFactory(calculatorAgent.contract.version('1.0.0')).accepts({
     source: 'test.test.test',
     data: {
       parentSubject$$: null,
-      message:
-        'I am John Doe, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
+      message: 'What can you do?',
     },
   });
   await execute(event).then((e) => console.log(e));
 };
 
-const testOpenaiAgentic = async () => {
-  console.log('Testing agentic OpenAI resumable');
-  const event = createArvoEventFactory(testOpenaiAgent.contract.version('1.0.0')).accepts({
+export const testWebInfoAgent = async () => {
+  console.log('Testing Web Info Agent');
+  const event = createArvoEventFactory(webInfoAgent.contract.version('1.0.0')).accepts({
     source: 'test.test.test',
     data: {
       parentSubject$$: null,
       message:
-        'I am John Doe, aged 23. Use all the available tools at your disposal one by one (Request all tools at the same time) and finally show me the result from all and give me helpful insights.',
+        'Can I register arvo.land domain? Also based on the Astro docs give me a summary of Astro with references',
     },
   });
   await execute(event).then((e) => console.log(e));
@@ -147,9 +136,9 @@ const testOpenaiAgentic = async () => {
 // testing frameworks like jest
 export const testArvoDemo = async () => {
   try {
-    await testGreetingOrchestrator();
-    await testOpenaiAgentic();
-    await testAnthropicAgentic();
+    await testFindDomainMcpAgent();
+    await testCalculatorAgent();
+    await testWebInfoAgent();
   } catch (e) {
     console.log(e);
   }

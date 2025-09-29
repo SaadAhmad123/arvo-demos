@@ -2,7 +2,7 @@ import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const SettingUpArvoAgentic: DemoCodePanel = {
-  heading: 'AI Agent Factory with ArvoResumable',
+  heading: 'A Factory for Event-driven AI Agentic Orchestrator',
   description: cleanString(`
     As shown above, \`ArvoResumable\` is a solid base for building AI-enabled agents. 
     This section outlines a **reusable scaffolding pattern** that **standardizes** how **agents** are created 
@@ -35,6 +35,16 @@ export const SettingUpArvoAgentic: DemoCodePanel = {
     all tool responses before initiating LLM inference, ensuring that no other events are expected 
     during execution. Because registering tool responses takes only milliseconds, the lock is held 
     briefly, **significantly reducing operational complexity while preserving consistency and reliability**.
+
+    ## Why Agentic Resumables Matter?
+
+    Agentic Resumables are the backbone of Arvo's approach to intelligent, event-driven systems. \
+    They bring together persistence, reactivity, and autonomy in a way that allows AI-driven logic 
+    to operate natively within Arvo's event fabric. By combining the ability to pause and resume with 
+    direct LLM-powered reasoning, Resumables provide a practical foundation for agents that **can manage 
+    long-running workflows, adapt to changing contexts, and interact seamlessly with other Arvo
+    components**. This makes them the most versatile and future-proof entry point for building 
+    adaptive, intelligent systems on top of Arvo.  
 
 
     > **A Quick Note:** Arvo is fundamentally an event-driven systems toolkit, **not an AI agent framework**. 
@@ -81,7 +91,7 @@ import {
 } from '@arizeai/openinference-semantic-conventions';
 import { SpanStatusCode } from '@opentelemetry/api';
 import { AgenticMessageContentSchema } from './schemas';
-import { jsonUsageIntentPrompt } from './helpers.prompt';
+import { jsonUsageIntentPrompt, toolInteractionLimitPrompt } from './helpers.prompt';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 
 /**
@@ -222,6 +232,7 @@ export const createAgenticResumable = <
   outputFormat,
   enableMessageHistoryInResponse,
   description,
+  maxToolInteractions,
 }: CreateAgenticResumableParams<TName, TService, TOutput>) => {
   validateServiceContract(services ?? {});
 
@@ -274,6 +285,8 @@ export const createAgenticResumable = <
     messages: CallAgenticLLMParam['messages'];
     toolTypeCount: Record<string, number>;
     toolUseId$$: string | null;
+    currentToolCallIteration: number;
+    maxToolCallIterationAllowed: number;
   };
 
   /**
@@ -460,6 +473,8 @@ export const createAgenticResumable = <
                   toolTypeCount: {},
                   currentSubject: input.subject,
                   toolUseId$$: input.data.toolUseId$$ ?? null,
+                  currentToolCallIteration: 1,
+                  maxToolCallIterationAllowed: maxToolInteractions ?? 5,
                 },
                 output: {
                   messages,
@@ -502,6 +517,8 @@ export const createAgenticResumable = <
                   toolTypeCount,
                   currentSubject: input.subject,
                   toolUseId$$: input.data.toolUseId$$ ?? null,
+                  currentToolCallIteration: 1,
+                  maxToolCallIterationAllowed: maxToolInteractions ?? 5,
                 },
                 services: toolRequests.map((item) =>
                   item.type in (serviceDomains ?? {}) ? { ...item, domain: serviceDomains?.[item.type] } : item,
@@ -544,6 +561,18 @@ export const createAgenticResumable = <
             }
           }
 
+          if (context.currentToolCallIteration >= context.maxToolCallIterationAllowed - 1) {
+            messages.push({
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  content: toolInteractionLimitPrompt(),
+                },
+              ],
+            });
+          }
+
           const { response, toolRequests, toolTypeCount } = await otelAgenticLLMCaller({
             type: 'tool_results',
             messages,
@@ -572,6 +601,7 @@ export const createAgenticResumable = <
                 ...context,
                 messages,
                 toolTypeCount: {},
+                currentToolCallIteration: context.currentToolCallIteration + 1,
               },
               output: {
                 messages,
@@ -612,6 +642,7 @@ export const createAgenticResumable = <
                 ...context,
                 messages,
                 toolTypeCount,
+                currentToolCallIteration: context.currentToolCallIteration + 1,
               },
               services: toolRequests.map((item) =>
                 item.type in (serviceDomains ?? {}) ? { ...item, domain: serviceDomains?.[item.type] } : item,
@@ -956,6 +987,12 @@ export type CreateAgenticResumableParams<
    * along with the final response, useful for debugging and conversation tracking.
    */
   enableMessageHistoryInResponse?: boolean;
+
+  /**
+   * Maximum number of times the LLM is allowed to perform tool calls.
+   * Default is 5 times
+   */
+  maxToolInteractions?: number;
 };
 
 
@@ -979,8 +1016,17 @@ Adhere strictly to the following JSON output guidelines:
   9. Use consistent naming conventions for keys (e.g., camelCase or snake_case).
   10. Do not use comments within the JSON.
 The output will be parsed using 'json.loads()' in Python, so strict JSON compliance is crucial.
-Return the final response in the following format:
+Return the final response as per the structure infered from the following JSON Schema 7 requirement:
 \${JSON.stringify(jsonRequirement)}
+\`;
+
+
+export const toolInteractionLimitPrompt = () => \`
+You must answer the original question using all the data available to you. 
+You have run out of tool call budget. No more tool calls are allowed any more.
+If you cannot answer the query well. Then mention what you have done briefly, what
+can you answer based on the collected data, what data is missing and why you cannot 
+answer any further.
 \`;
 
 

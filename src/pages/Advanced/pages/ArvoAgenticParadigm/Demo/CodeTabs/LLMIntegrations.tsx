@@ -3,9 +3,18 @@ import {} from '../../../../../Home/components/Installation';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const LLMIntegrations: DemoCodePanel = {
-  heading: 'Integrating LLMs with Agentic ArvoResumable',
+  heading: 'Integrating LLMs with the Agent Factories',
   description: cleanString(`
-    The \`createAgenticResumable\` factory is deliberately designed to be agnostic to any specific LLM provider. 
+    LLM integrations are the connective tissue that transforms Arvo's event-driven primitives into 
+    intelligent, adaptive agents. While the factories define how agents interact with events, services, 
+    and contracts, it is the LLM integration that provides the reasoning layer—interpreting context, 
+    choosing when and how to use tools, and shaping meaningful responses. By keeping LLM integrations 
+    modular and interchangeable, the architecture ensures that you can adopt the best models for their 
+    use cases, switch providers as technologies evolve, and maintain consistent agentic patterns 
+    regardless of the underlying model. This separation of concerns makes LLM integrations both a point 
+    of flexibility and a critical enabler of long-term system adaptability.  
+
+    The \`createAgenticResumable\` and \`createMcpAgent\` factories are deliberately designed to be agnostic to any specific LLM provider. 
     This abstraction ensures that the same reusable agentic pattern can be applied to any large language model—or 
     even to other categories of AI systems with minor adaptations—while remaining fully aligned with Arvo's 
     philosophy of orthogonal, composable abstractions. 

@@ -205,7 +205,7 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               >  
               > **To get started quickly:**
               > 1. Install the listed dependencies in Section 1.  
-              > 2. Copy the code from Sections 2 and 3 into your project using the same directory structure.  
+              > 2. Copy the code from Sections 2,3, and 4 into your project using the same directory structure.  
               >  
               > This approach balances speed of adoption with long-term flexibility—enabling you to bootstrap agent development rapidly while maintaining transparency and extensibility over the implementation.
             `)}
@@ -213,6 +213,35 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
         </div>
       </ContentContainer>
       <Demo />
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              The following examples illustrate representative execution traces of AI Agents, captured using **Arize Phoenix**.  
+              These traces provide visibility into agent behavior, decision-making, and workflow execution, helping developers 
+              analyze performance and refine system design.
+            `)}
+          />
+          <Separator padding={18} />
+          <div className='grid grid-cols-2 gap-4'>
+            <a href='/WebInfoAgentTrace.png' target='_blank' rel='noreferrer'>
+              <img
+                alt='Web Information Agent Execution Trace'
+                src='/WebInfoAgentTrace.png'
+                className='rounded-3xl shadow'
+              />
+            </a>
+            <a href='/CalculatorAgentTrace.png' target='_blank' rel='noreferrer'>
+              <img
+                alt='Calculator Agent Execution Trace'
+                src='/CalculatorAgentTrace.png'
+                className='rounded-3xl shadow'
+              />
+            </a>
+          </div>
+        </div>
+      </ContentContainer>
       <ContentContainer content>
         <div className={Md3ContentPadding}>
           <ReMark

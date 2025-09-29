@@ -6,129 +6,442 @@ export const CreatingAgents: DemoCodePanel = {
   heading: 'Creating Arvo-compatible Event Driven AI Agents',
   description: cleanString(`
     Once the factory patterns and LLM integrations are established in your 
-    codebase (these implementations can be copied directly), creating 
-    sophisticated AI agents becomes remarkably straightforward.
+    codebase (these implementations can be directly integrated), the creation 
+    of sophisticated AI agents becomes remarkably streamlined and maintainable.
 
-    This example demonstrates seamless integration of Anthropic Claude and 
-    OpenAI GPT models through the \`createAgenticResumable\` factory. The 
-    architecture cleanly separates operational concerns from agent behavior, 
-    allowing developers to focus on defining agent capabilities through 
-    service contracts rather than infrastructure complexity.
+    This implementation demonstrates the seamless integration of multiple LLM 
+    providers, including Anthropic Claude and OpenAI GPT models, through the 
+    \`createAgenticResumable\` and \`createMcpAgent\` factory patterns. The 
+    architecture maintains a clean separation between operational infrastructure 
+    and agent behavior, enabling developers to focus on defining agent capabilities 
+    through service contracts rather than managing infrastructure complexity.
 
-    The key insight is that agents don't directly call services—they emit 
-    events according to contracts that specify how to invoke other event 
-    handlers in the system. This indirection provides powerful benefits:
+    A fundamental architectural principle is that agents do not directly invoke 
+    services. Instead, they emit events conforming to contracts that specify how 
+    to interact with other event handlers in the system. This event-driven 
+    indirection provides several significant architectural benefits:
     
-    - **Uniform Communication**: The OpenAI agent can invoke the Anthropic 
-      agent as easily as calling any other service, using the same event-driven 
-      patterns throughout.
+    - **Uniform Communication Protocol**: The OpenAI-powered agent can invoke 
+      the Anthropic-powered agent with the same ease as calling any other service, 
+      utilizing consistent event-driven patterns throughout the system without 
+      requiring provider-specific integration logic.
     
-    - **Service Agnosticism**: Event handlers (whether simple services, complex 
-      workflows, or other AI agents) don't need to know they're being invoked 
-      by an AI—they just process events.
+    - **Service Implementation Agnosticism**: Event handlers, whether simple 
+      services, complex orchestrated workflows, or other AI agents, operate 
+      independently without needing awareness of their invoker. They process 
+      events according to their contracts, maintaining loose coupling across 
+      the system.
     
-    - **Natural Composition**: Agents can trigger orchestrated workflows, call 
-      other agents, or invoke simple services without special protocols or 
-      authentication between components.
+    - **Natural Composability**: Agents can trigger orchestrated workflows, 
+      invoke other agents, or call simple services without requiring special 
+      protocols, authentication mechanisms, or direct dependencies between 
+      components. This enables complex multi-agent systems to emerge naturally 
+      from simple building blocks.
 
-    The actual execution flow when an agent "calls" a service:
-    \`LLM Agent → Emit Event → Event Broker → Target Event Handler (possibly another Agent) → Process (may emit additional events) → Emit Response Event → Return to Original Agent\`
+    The execution flow when an agent invokes a service follows this pattern:
+    \`LLM Agent → Emit Event → Event Broker → Target Event Handler (potentially another Agent) → Process (may emit additional events) → Emit Response Event → Return to Original Agent\`
 
     This event-driven approach eliminates direct dependencies between agents 
-    and services, enabling true loose coupling while maintaining type safety 
-    through contracts. The result is an AI system that integrates naturally 
-    with existing enterprise architectures rather than requiring special 
-    infrastructure for AI components.
+    and services, achieving true loose coupling while maintaining type safety 
+    and contract adherence through compile-time validation. The architecture 
+    enables AI systems to integrate naturally with existing enterprise event-driven 
+    architectures, treating AI agents as first-class event handlers rather than 
+    requiring specialized infrastructure or communication patterns for AI components.
+
+    **The examples demonstrate several patterns**: the calculator agent coordinates 
+    multiple computational services, the MCP agents integrate external knowledge 
+    bases through the **Model Context Protocol**, and the web information agent 
+    orchestrates multiple specialized agents to handle complex queries. **Each 
+    implementation showcases how minimal configuration yields production-ready 
+    agents that participate seamlessly in the broader event-driven ecosystem**.
   `),
   tabs: [
     {
-      title: 'handlers/agent.test.anthropic.ts',
+      title: 'handlers/agent.calculator.ts',
       lang: 'ts',
       code: `
-import { greetingContract } from './greeting.handler';
-import { greetingOrchestratorContract } from './greeting.orchestrator';
-import { greetingResumableContract } from './greeting.resumable';
-import { createAgenticResumable } from './agentFactory/createAgenticResumable';
-import { anthropicLLMCaller } from './agentFactory/integrations/anthropic';
-import { z } from 'zod';
-import type { CallAgenticLLM } from './agentFactory/types';
+import z from 'zod';
+import { createAgenticResumable } from '../agentFactory/createAgenticResumable.js';
+import { openaiLLMCaller } from '../agentFactory/integrations/openai.js';
+import type { CallAgenticLLM } from '../agentFactory/types.js';
+import { calculatorContract } from './calculator.handler.js';
+import { fibonacciContract } from './fibonacci.handler.js';
 
 /**
- * Test implementation of an Anthropic-powered agentic resumable orchestrator.
+ * Calculator agent implementation that processes natural language input
+ * and executes mathematical operations when feasible.
  *
- * Demonstrates the creation of an AI agent that can interact with multiple types
- * of Arvo event handlers while maintaining a modular, loosely-coupled architecture.
- * The agent has access to different handler patterns (event handlers, orchestrators,
- * and resumables) and can intelligently select which services to invoke based on
- * conversation context.
+ * This handler demonstrates the Agentic Resumable pattern's capability
+ * to interface with arbitrary Arvo Event Handlers and orchestrate their
+ * operations through a unified agentic interface.
  */
-export const testAnthropicAgent = createAgenticResumable({
-  name: 'test.anthropic',
-  /**
-   * Available service contracts that define the agent's tool ecosystem.
-   *
-   * These contracts represent the full spectrum of Arvo event handlers,
-   * demonstrating that agents can seamlessly communicate with any handler
-   * type without requiring specialized integration protocols. The modular
-   * design ensures high cohesion within services and loose coupling between
-   * the agent and the broader system architecture.
-   */
+export const calculatorAgent = createAgenticResumable({
+  name: 'calculator',
+  description: 'This Agent can perform calculations based on the tools available to it.',
   services: {
-    greeting: greetingContract.version('1.0.0'), // ArvoEventHandler for simple operations
-    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // ArvoOrchestrator for state-based workflows
-    greetingResumable: greetingResumableContract.version('1.0.0'), // ArvoResumable for imperative orchestration
+    calculatorHandler: calculatorContract.version('1.0.0'),
+    fibonnaciHandler: fibonacciContract.version('1.0.0'),
   },
-  /**
-   * Structured output schema defining the agent's response format.
-   * When not provided, agents default to simple string responses.
-   */
+  maxToolInteractions: 100,
   outputFormat: z.object({
-    response: z.string().describe('The final response string'),
-    thoughts: z.string().describe('Elaborate why you made this response'),
+    response: z
+      .string()
+      .describe(
+        'The final answer of the query. It must be a string. You can stringify the number. If no response is available then the response is NaN (Not a number)',
+      ),
+    details: z.string().describe('The detailed answer to the query'),
   }),
-  // System prompt generator that defines the agent's behavioral guidelines.
-  systemPrompt: () => 'You are a helpful agent...',
-  agenticLLMCaller: anthropicLLMCaller as CallAgenticLLM,
+  systemPrompt: () =>
+    'If, based on the available tools you cannot perform the calculation then just tell me tha you cannot perform it and give me a terse reasoning',
+  agenticLLMCaller: openaiLLMCaller as CallAgenticLLM,
 });
+  
+
+      `,
+    },
+    {
+      title: 'handlers/agent.mcp.astro.docs.ts',
+      lang: 'ts',
+      code: `
+import { createMcpAgent } from '../agentFactory/createMcpAgent.js';
+import { MCPClient } from '../agentFactory/integrations/MCPClient.js';
+import { openaiLLMCaller } from '../agentFactory/integrations/openai.js';
+
+/**
+ * MCP agent implementation that establishes connectivity with an MCP
+ * server functioning as a knowledge base for the agent.
+ *
+ * The agent processes input event messages, formulates an optimal
+ * execution plan, and invokes the connected MCP tools to generate
+ * appropriate responses.
+ *
+ * This implementation demonstrates how the MCP Agent Arvo Event Handler
+ * can integrate with arbitrary MCP servers through the MCP Client interface.
+ */
+export const astroDocsMcpAgent = createMcpAgent({
+  name: 'astro.docs',
+  description: 'This agent enables you to find and search correct information from Astro docs',
+  mcpClient: new MCPClient('https://mcp.docs.astro.build/mcp'),
+  agenticLLMCaller: openaiLLMCaller,
+});
+
 
 
     `,
     },
     {
-      title: 'handlers/agent.test.openai.ts',
+      title: 'handlers/agent.mcp.findadomain.ts',
       lang: 'ts',
       code: `
-import { greetingOrchestratorContract } from './greeting.orchestrator';
-import { createAgenticResumable } from './agentFactory/createAgenticResumable';
-import { openaiLLMCaller } from './agentFactory/integrations/openai';
-import { testAnthropicAgent } from './agent.test.anthropic';
-import type { CallAgenticLLM } from './agentFactory/types';
+import z from 'zod';
+import { createMcpAgent } from '../agentFactory/createMcpAgent.js';
+import { anthropicLLMCaller } from '../agentFactory/integrations/anthropic.js';
+import { MCPClient } from '../agentFactory/integrations/MCPClient.js';
 
 /**
- * Test implementation of an OpenAI-powered agentic resumable orchestrator.
+ * Domain information agent that interfaces with the Find A Domain
+ * remote MCP server to retrieve domain-related data.
  *
- * ## Inter-Agent Communication Architecture
- * This implementation highlights two critical communication patterns:
- * - **Agent-to-Workflow**: Direct integration with state machine-based orchestrators
- * - **Agent-to-Agent**: Seamless communication between different AI agents
+ * This implementation demonstrates the agent's capability to return
+ * responses in any structured format specified in its configuration,
+ * providing flexibility in output schema definition.
  */
-export const testOpenaiAgent = createAgenticResumable({
-  name: 'test.openai',
-  // Available service contracts demonstrating universal communication patterns.
+export const findDomainMcpAgent = createMcpAgent({
+  name: 'findadomina',
+  description:
+    'An agent which can help find a domain. Ask it what it can do to figure out it capabilitie which you can then use.',
+  outputFormat: z.object({
+    response: z.string().describe('The short response to the query'),
+    details: z.string().describe('The detailed response of the query'),
+  }),
+  mcpClient: new MCPClient('https://api.findadomain.dev/mcp'),
+  agenticLLMCaller: anthropicLLMCaller,
+});
+
+      `,
+    },
+    {
+      title: 'handlers/agent.webinfo.ts',
+      lang: 'ts',
+      code: `
+import { createAgenticResumable } from '../agentFactory/createAgenticResumable.js';
+import { anthropicLLMCaller } from '../agentFactory/integrations/anthropic.js';
+import type { CallAgenticLLM } from '../agentFactory/types.js';
+import { astroDocsMcpAgent } from './agent.mcp.astro.docs.js';
+import { findDomainMcpAgent } from './agent.mcp.findadomain.js';
+
+/**
+ * Web Information Agent implementation that demonstrates inter-agent
+ * communication patterns within the system.
+ *
+ * This Agentic Resumable demonstrates the utilization of a unified configuration approach for
+ * connecting with other agents, maintaining consistent integration patterns
+ * whether interfacing with ArvoOrchestrators, ArvoResumables, ArvoEventHandlers or Arvo Agents.
+ */
+export const webInfoAgent = createAgenticResumable({
+  name: 'web.info',
+  description: 'This agent can answer queries related to domain search/finding and astro docs',
+  systemPrompt: () =>
+    'Make a plan and then execute it. Take into account the available tool while planning and executing',
   services: {
-    greetingOrchestrator: greetingOrchestratorContract.version('1.0.0'), // Workflow orchestration via ArvoEvent
-    anthropicAgent: testAnthropicAgent.contract.version('1.0.0'), // Agent-to-agent communication via ArvoEvent
+    astroDocAgent: astroDocsMcpAgent.contract.version('1.0.0'),
+    findDomainAgent: findDomainMcpAgent.contract.version('1.0.0'),
   },
-  // System prompt generator defining the agent's operational guidelines.
-  systemPrompt: () => 'You are a helpful agent...',
-  // Enables comprehensive conversation history to be returned in agent responses.
-  enableMessageHistoryInResponse: true,
-  agenticLLMCaller: openaiLLMCaller as CallAgenticLLM,
+  agenticLLMCaller: anthropicLLMCaller as CallAgenticLLM,
 });
 
 
 
-    `,
+      `,
+    },
+    {
+      title: 'handlers/calculate.handler.ts',
+      lang: 'ts',
+      code: `
+import { createArvoContract } from 'arvo-core';
+import { createArvoEventHandler, type EventHandlerFactory } from 'arvo-event-handler';
+import { z } from 'zod';
+
+/**
+ * Calculator event handler for mathematical operations that are
+ * computationally intensive or difficult for agents to execute directly.
+ *
+ * This handler accepts JavaScript mathematical expressions and evaluates
+ * them within a strictly sandboxed environment. Within the Arvo event-driven
+ * architecture, this handler can be invoked by users, ArvoOrchestrators,
+ * ArvoResumables, and Agentic ArvoResumables through the event broker.
+ *
+ * The toolUseId$$ passthrough field enables participation in agentic workflows
+ * by providing the correlation identifier required by LLMs to track tool call
+ * execution across the request-response cycle.
+ */
+export const calculatorContract = createArvoContract({
+  uri: '#/demo/calculator/execute',
+  type: 'com.calculator.execute',
+  description: 'Executes mathematical expressions safely using a restricted evaluation environment.',
+  versions: {
+    '1.0.0': {
+      accepts: z.object({
+        expression: z
+          .string()
+          .describe(
+            'Mathematical expression to evaluate. Supports: arithmetic operators (+, -, *, /, %, **), ' +
+              'Math functions (sqrt, pow, sin, cos, tan, log, exp, abs, round, min, max, floor, ceil), ' +
+              'and constants (PI, E). Examples: "2 + 2", "sqrt(16) * 5", "PI * pow(2, 3)", "sin(PI/2)"',
+          ),
+        // This is a usefull field when working with AI Agents for tool call correlation
+        toolUseId$$: z.string().optional(),
+      }),
+      emits: {
+        'evt.calculator.execute.success': z.object({
+          result: z.number().describe('Computed result of the mathematical expression as a finite number.'),
+          expression: z.string().describe('Original expression that was evaluated, returned for verification.'),
+          // This is a usefull field when working with AI Agents for tool call correlation
+          toolUseId$$: z.string().optional(),
+        }),
+      },
+    },
+  },
+});
+
+export const calculatorHandler: EventHandlerFactory = () =>
+  createArvoEventHandler({
+    contract: calculatorContract,
+    executionunits: 0,
+    handler: {
+      '1.0.0': async ({ event }) => {
+        const { expression, toolUseId$$ } = event.data;
+
+        if (!expression || expression.trim().length === 0) {
+          throw new Error('Expression cannot be empty');
+        }
+
+        try {
+          const result = evaluateMathExpression(expression);
+
+          if (typeof result !== 'number' || !Number.isFinite(result)) {
+            throw new Error('Expression must evaluate to a finite number');
+          }
+
+          return {
+            type: 'evt.calculator.execute.success',
+            data: {
+              result,
+              expression,
+              toolUseId$$,
+            },
+            executionunits: expression.length * 1e-6,
+          };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Unknown error';
+          throw new Error(\`Failed to evaluate expression: \${message}\`);
+        }
+      },
+    },
+  });
+
+function evaluateMathExpression(expr: string): number {
+  const whitelist = /^[0-9+\-*/().%\s,]+$/;
+
+  const safeExpr = expr
+    .replace(/\bPI\b/g, 'PI')
+    .replace(/\bE\b/g, 'E')
+    .replace(/\bsqrt\b/g, 'sqrt')
+    .replace(/\bpow\b/g, 'pow')
+    .replace(/\babs\b/g, 'abs')
+    .replace(/\bsin\b/g, 'sin')
+    .replace(/\bcos\b/g, 'cos')
+    .replace(/\btan\b/g, 'tan')
+    .replace(/\basin\b/g, 'asin')
+    .replace(/\bacos\b/g, 'acos')
+    .replace(/\batan\b/g, 'atan')
+    .replace(/\blog\b/g, 'log')
+    .replace(/\bexp\b/g, 'exp')
+    .replace(/\bfloor\b/g, 'floor')
+    .replace(/\bceil\b/g, 'ceil')
+    .replace(/\bround\b/g, 'round')
+    .replace(/\bmin\b/g, 'min')
+    .replace(/\bmax\b/g, 'max');
+
+  const testExpr = safeExpr.replace(
+    /\b(sqrt|pow|abs|sin|cos|tan|asin|acos|atan|log|exp|floor|ceil|round|min|max|PI|E)\b/g,
+    '',
+  );
+
+  if (!whitelist.test(testExpr)) {
+    throw new Error('Expression contains invalid characters or functions');
+  }
+
+  const evalFunc = new Function(
+    'sqrt',
+    'pow',
+    'abs',
+    'sin',
+    'cos',
+    'tan',
+    'asin',
+    'acos',
+    'atan',
+    'log',
+    'exp',
+    'floor',
+    'ceil',
+    'round',
+    'min',
+    'max',
+    'PI',
+    'E',
+    \`"use strict"; return (\${safeExpr});\`,
+  );
+
+  return evalFunc(
+    Math.sqrt,
+    Math.pow,
+    Math.abs,
+    Math.sin,
+    Math.cos,
+    Math.tan,
+    Math.asin,
+    Math.acos,
+    Math.atan,
+    Math.log,
+    Math.exp,
+    Math.floor,
+    Math.ceil,
+    Math.round,
+    Math.min,
+    Math.max,
+    Math.PI,
+    Math.E,
+  );
+}
+
+
+      
+      `,
+    },
+    {
+      title: 'handlers/fibonacci.handler.ts',
+      lang: 'ts',
+      code: `
+import { createArvoEventHandler, type EventHandlerFactory } from 'arvo-event-handler';
+import { createSimpleArvoContract } from 'arvo-core';
+import z from 'zod';
+
+/**
+ * Fibonacci sequence generator event handler for computationally intensive
+ * operations that are impractical for agents to execute directly.
+ *
+ * This handler generates Fibonacci series using an iterative algorithm and
+ * integrates with the Arvo event-driven architecture, enabling invocation
+ * by users, ArvoOrchestrators, ArvoResumables, and Agentic ArvoResumables
+ * through the event broker.
+ *
+ * The toolUseId$$ passthrough field enables participation in agentic workflows
+ * by providing the correlation identifier required by LLMs to track tool call
+ * execution across the request-response cycle.
+ */
+export const fibonacciContract = createSimpleArvoContract({
+  uri: '#/demo/handler/fibonnaci',
+  type: 'fibonacci.series',
+  description: 'Generates a fibonacci sequence up to the specified length using an iterative algorithm',
+  versions: {
+    '1.0.0': {
+      accepts: z.object({
+        limit: z.number().min(0).max(1000).describe('The maximum length of the fibonacci series to generate'),
+        // This is a usefull field when working with AI Agents for tool call correlation
+        toolUseId$$: z.string().optional(),
+      }),
+      emits: z.object({
+        series: z.number().array().describe('The generated fibonacci sequence as an array of numbers'),
+        // This is a usefull field when working with AI Agents for tool call correlation
+        toolUseId$$: z.string().optional(),
+      }),
+    },
+  },
+});
+
+export const fibonacciHandler: EventHandlerFactory = () =>
+  createArvoEventHandler({
+    contract: fibonacciContract,
+    executionunits: 0,
+    handler: {
+      '1.0.0': async ({ event }) => {
+        const limit = event.data.limit;
+
+        if (limit <= 0) {
+          throw new Error('Limit must be greater than 0');
+        }
+
+        const series: number[] = [];
+
+        if (limit >= 1) {
+          series.push(0);
+        }
+
+        if (limit >= 2) {
+          series.push(1);
+        }
+
+        for (let i = 2; i < limit; i++) {
+          // biome-ignore lint/style/noNonNullAssertion: Sure that these cannot be empty
+          const nextNumber = series[i - 1]! + series[i - 2]!;
+          series.push(nextNumber);
+        }
+
+        return {
+          type: 'evt.fibonacci.series.success',
+          data: {
+            series: series,
+            toolUseId$$: event.data.toolUseId$$,
+          },
+          executionunits: limit * 1e-6,
+        };
+      },
+    },
+  }); 
+      
+      `,
     },
   ],
 };
