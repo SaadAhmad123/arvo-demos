@@ -84,7 +84,8 @@ export const anthropicLLMCaller: LLMIntergration = async ({
     const formatted = item.name.replaceAll('.', '_');
     toolNameToFormattedMap[item.name] = formatted;
     formattedToToolNameMap[formatted] = item.name;
-    toolDef.push({ ...item, name: toolNameToFormattedMap[item.name] });
+    // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. This can never be undefined
+    toolDef.push({ ...item, name: toolNameToFormattedMap[item.name]! });
   }
 
   /**
@@ -136,7 +137,8 @@ export const anthropicLLMCaller: LLMIntergration = async ({
   if (message.stop_reason === 'tool_use') {
     for (const item of message.content) {
       if (item.type === 'tool_use') {
-        const actualType = formattedToToolNameMap[item.name]; // The system understands the original tool name no the AI tool name
+        // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. This can never be undefined
+        const actualType = formattedToToolNameMap[item.name]!; // The system understands the original tool name no the AI tool name
         toolRequests.push({
           type: actualType,
           id: item.id,
@@ -273,7 +275,8 @@ const formatMessagesForOpenAI = (
               type: 'function',
               id: item.content.id,
               function: {
-                name: toolNameToFormattedMap[item.content.name],
+                // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. This can not be undefined
+                name: toolNameToFormattedMap[item.content.name]!,
                 arguments: JSON.stringify(item.content.input),
               },
             },
@@ -348,7 +351,8 @@ export const openaiLLMCaller: LLMIntergration = async ({
     toolDef.push({
       type: 'function',
       function: {
-        name: toolNameToFormattedMap[item.name],
+        // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. This can not be undefined
+        name: toolNameToFormattedMap[item.name]!,
         description: item.description,
         parameters: item.input_schema,
       },
@@ -384,7 +388,8 @@ export const openaiLLMCaller: LLMIntergration = async ({
   ) {
     for (const item of message.choices[0]?.message.tool_calls ?? []) {
       if (item.type === 'function') {
-        const actualType = formattedToToolNameMap[item.function.name];
+        // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. This can not be undefined
+        const actualType = formattedToToolNameMap[item.function.name]!;
         toolRequests.push({
           type: actualType,
           id: item.id,

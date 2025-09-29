@@ -1,4 +1,3 @@
-import { cleanString } from 'arvo-core';
 import { Md3ContentPadding } from '../../../classNames';
 import { ContentContainer } from '../../../components/ContentContainer';
 import { withNavBar } from '../../../components/Navbar/withNavBar';
@@ -8,6 +7,7 @@ import { LearningTiles } from '../../../components/LearningTiles';
 import { ArvoContractLearn, ArvoEventHandlerLearn, ArvoEventLearn } from '../../../components/LearningTiles/data';
 import { Md3Cards } from '../../../classNames/cards';
 import { Md3Typography } from '../../../classNames/typography';
+import { cleanString } from '../../../utils';
 
 export const EventRoutingAndBrokersPage = withNavBar(() => {
   return (

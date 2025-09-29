@@ -82,7 +82,7 @@ import {
 import { SpanStatusCode } from '@opentelemetry/api';
 import { AgenticMessageContentSchema } from './schemas';
 import { jsonUsageIntentPrompt } from './helpers.prompt';
-import zodToJsonSchema from 'zod-to-json-schema';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 
 /**
  * [Utility] Validates that service contracts for agentic resumables meet required structure.
@@ -165,6 +165,7 @@ const DEFAULT_AGENT_OUTPUT_FORMAT = z.object({ response: z.string() });
  * // Create a customer support agent with tool access
  * const supportAgent = createAgenticResumable({
  *   name: 'customer.support', // The name must be a-z, A-Z, .
+ *   description: 'The customer support agent which can do user lookup, ticket creation and consult the internal knowledge base',
  *   services: {
  *     userLookup: userContract.version('1.0.0'),
  *     ticketCreation: ticketContract.version('1.0.0'),
@@ -192,6 +193,7 @@ const DEFAULT_AGENT_OUTPUT_FORMAT = z.object({ response: z.string() });
  * // Create a data extraction agent with structured output
  * const extractorAgent = createAgenticResumable({
  *   name: 'data.extractor',
+ *   description: 'A data extraction agent which takes unstructured text and returns structured data',
  *   outputFormat: z.object({
  *     entities: z.array(z.object({
  *       name: z.string(),
@@ -364,6 +366,7 @@ export const createAgenticResumable = <
           const otelAgenticLLMCaller: (
             param: Omit<CallAgenticLLMParam<TService, TOutput>, 'span' | 'systemPrompt'> & {
               systemPrompt: string | null;
+              description: string | null;
             },
           ) => Promise<CallAgenticLLMOutput<TService>> = async (params) => {
             // This function automatically inherits from the parent span
@@ -378,6 +381,7 @@ export const createAgenticResumable = <
                 try {
                   const finalSystemPrompt =
                     [
+                      ...(params.description ? [\`# Your Agentic Description\\n\${params.description}\`] : []),
                       ...(params.systemPrompt ? [\`# Instructions:\\n\${params.systemPrompt}\`] : []),
                       ...(params.outputFormat
                         ? [\`# JSON Response Requirements:\\n\${jsonUsageIntentPrompt(zodToJsonSchema(params.outputFormat))}\`]
@@ -430,6 +434,7 @@ export const createAgenticResumable = <
               messages,
               services: contracts.services,
               toolDefinitions: toolDef,
+              description: description ?? null,
               systemPrompt:
                 systemPrompt?.({
                   messages,
@@ -467,11 +472,16 @@ export const createAgenticResumable = <
             // LLM requested tools - prepare tool calls and update conversation
             if (toolRequests) {
               for (let i = 0; i < toolRequests.length; i++) {
-                if (toolRequests[i].data && typeof toolRequests[i].data === 'object') {
-                  toolRequests[i].data.toolUseId$$ = toolRequests[i].id; // To coordination tool calls for the LLM
-                  toolRequests[i].data.parentSubject$$ = input.subject; // To coordination nested orchestration/agentic invocations
+                if (!toolRequests[i]) continue;
+                // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+                if (toolRequests[i]!.data && typeof toolRequests[i]!.data === 'object') {
+                  // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+                  toolRequests[i]!.data.toolUseId$$ = toolRequests[i]!.id; // To coordination tool calls for the LLM
+                  // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+                  toolRequests[i]!.data.parentSubject$$ = input.subject; // To coordination nested orchestration/agentic invocations
                 }
-                const { type, id, data } = toolRequests[i];
+                // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+                const { type, id, data } = toolRequests[i]!;
                 const { toolUseId$$, ...toolInputData } = data;
                 messages.push({
                   role: 'assistant',
@@ -539,6 +549,7 @@ export const createAgenticResumable = <
             messages,
             services: contracts.services,
             toolDefinitions: toolDef,
+            description: description ?? null,
             systemPrompt:
               systemPrompt?.({
                 messages,
@@ -573,11 +584,16 @@ export const createAgenticResumable = <
           // LLM requested more tools - continue the processing cycle additional tool execution
           if (toolRequests) {
             for (let i = 0; i < toolRequests.length; i++) {
-              if (toolRequests[i].data && typeof toolRequests[i].data === 'object') {
-                toolRequests[i].data.toolUseId$$ = toolRequests[i].id;
-                toolRequests[i].data.parentSubject$$ = context.currentSubject;
+              if (!toolRequests[i]) continue;
+              // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+              if (toolRequests[i]!.data && typeof toolRequests[i]!.data === 'object') {
+                // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+                toolRequests[i]!.data.toolUseId$$ = toolRequests[i]!.id;
+                // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+                toolRequests[i]!.data.parentSubject$$ = context.currentSubject;
               }
-              const { type, id, data } = toolRequests[i];
+              // biome-ignore lint/style/noNonNullAssertion: Typescript compiler is being silly here. Not understanding that this can never be undefined
+              const { type, id, data } = toolRequests[i]!;
               const { toolUseId$$, ...toolInputData } = data;
               messages.push({
                 role: 'assistant',

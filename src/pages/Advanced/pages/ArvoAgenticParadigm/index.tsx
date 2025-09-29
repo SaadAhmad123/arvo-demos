@@ -1,4 +1,3 @@
-import { cleanString } from 'arvo-core';
 import { Md3Cards } from '../../../../classNames/cards';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
@@ -17,13 +16,11 @@ import {
 import { Demo } from './Demo';
 import { PageNavigation } from '../../../../components/PageNavigation';
 import { Md3Buttons } from '../../../../classNames/buttons';
+import { cleanString } from '../../../../utils';
 
 export const ArvoAgenticParadigmPage = withNavBar(() => {
   return (
     <main>
-      {/* <button onClick={() => testArvoDemo()} type='button'>
-        Execute
-      </button> */}
       <Separator padding={8} />
       <ContentContainer>
         <section
