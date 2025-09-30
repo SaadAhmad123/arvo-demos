@@ -8,7 +8,6 @@ import { Installation } from './components/Installation';
 import { Pillers } from './components/Pillars';
 import { Demo } from './components/Demo';
 import { Md3ContentPadding } from '../../classNames';
-import { Comparison } from './components/Comparison';
 import { PageNavigation } from '../../components/PageNavigation';
 
 export const HomePage = withNavBar(() => {
@@ -41,11 +40,7 @@ export const HomePage = withNavBar(() => {
         </div>
       </ContentContainer>
 
-      <Separator padding={18} />
       <Pillers />
-      <Separator padding={18} />
-      <Comparison />
-      <Separator padding={18} />
       <Installation />
       <Separator padding={18} />
       <Demo />

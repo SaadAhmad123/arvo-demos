@@ -4,4 +4,5 @@ export type DemoCodePanel = {
   heading: string;
   description: string;
   tabs: CodeBlockProps['tabs'][number][];
+  singlePanel?: boolean;
 };

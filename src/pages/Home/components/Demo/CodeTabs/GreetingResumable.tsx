@@ -4,42 +4,74 @@ import type { DemoCodePanel } from '../../../../types';
 export const GreetingResumableTab: DemoCodePanel = {
   heading: 'Imperative Orchestration for Agentic Workflows',
   description: cleanString(`
-  State machines and state charts bring clarity and structure to event-driven architectures, but they often fall
-  short when workflows need to adapt dynamically. Scenarios where outcomes depend on both prior transitions and
-  evolving runtime conditions can lead to "state explosion," making charts hard to manage and reason about.
+  State machines excel at bringing clarity to event-driven architectures, but struggle when workflows must 
+  adapt dynamically based on runtime conditions. As decision trees grow complex, state charts become 
+  unwieldy—a problem known as "state explosion."
 
-  To address this, Arvo introduces \`ArvoResumable\`: an imperative orchestration model that lets you express workflow
-  logic in a familiar programming style while still operating within Arvo’s event-driven framework. Resumables give
-  you the freedom to handle dynamic state transitions, integrate external APIs (such as large language models), and
-  orchestrate workflows imperatively—without compromising reliability or composability.
+  Arvo addresses this with \`ArvoResumable\` which is an imperative orchestration model that lets you express 
+  workflow logic in familiar programming constructs while maintaining Arvo's event-driven guarantees. 
+  Write dynamic conditionals, integrate external APIs, and make runtime decisions without sacrificing 
+  reliability or composability.
 
-  This example demonstrates two of Arvo's most powerful capabilities:
-  - **ArvoResumable** — Write workflows imperatively, giving you flexibility to model dynamic state and make decisions
-    at runtime (e.g., based on API or LLM responses). This avoids state explosion while still preserving all of Arvo’s
-    guarantees like contract validation and observability.  
-  - **Nested Orchestration** — A workflow can trigger and coordinate other workflows as first-class participants. This
-    enables modular system design, where complex processes are broken into reusable units. It also allows hybrid
-    approaches (declarative + imperative) in the same architecture, something most orchestration systems cannot do.
+  This example demonstrates two powerful capabilities working together:
 
-  Resumables are especially powerful in modern **Agentic AI** scenarios. An LLM can be invoked directly within a handler
-  to decide which events to raise, turning AI agents into standard participants in the event-driven system. Service
-  contracts can be exposed to LLMs as tool calls, and those tool calls naturally translate into dynamic event emissions.
-  The resumable context ensures workflow state is tracked across these interactions, enabling collaborative AI agents
-  and resilient distributed processes.
+  **ArvoResumable** — Express workflows imperatively with full programming flexibility. Handle dynamic 
+  state transitions, integrate LLM responses, or invoke external services while preserving contract 
+  validation and observability. This eliminates state explosion while maintaining the benefits of 
+  event-driven architecture.
 
-  You will explore these concepts—resumables, nested orchestration, and agentic workflows—in more depth in the detailed
-  documentation.
+  **Nested Orchestration** — Workflows can invoke other workflows as first-class participants, enabling 
+  modular system design where complex processes decompose into reusable units. This allows hybrid 
+  approaches where declarative state machines and imperative resumables coexist in the same architecture.
+
+  ## Understanding This Example
+
+  This resumable orchestrator processes a name and age through multiple handlers simultaneously. Upon 
+  initialization, it emits three events in parallel: one to the greeting handler with the name, another 
+  to the addition handler to calculate age plus seven, and a third to the declarative state machine 
+  orchestrator from the previous example. The imperative handler uses simple conditional logic to check 
+  when all three responses have arrived, then compares the output from the nested orchestrator against 
+  its own directly-generated result. This pattern demonstrates how resumables coordinate both individual 
+  handlers and nested workflows through straightforward programming logic rather than explicit state 
+  definitions, while also showcasing the interoperability between declarative and imperative orchestration 
+  styles within the same system.
+
+  ## Architectural Significance
+
+  The introduction of \`ArvoResumable\` alongside \`ArvoOrchestrator\` represents a pragmatic solution to a 
+  fundamental trade-off in workflow orchestration. Declarative state machines provide visual clarity and 
+  formal verification but become brittle when facing dynamic runtime conditions. Traditional imperative 
+  approaches offer flexibility but often sacrifice observability and type safety.
+
+  Arvo resolves this tension by treating both models as equivalent event handlers within the same 
+  framework. A resumable orchestrator maintains identical event contracts, lifecycle management, and 
+  observability as its state machine counterpart—the only difference is how workflow logic is expressed 
+  internally. This means you can choose the right tool for each workflow: state machines for well-defined 
+  processes with clear transitions, resumables for dynamic scenarios requiring conditional logic or 
+  external integrations.
+
+  The nested orchestration capability further amplifies this flexibility. Because orchestrators are simply 
+  event handlers, they compose naturally—a resumable can invoke a state machine, which can invoke another 
+  resumable, creating hierarchical workflows where each level uses the most appropriate orchestration 
+  model. This compositional approach is particularly powerful for agentic AI systems, where LLM-driven 
+  decision-making (naturally imperative) must coordinate with deterministic business processes (naturally 
+  declarative). Rather than forcing everything into one paradigm, Arvo lets you leverage the strengths of 
+  each approach while maintaining architectural consistency across the entire system.
+
+  Resumables are particularly valuable for **Agentic AI workflows**. An LLM can be invoked directly within 
+  a handler to decide which events to emit, turning AI agents into standard event-driven participants. 
+  Service contracts naturally translate into LLM tool calls, while the resumable context tracks workflow 
+  state across these interactions—enabling collaborative AI agents and resilient distributed processes.
+
+  These concepts—resumables, nested orchestration, and agentic workflows—are explored in depth in the 
+  detailed documentation.
 `),
   tabs: [
     {
       title: 'handlers/greeting.resumable.ts',
       lang: 'ts',
       code: `
-import {
-  ArvoErrorSchema,
-  createArvoOrchestratorContract,
-  type ArvoErrorType,
-} from 'arvo-core';
+import { ArvoErrorSchema, createArvoOrchestratorContract, type ArvoErrorType } from 'arvo-core';
 import {
   createArvoResumable,
   type EventHandlerFactory,
@@ -47,9 +79,9 @@ import {
   type IMachineMemory,
 } from 'arvo-event-handler';
 import { z } from 'zod';
-import { addContract } from './add.handler.ts';
-import { greetingContract } from './greeting.handler.ts';
-import { greetingOrchestratorContract } from './greeting.orchestrator.ts';
+import { addContract } from './add.handler.js';
+import { greetingContract } from './greeting.handler.js';
+import { greetingOrchestratorContract } from './greeting.orchestrator.js';
 
 // Define the contract for the greeting resumable workflow.
 // Each orchestrator contract must have a globally unique URI and name.
@@ -61,11 +93,13 @@ export const greetingResumableContract = createArvoOrchestratorContract({
       init: z.object({
         name: z.string(),
         age: z.number(),
+        toolUseId$$: z.string().optional(),
       }),
       complete: z.object({
         errors: ArvoErrorSchema.array().min(1).nullable(),
         result: z.string().nullable(),
         sameResultFromWorkflow: z.boolean(),
+        toolUseId$$: z.string().optional(),
       }),
     },
   },
@@ -95,6 +129,7 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
         greeting: string | null;
         updatedAge: number | null;
         errors: ArvoErrorType[];
+        toolUseId: string | null;
         /**
          * Tracks the process ID (subject) of this orchestration.
          * Required when this resumable delegates work to another orchestrator,
@@ -136,7 +171,7 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
              * The ViolationError category will be covered in more detail in future docs.
              */
             throw new ExecutionViolation(
-              '[Critical Error] Init event consumed after context initialization. Possible race condition or deduplication error.'
+              '[Critical Error] Init event consumed after context initialization. Possible race condition or deduplication error.',
             );
           }
 
@@ -147,6 +182,7 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
               greeting: null,
               updatedAge: null,
               errors: [],
+              toolUseId: input.data.toolUseId$$ ?? null,
               selfSubject$$: input.subject, // Subjects act as workflow IDs; nested orchestrations each have their own subject.
             },
             services: [
@@ -173,7 +209,7 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
         if (!context) {
           // Fatal violation: service event received without initialized context.
           throw new ExecutionViolation(
-            '[Critical Error] Service event consumed without context. Possible state persistence issue.'
+            '[Critical Error] Service event consumed without context. Possible state persistence issue.',
           );
         }
 
@@ -184,20 +220,24 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
           (collectedEvents?.['arvo.orc.greeting.done']?.length ?? 0) > 0
         ) {
           const orchestratorString = collectedEvents['arvo.orc.greeting.done']?.[0]?.data?.result;
-          const lowLevelGeneratedString =
-            \`Greeting -> \${collectedEvents['evt.greeting.create.success']?.[0]?.data?.greeting}, Updated Age -> \${collectedEvents['evt.calculator.add.success']?.[0]?.data?.result}\`;
+          const lowLevelGeneratedString = \`Greeting -> \${collectedEvents['evt.greeting.create.success']?.[0]?.data?.greeting}, Updated Age -> \${collectedEvents['evt.calculator.add.success']?.[0]?.data?.result}\`;
 
           return {
             output: {
               errors: null,
               sameResultFromWorkflow: lowLevelGeneratedString === orchestratorString,
               result: lowLevelGeneratedString,
+              toolUseId$$: context.toolUseId ?? undefined,
             },
           };
         }
       },
     },
   });
+
+      
+
+
   
 `,
     },

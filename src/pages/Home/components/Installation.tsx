@@ -5,6 +5,8 @@ import CodeBlock from '../../../components/CodeBlock';
 import { ContentContainer } from '../../../components/ContentContainer';
 import { Separator } from '../../../components/Separator';
 import { Label } from '../../../components/Label';
+import { ReMark } from '../../../components/ReMark';
+import { cleanString } from '../../../utils';
 import { Md3ContentPadding } from '../../../classNames';
 
 export type PkgMap = Record<string, string>;
@@ -144,123 +146,140 @@ export const telemetrySdkStop = async () => {
 
 export const Installation: React.FC = () => {
   return (
-    <ContentContainer content>
-      <div className={`${Md3ContentPadding} pb-0!`}>
-        <h1 className={Md3Typography.headline.large} id='getting-started'>
-          Getting Started with Arvo
-        </h1>
-        <Separator padding={12} />
-        <p className={Md3Typography.body.large}>
-          This guide walks you through preparing your environment, installing Arvo, and configuring observability with
-          OpenTelemetry (OTel). Follow the steps in order to get your Arvo application up and running quickly with full
-          telemetry support.
-        </p>
-      </div>
-      <Separator padding={36} />
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-        <div className={Md3Cards.filled}>
-          <div className={Md3Cards.inner.content}>
-            <h2 className={Md3Typography.headline.large}>Preparation</h2>
-            <Separator padding={8} />
-            <p className={Md3Typography.body.medium}>
-              Before setting up Arvo, make sure your development environment has the necessary tooling in place. These
-              preparation steps install foundational developer tools (like TypeScript and Biome) that ensure your
-              project is consistent and type-safe. They are required only for development and will not ship with your
-              production build.
-            </p>
-          </div>
-        </div>
-        <CodeBlock tabs={buildInstallTabs(PREPARATION_PACKAGES, { dev: true, showNodeVersion: true })} />
+    <>
+      <ContentContainer content>
+        <div id='getting-started' className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              # Getting Started with Arvo  
 
-        <div className={Md3Cards.filled}>
-          <div className={Md3Cards.inner.content}>
-            <h2 className={Md3Typography.headline.large}>Install Arvo</h2>
-            <Separator padding={8} />
-            <p className={Md3Typography.body.medium}>
-              Once the environment is ready, install Arvo itself and its required core dependencies. This step brings in
-              the main dependencies (Arvo core, event handling, and schema validation libraries like Zod) that form the
-              foundation of an Arvo application.
-            </p>
-            <Separator />
-            <p className={`${Md3Typography.body.small} opacity-75`}>
-              <strong>Note:</strong> If you want to run Arvo in the browser, you will also need to install a Node{' '}
-              <code>Buffer</code> polyfill, since the <code>Buffer</code> class does not exist in the browser
-              environment.
-            </p>
-          </div>
-        </div>
-        <CodeBlock tabs={buildInstallTabs(ARVO_PACKAGES)} />
+              Getting started with Arvo is straightforward and accessible. As an application-tier 
+              toolkit that abstracts event-driven architectural and infrastructure concerns, Arvo 
+              distinguishes itself from other tools in the ecosystem by enabling you to begin 
+              experimentation and development immediately within a simple console application 
+              while maintaining a structure that seamlessly scales across diverse execution 
+              environments, from basic NodeJS applications to serverless distributed infrastructure.
 
-        <div className={Md3Cards.filled}>
-          <div className={Md3Cards.inner.content}>
-            <Label content='Optional' />
-            <h2 className={Md3Typography.headline.large}>Observability</h2>
-            <Separator padding={8} />
-            <p className={Md3Typography.body.medium}>
-              Monitoring and observability are first-class features in Arvo through OpenTelemetry (OTel). Depending on
-              whether you are building a browser-based app or running Arvo on the server, you need to install the
-              corresponding OTel packages. This ensures you can capture traces, metrics, and logs from both the client
-              and server side, helping you understand system performance and debug issues effectively.
-            </p>
-          </div>
-        </div>
-        <CodeBlock
-          tabs={[
-            {
-              lang: 'bash' as const,
-              title: 'Server',
-              code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_SERVER_PACKAGES))}`,
-            },
-            {
-              lang: 'ts' as const,
-              title: 'Server Config (otel.ts)',
-              code: OTEL_SERVER_CODE_SNIPPET.trim(),
-            },
-            {
-              lang: 'bash' as const,
-              title: 'Client',
-              code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_BROWSER_PACKAGES))}`,
-            },
-            {
-              lang: 'ts' as const,
-              title: 'Client Config (otel.ts)',
-              code: OTEL_BROWSER_CODE_SNIPPET.trim(),
-            },
-          ]}
-        />
 
-        <div className={Md3Cards.filled}>
-          <div className={Md3Cards.inner.content}>
-            <Label content='Optional' />
-            <h2 className={Md3Typography.headline.large}>Experience Telemetry</h2>
-            <Separator padding={8} />
-            <p className={Md3Typography.body.medium}>
-              To view and analyze the telemetry data collected from Arvo, you need an OTel backend. While production
-              environments typically use a dedicated collector, during local development you can spin up Jaeger in a
-              single Docker container. Jaeger provides a simple UI to visualize traces, which is invaluable for
-              debugging and ensuring your observability pipeline is working correctly.
-            </p>
+              # Installation
+
+              The following guide walks you through preparing your environment, installing Arvo, and configuring 
+              observability with OpenTelemetry (OTel). Follow these steps sequentially to establish your 
+              Arvo application with comprehensive telemetry support. Alternatively, you can [clone Arvo's 
+              sample project from GitHub](https://github.com/SaadAhmad123/arvo-example-project) for an accelerated start.
+          `)}
+          />
+        </div>
+      </ContentContainer>
+      <ContentContainer>
+        <div className={`${Md3ContentPadding} pt-0!`}>
+          <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+            <div className={Md3Cards.filled}>
+              <div className={Md3Cards.inner.content}>
+                <h2 className={Md3Typography.headline.large}>Preparation</h2>
+                <Separator padding={8} />
+                <p className={Md3Typography.body.medium}>
+                  Before setting up Arvo, make sure your development environment has the necessary tooling in place.
+                  These preparation steps install foundational developer tools (like TypeScript and Biome) that ensure
+                  your project is consistent and type-safe. They are required only for development and will not ship
+                  with your production build.
+                </p>
+              </div>
+            </div>
+            <CodeBlock tabs={buildInstallTabs(PREPARATION_PACKAGES, { dev: true, showNodeVersion: true })} />
+
+            <div className={Md3Cards.filled}>
+              <div className={Md3Cards.inner.content}>
+                <h2 className={Md3Typography.headline.large}>Install Arvo</h2>
+                <Separator padding={8} />
+                <p className={Md3Typography.body.medium}>
+                  Once the environment is ready, install Arvo itself and its required core dependencies. This step
+                  brings in the main dependencies (Arvo core, event handling, and schema validation libraries like Zod)
+                  that form the foundation of an Arvo application.
+                </p>
+                <Separator />
+                <p className={`${Md3Typography.body.small} opacity-75`}>
+                  <strong>Note:</strong> If you want to run Arvo in the browser, you will also need to install a Node{' '}
+                  <code>Buffer</code> polyfill, since the <code>Buffer</code> class does not exist in the browser
+                  environment.
+                </p>
+              </div>
+            </div>
+            <CodeBlock tabs={buildInstallTabs(ARVO_PACKAGES)} />
+
+            <div className={Md3Cards.filled}>
+              <div className={Md3Cards.inner.content}>
+                <Label content='Optional' />
+                <h2 className={Md3Typography.headline.large}>Observability</h2>
+                <Separator padding={8} />
+                <p className={Md3Typography.body.medium}>
+                  Monitoring and observability are first-class features in Arvo through OpenTelemetry (OTel). Depending
+                  on whether you are building a browser-based app or running Arvo on the server, you need to install the
+                  corresponding OTel packages. This ensures you can capture traces, metrics, and logs from both the
+                  client and server side, helping you understand system performance and debug issues effectively.
+                </p>
+              </div>
+            </div>
+            <CodeBlock
+              tabs={[
+                {
+                  lang: 'bash' as const,
+                  title: 'Server',
+                  code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_SERVER_PACKAGES))}`,
+                },
+                {
+                  lang: 'ts' as const,
+                  title: 'Server Config (otel.ts)',
+                  code: OTEL_SERVER_CODE_SNIPPET.trim(),
+                },
+                {
+                  lang: 'bash' as const,
+                  title: 'Client',
+                  code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_BROWSER_PACKAGES))}`,
+                },
+                {
+                  lang: 'ts' as const,
+                  title: 'Client Config (otel.ts)',
+                  code: OTEL_BROWSER_CODE_SNIPPET.trim(),
+                },
+              ]}
+            />
+
+            <div className={Md3Cards.filled}>
+              <div className={Md3Cards.inner.content}>
+                <Label content='Optional' />
+                <h2 className={Md3Typography.headline.large}>Experience Telemetry</h2>
+                <Separator padding={8} />
+                <p className={Md3Typography.body.medium}>
+                  To view and analyze the telemetry data collected from Arvo, you need an OTel backend. While production
+                  environments typically use a dedicated collector, during local development you can spin up Jaeger in a
+                  single Docker container. Jaeger provides a simple UI to visualize traces, which is invaluable for
+                  debugging and ensuring your observability pipeline is working correctly.
+                </p>
+              </div>
+            </div>
+            <CodeBlock
+              tabs={[
+                {
+                  lang: 'bash' as const,
+                  title: 'Jaeger (Docker)',
+                  code: [
+                    '# Start Jaeger all‑in‑one locally',
+                    'docker run --rm \\',
+                    '  -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \\',
+                    '  -p 16686:16686 \t# Web UI',
+                    '  -p 4317:4317   \t# OTLP gRPC',
+                    '  -p 4318:4318   \t# OTLP HTTP',
+                    '  -p 9411:9411   \t# Zipkin',
+                    '  jaegertracing/all-in-one:latest',
+                  ].join('\n'),
+                },
+              ]}
+            />
           </div>
         </div>
-        <CodeBlock
-          tabs={[
-            {
-              lang: 'bash' as const,
-              title: 'Jaeger (Docker)',
-              code: [
-                '# Start Jaeger all‑in‑one locally',
-                'docker run --rm \\',
-                '  -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \\',
-                '  -p 16686:16686 \t# Web UI',
-                '  -p 4317:4317   \t# OTLP gRPC',
-                '  -p 4318:4318   \t# OTLP HTTP',
-                '  -p 9411:9411   \t# Zipkin',
-                '  jaegertracing/all-in-one:latest',
-              ].join('\n'),
-            },
-          ]}
-        />
-      </div>
-    </ContentContainer>
+      </ContentContainer>
+    </>
   );
 };
