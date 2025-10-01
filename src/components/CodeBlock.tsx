@@ -55,21 +55,23 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         className='flex items-center justify-between px-4 py-2 border-b border-outline overflow-auto gap-6 bg-background'
         aria-live='polite'
       >
-        <div className='flex space-x-2'>
-          {tabs.map((tab, idx) => (
-            <button
-              key={idx.toString()}
-              type='button'
-              onClick={() => setActiveIndex(idx)}
-              className={`${
-                idx === activeIndex
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-on-surface-variant hover:text-on-surface'
-              } px-2 py-1 text-sm font-medium cursor-pointer truncate`}
-            >
-              {tab.title || tab.lang}
-            </button>
-          ))}
+        <div className='flex-1 overflow-auto'>
+          <div className='flex space-x-2 shrink-0'>
+            {tabs.map((tab, idx) => (
+              <button
+                key={idx.toString()}
+                type='button'
+                onClick={() => setActiveIndex(idx)}
+                className={`inline-block ${
+                  idx === activeIndex
+                    ? 'border-b-2 border-primary text-primary'
+                    : 'text-on-surface-variant hover:text-on-surface'
+                } px-2 py-1 text-sm font-medium cursor-pointer`}
+              >
+                {tab.title || tab.lang}
+              </button>
+            ))}
+          </div>
         </div>
         {showCopy && (
           <button type='button' className={Md3Buttons.icon} onClick={onCopy} aria-label='Copy code to clipboard'>
@@ -97,7 +99,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       {shiki.data && (
         <div className='flex-1 overflow-auto'>
           <div
-            className={`[&_.shiki]:m-0 [&_.shiki]:max-h-[600px] [&_.shiki]:px-4 [&_.shiki]:py-5 [&_.shiki]:font-mono [&_.shiki]:text-sm [&_.shiki]:leading-6 ${wrap ? '[&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-words [&_.shiki]:[overflow-wrap:anywhere]' : ''}`}
+            className={`[&_.shiki]:m-0 [&_.shiki]:max-h-[800px] [&_.shiki]:px-4 [&_.shiki]:py-5 [&_.shiki]:font-mono [&_.shiki]:text-sm [&_.shiki]:leading-6 ${wrap ? '[&_.shiki]:whitespace-pre-wrap [&_.shiki]:break-words [&_.shiki]:[overflow-wrap:anywhere]' : ''}`}
             // biome-ignore lint/security/noDangerouslySetInnerHtml: This is fine
             dangerouslySetInnerHTML={{ __html: shiki.data }}
           />

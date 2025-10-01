@@ -173,7 +173,7 @@ export const Installation: React.FC = () => {
         </div>
       </ContentContainer>
       <ContentContainer>
-        <div className={`${Md3ContentPadding} pt-0!`}>
+        <div>
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
             <div className={Md3Cards.filled}>
               <div className={Md3Cards.inner.content}>

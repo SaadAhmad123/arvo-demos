@@ -5,40 +5,35 @@ import type { DemoCodePanel } from '../../../../../types';
 export const Integration: DemoCodePanel = {
   heading: 'Stitching Agents in Arvo Fabric',
   description: cleanString(`
-    Once AI agents are created using the factory patterns, integrating them into 
-    the Arvo ecosystem becomes remarkably straightforward. The agents register 
-    with the event broker exactly like any other event handler, requiring only 
-    a memory manager for persisting execution state between event cycles.
+    Once AI agents are created using factory patterns, integrating them into 
+    the Arvo ecosystem is straightforward. Agents register with the event broker 
+    like any other event handler, requiring only a memory manager to persist 
+    execution state between event cycles.
 
-    The \`execute\` function demonstrates this simplicity through minimal infrastructure 
-    components with an in-memory key-value store (essentially a hash map) for state 
-    management and a simple event broker implemented as an in-memory FIFO queue. 
+    ## Infrastructure Simplicity
 
-    Notice how the AI agents integrate identically to traditional event handlers. 
-    The \`testAnthropicAgent\` and \`testOpenaiAgent\` register through their \`handlerFactory\` 
-    methods, receiving the same memory interface as \`ArvoOrchestrators\` and \`ArvoResumable\`. 
-    This uniform integration pattern means AI capabilities can be added to existing 
-    Arvo systems without architectural changes or special handling.
+    The \`execute\` function demonstrates this simplicity through minimal infrastructure with
+    an in-memory key-value store for state management and a simple event broker 
+    implemented as an in-memory FIFO queue. The testing function \`testArvoDemo\` 
+    in \`execute.test.ts\` demonstrates that the same execute function can run any 
+    handler, orchestrator, or agent with the correct event.
 
     The in-memory broker automatically routes events based on type matching, handling 
-    the complete event flow from initial request through all intermediate processing 
-    to final response. When an agent emits an event to invoke another service, the 
-    broker ensures proper delivery and response correlation without the agents 
-    needing direct knowledge of each other.
+    the complete event flow from initial request through intermediate processing to 
+    final response. When an agent emits an event to invoke another service, the broker 
+    ensures proper delivery and response correlation without requiring agents to have 
+    direct knowledge of each other. See the [event broker design](/advanced/event-routing-and-brokers) for more information in this
+    area. 
 
-    For **production deployments**, this same code structure scales to distributed 
-    scenarios by replacing the \`SimpleMachineMemory\` with a distributed state store 
-    with optimistic locking capability and the \`createSimpleEventBroker\` with production message brokers 
-    **RabbitMQ. **The event handlers, including AI agents, remain unchanged during this 
-    transition, demonstrating the architecture's scalability from prototype to 
-    production**. Distributed deployment patterns and broker integrations are covered 
-    in their respective documentation sections.
+    ## Production Scalability
 
-    > **Note:** This \`execute\` function extends the [Getting Started example](/). The 
-    > handlers \`addHandler\`, \`greetingHandler\`, \`greetingOrchestrator\`, and 
-    > \`greetingResumable\` are documented in the Getting Started section. This 
-    > example demonstrates how AI agents integrate alongside these existing handlers 
-    > using identical patterns.
+    For production deployments, this code structure scales to distributed scenarios 
+    by replacing \`SimpleMachineMemory\` with a distributed state store featuring 
+    optimistic locking capability and replacing \`createSimpleEventBroker\` with 
+    production message brokers like RabbitMQ. Event handlers, including AI agents, 
+    remain unchanged during this transition, demonstrating the architecture's 
+    scalability from prototype to production. Distributed deployment patterns and 
+    broker integrations are covered in their respective documentation sections.
   `),
   tabs: [
     {

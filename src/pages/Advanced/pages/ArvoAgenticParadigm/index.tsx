@@ -1,3 +1,13 @@
+import {
+  MdAutorenew,
+  MdPsychology,
+  MdPeople,
+  MdVisibility,
+  MdFlag,
+  MdAutoAwesome,
+  MdExtension,
+  MdAccountTree,
+} from 'react-icons/md';
 import { Md3Cards } from '../../../../classNames/cards';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
@@ -5,18 +15,12 @@ import { withNavBar } from '../../../../components/Navbar/withNavBar';
 import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { Md3ContentPadding } from '../../../../classNames';
-import {
-  AgenticSystemExampleLearn,
-  ArvoEventHandlerLearn,
-  ArvoMachineLearn,
-  ArvoOrchestratorLearn,
-  ArvoResumableLearn,
-  EventRoutingAndBrokerInArvoLearn,
-} from '../../../../components/LearningTiles/data';
+import { AgenticSystemExampleLearn, EventRoutingAndBrokerInArvoLearn } from '../../../../components/LearningTiles/data';
 import { Demo } from './Demo';
 import { PageNavigation } from '../../../../components/PageNavigation';
 import { Md3Buttons } from '../../../../classNames/buttons';
 import { cleanString } from '../../../../utils';
+import { Link } from 'react-router';
 
 export const ArvoAgenticParadigmPage = withNavBar(() => {
   return (
@@ -32,8 +36,8 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               <h1 className={`${Md3Typography.display.large} text-on-surface`}>Agentic AI Paradigm</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
-                In Arvo, agents are simply event handlers. They communicate with the same reliability guarantees as any
-                other service, and no longer face architectural barriers to participating in distributed workflows.
+                Arvo's event-driven design naturally mirrors true agentic behavior, letting you build systems that don't
+                just scale—they evolve.
               </p>
               <Separator padding={24} />
               <a
@@ -58,156 +62,225 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
         <div className={Md3ContentPadding}>
           <ReMark
             bodyTextSize='large'
+            // TODO - Make the following content professional, better and remove informatuionredundancies.
+            // Also give it s abeter reading flow than the current strucutre. No need to give me the same
+            // content rather give me somethign better with the same essense
             content={cleanString(`
-              # What is an Agent?
+              Arvo's agentic paradigm takes a different approach than frameworks like LangGraph or protocols like MCP. 
+              It's an event-driven toolkit that provides application-tier constructs for building reliable event driven 
+              applications inTypeScript. Its **event-driven nature naturally enables truly agentic behavior**.
 
-              In computer science, Agents have been studied since the 1970s, with roots 
-              in the [Actor Model](https://en.wikipedia.org/wiki/Actor_model) and [Distributed Artificial Intelligence](https://en.wikipedia.org/wiki/Distributed_artificial_intelligence),
-              and became a major research focus in the 1990s under the field of [Agent Oriented Programming](https://en.wikipedia.org/wiki/Agent-oriented_programming) and[Multi-Agent Systems](https://en.wikipedia.org/wiki/Multi-agent_system). 
-              Early mechanisms such as [contract-net protocols](https://en.wikipedia.org/wiki/Contract_Net_Protocol), [facilitator/mediator agents](https://www.researchgate.net/publication/2598082_Facilitators_Mediators_Or_Autonomous_Agents), and 
-              [mixed-initiative interactions](https://erichorvitz.com/chi99horvitz.pdf) explored how agents could coordinate tasks 
-              and collaborate with humans. Today, large language models provide a powerful 
-              new intelligence for building agentic systems, but the conceptual 
-              foundations are long established.
+
+              Understanding Arvo's agentic paradigm requires a mindset shift. Agency (the AI Agentic behaviour) isn't 
+              a special feature bolted onto Arvo rather it emerges organically from its design. **AI Agent
+              isn't a separate components in the toolkit; it a pattern derived from Arvo's primitives.**
+              This deliver genuinely agentic systems with enterprise-grade observability, scalability, 
+              reliability, evolvability, and security. Since agents are just event handlers with specific
+              agentic logic and intelligence, they integrate seemlessly within the Arvo's event-driven fabric.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              Arvo's agentic paradigm draws inspiration from the established body of work on agent systems and adopts the following [commonly accepted characteristics](https://en.wikipedia.org/wiki/Software_agent) of an agent:
+              # Agentic Software
 
-              - **Persistence:** Agents are not invoked only on demand; they maintain context and can remain in a "waiting" state, resuming activity when appropriate.  
-              - **Autonomy:** Agents exhibit a degree of intelligence, enabling them to decompose problems, select and prioritize tasks, and make decisions without constant human intervention.  
-              - **Social Ability:** Agents are inherently collaborative; they can communicate and coordinate with other agents, systems, and humans, and can delegate tasks when needed.  
-              - **Reactivity:** Agents perceive and respond to changes in their environment, using memory and context to determine when and how to act.  
-              - **Goal Orientation:** Beyond reactivity, agents pursue well-defined goals, balancing short-term actions with long-term objectives.  
-            
-              > **Note:** Arvo is **not an agent framework** in the traditional sense. It is an **event-driven systems toolkit** where agents are 
-               simply another form of event handler. **Arvo's belief is that event-driven agents provide the most stable and scalable architecture
-               for AI Agents**. Remember even for AI Agents Arvo's mental model remains the same i.e. all communication happens through \`ArvoEvent\`, 
-               these events are processed by event handler functions, and \`ArvoContract\` defines cohesion, reliability and event validation across
-               event handlers.
+              Arvo's agentic paradigm draws inspiration from the established body of work on agent systems and adopts the following [commonly accepted characteristics](https://en.wikipedia.org/wiki/Software_agent) of a software agent:
             `)}
           />
-          <Separator padding={8} />
+          <Separator padding={18} />
+          <div className='grid grid-cols-1 xl:grid-cols-3 gap-4 mb-4'>
+            {[
+              {
+                title: 'Persistance',
+                description:
+                  'Agents are not invoked only on demand; they maintain context and can remain in a "waiting" state, resuming activity when appropriate.',
+                icon: MdAutorenew,
+              },
+              {
+                title: 'Autonomy',
+                description:
+                  'Agents exhibit a degree of intelligence, enabling them to decompose problems, select and prioritize tasks, and make decisions without constant human intervention.',
+                icon: MdPsychology,
+              },
+              {
+                title: 'Social Ability',
+                description:
+                  'Agents are inherently collaborative; they can communicate and coordinate with other agents, systems, and humans, and can delegate tasks when needed.',
+                icon: MdPeople,
+              },
+            ].map(({ title, description, icon: Icon }, index) => (
+              <div key={index.toString()} className={Md3Cards.filled}>
+                <div className={Md3Cards.inner.content}>
+                  <div className='flex items-center gap-4'>
+                    <Icon className='size-8' />
+                    <h1 className={Md3Typography.headline.medium}>{title}</h1>
+                  </div>
+                  <Separator padding={8} />
+                  <p className={Md3Typography.body.medium}>{description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className='grid grid-cols-1 xl:grid-cols-2 gap-4'>
+            {[
+              {
+                title: 'Reactivity',
+                description:
+                  'Agents perceive and respond to changes in their environment, using memory and context to determine when and how to act.',
+                icon: MdVisibility,
+              },
+              {
+                title: 'Goal Orientation',
+                description:
+                  'Beyond reactivity, agents pursue well-defined goals, balancing short-term actions with long-term objectives.',
+                icon: MdFlag,
+              },
+            ].map(({ title, description, icon: Icon }, index) => (
+              <div key={index.toString()} className={Md3Cards.filled}>
+                <div className={Md3Cards.inner.content}>
+                  <div className='flex items-center gap-4'>
+                    <Icon className='size-8' />
+                    <h1 className={Md3Typography.headline.medium}>{title}</h1>
+                  </div>
+                  <Separator padding={8} />
+                  <p className={Md3Typography.body.medium}>{description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Separator padding={18} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # Agents in Arvo
+              # Implementing Agents in Arvo
 
-              Arvo is an event-driven application layer that abstracts the underlying 
-              infrastructure—such as event brokers and state databases—while providing 
-              strong guarantees around reliability, observability, and developer experience 
-              at the application tier. Within Arvo, there are three kinds of event handlers, 
-              each orthogonal in capability and covered in detail in their respective 
-              documentation:
-
-              - [\`ArvoEventHandler\`](${ArvoEventHandlerLearn.link}) is the most basic event handler. 
-              It consumes an event and produces one or more resulting events. These handlers operate 
-              in isolation and do not coordinate with other handlers during execution. Conceptually, 
-              they represent a **request-response model** in Arvo's event-driven design.
-
-              - [\`ArvoOrchestrator\`](${ArvoOrchestratorLearn.link}) provides an execution environment
-              for state machine definitions (see [\`ArvoMachine\`](${ArvoMachineLearn.link})). Unlike 
-              traditional systems with a single central orchestrator, Arvo treats orchestrators as 
-              specialized event handlers that can collaborate with others. When orchestration is 
-              needed, the handler generates the required events (based on \`ArvoMachine\` state machine), 
-              persists its current state in a key-value store, emits the events, and then **pauses**. 
-              While waiting for responses, the orchestrator releases CPU and memory. When new events 
-              arrive, it restores state and resumes processing to determine the next transition. 
-              This **start-stop model** enables efficient, scalable workflows.
-
-              - [\`ArvoResumable\`](${ArvoResumableLearn.link}) behaves similarly to the \`ArvoOrchestrator\` 
-              at runtime, but instead of relying on declarative \`ArvoMachine\` state machines, it allows 
-              workflows to be defined **imperatively** using standard programming constructs. This makes it 
-              possible to implement dynamic, context-dependent workflow logic and to call external APIs 
-              directly—capabilities that a declarative [\`ArvoMachine\`](${ArvoMachineLearn.link}) cannot 
-              provide. Resumables are especially well-suited for agentic and adaptive workflows.  
+              In Arvo, there are three kinds of event handlers, each orthogonal in capability and
+              covered in detail in their respective documentation. The agentic characteristics 
+              defined above are naturally embodied by these Arvo's event handlers, enabling you 
+              to define the agentic logic in them and making those agents participate in the broader 
+              Arvo event-driven eco-system.
             `)}
           />
-          <Separator padding={8} />
+          <Separator padding={18} />
+          <div className='grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4'>
+            {[
+              {
+                icon: MdAutoAwesome,
+                title: 'Agentic Orchestators',
+                button: {
+                  title: 'Explore imperative orchestrators',
+                  link: '/learn/arvo-resumable',
+                },
+                description: cleanString(`
+                  \`ArvoResumable\` provides the most direct implementation of the agentic paradigm in Arvo. 
+                  These start-stop imperative orchestrators enable you to define dynamic workflows through 
+                  TypeScript code rather than state charts. Event handlers interact within the Arvo fabric 
+                  via events defined by service contracts registered with the handler. Their ability to 
+                  implement dynamic workflows and orchestrate other event handlers makes them ideal for 
+                  AI-driven workflows. In these scenarios, an AI connected via external API calls determines 
+                  the next events to emit based on the current state and event context, which can then 
+                  trigger other Arvo event handlers, orchestrators, and agents.
+                `),
+              },
+              {
+                icon: MdExtension,
+                title: 'Tooled Agents',
+                button: {
+                  title: 'Explore event handlers',
+                  link: '/learn/arvo-event-handler',
+                },
+                description: cleanString(`
+                  \`ArvoEventHandler\` operates at a different layer of the architecture, focusing on the boundary
+                  between Arvo and the outside world. These handlers serve as the bridge between Arvo's event-driven
+                  architecture and external APIs, including Model Context Protocol servers. Rather than coordinating 
+                  internal workflows, they specialize in managing interactions with external systems and tools. 
+                  They receive request events from within Arvo, invoke external services, coordinate AI-driven tool 
+                  execution, and return results through response events. This enables AI agent systems to leverage
+                  external capabilities while maintaining the event-driven structure.
+                `),
+              },
+            ].map(({ title, description, button, icon: Icon }, index) => (
+              <div key={index.toString()} className={Md3Cards.filled}>
+                <div className={Md3Cards.inner.content}>
+                  <div className='flex items-center gap-4'>
+                    <Icon className='size-8' />
+                    <h1 className={Md3Typography.headline.medium}>{title}</h1>
+                  </div>
+                  <Separator padding={8} />
+                  <ReMark content={description} />
+                  <Separator padding={8} />
+                  <Link to={button.link} className={Md3Buttons.filled}>
+                    {button.title}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className='grid grid-cols-1 gap-4'>
+            {[
+              {
+                icon: MdAccountTree,
+                title: 'Structured Workflows',
+                button: {
+                  title: 'Explore static orchestrators',
+                  link: '/learn/arvo-orchestrator',
+                },
+                description: cleanString(`
+                  \`ArvoOrchestrator\` event handlers occupy a complementary space in Arvo's agentic paradigm. 
+                  These handlers execute state-machine workflows defined through ArvoMachine, creating 
+                  reliable and predictable processes. Agentic orchestrators implemented via \`ArvoResumable\` 
+                  can delegate deterministic execution to \`ArvoOrchestrator\` or be deterministically invoked 
+                  by it. \`ArvoOrchestrator\` can also invoke agents implemented via \`ArvoEventHandler\`, though 
+                  these agents cannot invoke \`ArvoOrchestrator\` in return. This enables structured collaboration 
+                  between deterministic and agentic paradigms.  
+                `),
+              },
+            ].map(({ title, description, button, icon: Icon }, index) => (
+              <div key={index.toString()} className={Md3Cards.filled}>
+                <div className={Md3Cards.inner.content}>
+                  <div className='flex items-center gap-4'>
+                    <Icon className='size-8' />
+                    <h1 className={Md3Typography.headline.medium}>{title}</h1>
+                  </div>
+                  <Separator padding={8} />
+                  <ReMark content={description} />
+                  <Separator padding={8} />
+                  <Link to={button.link} className={Md3Buttons.filled}>
+                    {button.title}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Separator padding={18} />
+
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # Realizing Agents in Arvo
+              The true power of Arvo's agentic paradigm emerges from the seamless composition of 
+              these handler types. Intelligent agentic orchestrators coordinate with deterministic 
+              workflows and leverage external tool using agents, all communicating through the unified 
+              event-driven fabric. The result is an architectural pattern where agentic intelligence, deterministic reliability, 
+              and external integration work in concert within a cohesive event-driven system.
 
-              The agentic characteristics defined above are naturally embodied by Arvo's 
-              event handlers, transforming them from simple processing units into true software 
-              agents with state, perception, and collaborative capabilities.
+              ## What are you building?
 
-              ## ArvoResumable—The Natural Agent
+              Let's explore agentic implementation in Arvo by creating factory functions for 
+              two core agent types: 
 
-              \`ArvoResumable\` represents the most direct implementation of the agentic 
-              paradigm in Arvo. These handlers **perceive their environment** through incoming 
-              \`ArvoEvent\` messages and **communicate with the broader system** by emitting their 
-              own events, fulfilling the social ability requirement. They **maintain persistence** 
-              by storing state in a key-value database and retrieving it to resume processing when
-              new events arrive. 
+              - **Agentic Resumables** which are the agentic orchestrators
+              - **MCP Agents** which are MCP connected agents
+
+              These factories encapsulate common agentic logic and return fully configured event handlers ready to 
+              participate in Arvo's fabric. You'll then build AI agents and integrate them into Arvo's event-driven system.
+
+              > **Recommendation:** It is strongly encouraged that yoy copy the factory methods and accompanying files into your codebase and start 
+              > building AI agents. The following code is production-ready and follows the **shadcn philosophy** of 
+              > copy-paste integration, allowing you to leverage the agentic paradigm immediately. You can also **clone 
+              > the code from [Arvo's example project](https://github.com/SaadAhmad123/arvo-example-project/tree/main/src/agentFactory)**, make
+              > sure to copy paste all the contents of the folder.
               
-              What makes \`ArvoResumable\` particularly powerful for agentic workflows is 
-              its **reactivity to relevant events** combined with the **autonomy provided by 
-              modern large language models**. When integrated with AI capabilities, these agents
-              can **autonomously navigate complex problems**, make **contextual decisions**, and pursue 
-              well-defined goals **without constant supervision**. 
-              
-              Beyond basic agent characteristics, \`ArvoResumable\` provides agents with comprehensive 
-              \`ArvoContract\` definitions for all services they can interact with. This eliminates 
-              runtime discovery overhead, reduces error potential, and allows developers to define 
-              precise operational scopes. This scoping mechanism enhances system reliability and 
-              security by creating predictable, bounded agent behavior while maintaining the 
-              flexibility needed for complex workflows.
-
-              ## ArvoEventHandler—External Intelligence Integration
-
-              \`ArvoEventHandler\` instances serve as bridges between Arvo's internal agentic 
-              ecosystem and external intelligent systems. They excel at integrating with 
-              modern [Model Context Protocol (MCP) servers](https://modelcontextprotocol.io/docs/getting-started/intro)
-              and other systems, enabling LLMs to interact with external environments and tools. 
-              While these handlers cannot perform internal Arvo system communication (unlike the other two event handler) 
-              state during processing, they are perfectly suited for agents that need to gather intelligence from external 
-              sources and share results with the broader Arvo agent network.
-
-              ## ArvoOrchestrator—Structured Workflow Agents
-
-              Though \`ArvoOrchestrator\` handlers don't directly integrate LLM intelligence, 
-              they provide essential structural foundation for agentic systems. By executing state machine 
-              workflows defined through \`ArvoMachine\`, they create reliable, predictable processes that 
-              intelligent agents can invoke and depend upon. This separation of concerns allows 
-              expensive AI intelligence to focus on decision-making while delegating well-defined, 
-              deterministic workflows to orchestrators.
-
-              ## Domain-Based Event Routing
-
-              The \`domain\`-based \`ArvoEvent\` routing enables sophisticated routing 
-              behavior by examining the \`domain\` field in event data. This allows events to
-              be routed to systems that can invoke human interaction, enabling truly human-in-the-loop
-              workflows without interrupt-based programming. This pattern allows both \`ArvoResumable\` 
-              and \`ArvoOrchestrator\` handlers to wait for human interaction for extended periods 
-              without consuming compute resources. This approach will be explored further in the 
-              human-in-the-loop documentation.
-            `)}
-          />
-          <Separator padding={8} />
-          <ReMark
-            bodyTextSize='large'
-            content={cleanString(`
-              The true power of Arvo's agentic paradigm emerges from the collaboration between 
-              these different handler types. Intelligent \`ArvoResumable\` agents can coordinate 
-              with structured \`ArvoOrchestrator\` workflows and leverage \`ArvoEventHandler\` 
-              integrations, all through the same unified \`ArvoEvent\` data structure and event-driven communication paradigm. 
-              This creates a heterogeneous agent network where specialized capabilities combine 
-              to solve complex, multi-faceted problems that no single agent could address alone.
-
-              > **Note:** The code provided in this section follows the *shadcn* philosophy. It is intended to be 
-              > **production-ready yet easily adaptable**. It is design so that you can copy it directly into your 
-              > project without modification, but you retain full control to customize as needed.  
-              >  
-              > **To get started quickly:**
-              > 1. Install the listed dependencies in Section 1.  
-              > 2. Copy the code from Sections 2,3, and 4 into your project using the same directory structure.  
-              >  
-              > This approach balances speed of adoption with long-term flexibility—enabling you to bootstrap agent development rapidly while maintaining transparency and extensibility over the implementation.
             `)}
           />
         </div>
@@ -258,18 +331,18 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              Arvo believes that your AI Agent must become a part of the system rather than making the system a part of the Agent.
-              The \`createAgenticResumable\` factory and LLM integration patterns may initially appear sophisticated, but they are 
-              intentionally designed for ease of use and flexibility. They are specifically designed so that you as developer can copy 
-              them directly into your projects, gaining both immediate productivity and full transparency over the internal architecture. 
-              This approach avoids constant version churn and gives you complete control to adapt agents as AI technologies evolve.
+              Arvo guiding principal here is that your **AI Agents must become a part of the system rather than making the system a part of the Agent**.
+              The factory and integration patterns may initially appear sophisticated, but they are intentionally designed for ease of use and flexibility. 
+              They are provided so that you as developer can copy them directly into your projects, gaining both immediate productivity 
+              and full transparency over the internal architecture. This approach avoids constant version churn and gives you 
+              complete control to adapt agents as AI technologies evolve.
             `)}
           />
           <Separator padding={8} />
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              A key strength of this Agent design approach is its uniformity. These Arvo-based agents interoperate with other Arvo-based agents, 
+              A **key strength of this Agent design approach is its uniformity**. These Arvo-based agents interoperate with other Arvo-based agents, 
               orchestrators, and event handlers using the same communication patterns—without special protocols or bespoke infrastructure. 
               This consistency reduces architectural overhead, simplifies integration, and increases system reliability.
               Furthermore, just like the rest of Arvo, this agentic factory is built with developer experience and operational robustness in mind. 

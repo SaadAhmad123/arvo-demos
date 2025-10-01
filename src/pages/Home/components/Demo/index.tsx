@@ -72,7 +72,7 @@ export const Demo: React.FC = () => {
         </div>
       </ContentContainer>
       <ContentContainer>
-        <div className={Md3ContentPadding}>
+        <div>
           <div className='grid grid-cols-1 gap-4'>
             {[
               AdditionHandlerTab,

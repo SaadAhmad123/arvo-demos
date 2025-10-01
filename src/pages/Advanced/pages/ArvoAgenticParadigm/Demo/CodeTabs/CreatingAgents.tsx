@@ -3,57 +3,32 @@ import {} from '../../../../../Home/components/Installation';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const CreatingAgents: DemoCodePanel = {
+  singlePanel: true,
   heading: 'Creating Arvo-compatible Event Driven AI Agents',
   description: cleanString(`
-    Once the factory patterns and LLM integrations are established in your 
-    codebase (these implementations can be directly integrated), the creation 
-    of sophisticated AI agents becomes remarkably streamlined and maintainable.
 
-    This implementation demonstrates the seamless integration of multiple LLM 
-    providers, including Anthropic Claude and OpenAI GPT models, through the 
-    \`createAgenticResumable\` and \`createMcpAgent\` factory patterns. The 
-    architecture maintains a clean separation between operational infrastructure 
-    and agent behavior, enabling developers to focus on defining agent capabilities 
-    through service contracts rather than managing infrastructure complexity.
+    Once integrations and factories are complete, you can build agentic systems. This 
+    example demonstrates two MCP Agents: \`astroDocsMcpAgent\` and \`findDomainMcpAgent\`, 
+    which orchestrate their respective MCP services via the MCP client integration. The 
+    \`webInfoAgent\`, an Agentic Resumable, registers these MCP Agents and orchestrates 
+    them. The MCP Agents are also directly callable via their respective events. Additionally, 
+    the \`calculatorAgent\` Agentic Resumable registers calculator and Fibonacci service-generated
+    event handlers.
 
-    A fundamental architectural principle is that agents do not directly invoke 
-    services. Instead, they emit events conforming to contracts that specify how 
-    to interact with other event handlers in the system. This event-driven 
-    indirection provides several significant architectural benefits:
-    
-    - **Uniform Communication Protocol**: The OpenAI-powered agent can invoke 
-      the Anthropic-powered agent with the same ease as calling any other service, 
-      utilizing consistent event-driven patterns throughout the system without 
-      requiring provider-specific integration logic.
-    
-    - **Service Implementation Agnosticism**: Event handlers, whether simple 
-      services, complex orchestrated workflows, or other AI agents, operate 
-      independently without needing awareness of their invoker. They process 
-      events according to their contracts, maintaining loose coupling across 
-      the system.
-    
-    - **Natural Composability**: Agents can trigger orchestrated workflows, 
-      invoke other agents, or call simple services without requiring special 
-      protocols, authentication mechanisms, or direct dependencies between 
-      components. This enables complex multi-agent systems to emerge naturally 
-      from simple building blocks.
+    **This example demonstrates that in Arvo, event handlers based on Arvo primitives can interconnect
+    regardless of their internal operational logic.**
+
+    ## Event Flow Architecture
 
     The execution flow when an agent invokes a service follows this pattern:
+
     \`LLM Agent → Emit Event → Event Broker → Target Event Handler (potentially another Agent) → Process (may emit additional events) → Emit Response Event → Return to Original Agent\`
 
-    This event-driven approach eliminates direct dependencies between agents 
-    and services, achieving true loose coupling while maintaining type safety 
-    and contract adherence through compile-time validation. The architecture 
-    enables AI systems to integrate naturally with existing enterprise event-driven 
-    architectures, treating AI agents as first-class event handlers rather than 
-    requiring specialized infrastructure or communication patterns for AI components.
-
-    **The examples demonstrate several patterns**: the calculator agent coordinates 
-    multiple computational services, the MCP agents integrate external knowledge 
-    bases through the **Model Context Protocol**, and the web information agent 
-    orchestrates multiple specialized agents to handle complex queries. **Each 
-    implementation showcases how minimal configuration yields production-ready 
-    agents that participate seamlessly in the broader event-driven ecosystem**.
+    This event-driven approach eliminates direct dependencies between agents and services, 
+    achieving loose coupling while maintaining type safety and contract adherence through 
+    compile-time validation. The architecture enables AI systems to integrate naturally with 
+    existing enterprise event-driven architectures, treating AI agents as first-class event 
+    handlers without requiring specialized infrastructure or communication patterns.
   `),
   tabs: [
     {

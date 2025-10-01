@@ -2,58 +2,44 @@ import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const SettingUpArvoAgentic: DemoCodePanel = {
-  heading: 'A Factory for Event-driven AI Agentic Orchestrator',
+  heading: 'The AI Agentic Orchestrator',
   description: cleanString(`
-    As shown above, \`ArvoResumable\` is a solid base for building AI-enabled agents. 
-    This section outlines a **reusable scaffolding pattern** that **standardizes** how **agents** are created 
-    and operated across the Arvo system. This reusable **factory** pattern, for building AI agents, builds 
-    on top of Arvo's event-driven foundation. It abstracts away 
-    common operational concerns—such as validation, context management, and 
-    observability—so developers can focus on defining each agent’s unique 
-    responsibilities.
+    The first factory to create is the agentic orchestrator factory which will create the **Agentic Resumable**.
+    You should copy the code here in your project in the exact same file structure as mention in the file name
+    to get started quickly. There may be some errors in the code due to compiler 
+    
+    This factory defines a contract for the orchestrator and provides an event handler factory that
+    returns the actual event handler. The event handler factory pattern enables deployment-specific 
+    dependency injection, such as the memory manager object, allowing for flexible configuration. For 
+    conceptual clarity, the event handler created by the event handler factory returned by the Agentic 
+    Resumable factory is called the **Agentic Resumable** event handler.
+    
+    ## Core Functionality
+    
+    The \`createAgenticResumable\` factory embeds the logic required for an intelligent AI system, such as a large language 
+    model, to behave as an agent. It handles the logic required to maintain the context of the agentic workflow and
+    integrates OpenTelemetry (OTEL) observability. By abstracting these common operational concerns, it enables you to
+    define an \`agenticLLMCaller\` that integrates with the LLM of your choice or any other AI system. You can further 
+    customize this factory to meet your specific needs.
 
-    The \`createAgenticResumable\` factory acts as a bridge between any LLM provider 
-    and Arvo's event-driven architecture. It constructs a correctly configured 
-    \`ArvoResumable\` handler with common logic for all agents, while letting **you define 
-    each agent's scope via \`ArvoContract\`, prompts, and the LLM integrations**. Those contracts are exposed to 
-    your LLM integration as callable tools—creating a clean interface between LLM reasoning and structured system capabilities. 
-    The factory also wires LLM calls into OpenTelemetry and enriches spans with OpenInference attributes, enabling 
-    deep, end-to-end LLM observability.
-
-    Furthermore, this factory establishes an \`ArvoContract\` for the AI Agent
-    itself, enabling users to interact with the generated agents through a well
-    defined interface. The factory returns both the contract and the event-handler builder, making it easy 
-    to plug agents into existing Arvo services and participate in the broader event 
-    ecosystem with minimal ceremony.
-
-    **Best Practice Demonstration:** This implementation highlights a critical best practice 
-    in Arvo by **anticipating the challenges of distributed system deployment**. In such environments, \`ArvoResumable\` 
-    acquires an **optimistic lock** on the execution to ensure events are processed with consistent state, 
-    thereby **preventing corruption**. However, large language models **(LLMs) introduce high and variable latency**, 
+    The factory takes the service contract, configures the \`ArvoResumable\` to register the contracts
+    with it. On runtime, the resultant Agentic Resumable takes these contract definitions and converts 
+    them into tool definitions that are passed to the LLM integration. This allows your LLM integration
+    to embed the available tool definitions into the LLM to understand the available services and how 
+    to invoke them. The Agentic Resumable on runtime then takes those tool calls from your LLM integration, 
+    and converts them to Arvo-compliant events, emits them, and waits for the response.
+    
+    ## Best Practice Demonstration
+    
+    This implementation highlights a critical best practice in Arvo by **anticipating the challenges of distributed system deployment**. When you 
+    eventually deploy in such environments, the underlying \`ArvoResumable\` will tend to acquires an **optimistic lock** on execution to ensure 
+    events are processed with consistent state, thereby **preventing corruption**. However, AI models like **LLMs introduce high and variable latency**, 
     which can result in prolonged and unpredictable lock durations and failed event processing due to 
-    lock contention, **leading to complex retries**. To mitigate this, Arvo recommends collecting 
-    all tool responses before initiating LLM inference, ensuring that no other events are expected 
+    lock contention, **leading to complex retries**. 
+    
+    To mitigate this, Arvo recommends collecting all tool responses before initiating LLM inference, ensuring that no other events are expected 
     during execution. Because registering tool responses takes only milliseconds, the lock is held 
     briefly, **significantly reducing operational complexity while preserving consistency and reliability**.
-
-    ## Why Agentic Resumables Matter?
-
-    Agentic Resumables are the backbone of Arvo's approach to intelligent, event-driven systems. \
-    They bring together persistence, reactivity, and autonomy in a way that allows AI-driven logic 
-    to operate natively within Arvo's event fabric. By combining the ability to pause and resume with 
-    direct LLM-powered reasoning, Resumables provide a practical foundation for agents that **can manage 
-    long-running workflows, adapt to changing contexts, and interact seamlessly with other Arvo
-    components**. This makes them the most versatile and future-proof entry point for building 
-    adaptive, intelligent systems on top of Arvo.  
-
-
-    > **A Quick Note:** Arvo is fundamentally an event-driven systems toolkit, **not an AI agent framework**. 
-    > The implementation shown here demonstrates advanced capabilities but is built entirely from Arvo 
-    > primitives and intentionally kept outside the core package. Embedding agent-specific logic would 
-    > tie Arvo to constant version churn and unnecessarily expand its scope. Instead, Arvo embraces the 
-    > **shadcn philosophy** for agentic patterns by providing production-ready example code that you can 
-    > copy, adapt, and integrate to fit your specific context. This approach gives you full control over 
-    > your agent implementations while benefiting from proven patterns and robust, battle-tested foundations.
   `),
   tabs: [
     {

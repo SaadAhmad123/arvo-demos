@@ -3,35 +3,39 @@ import {} from '../../../../../Home/components/Installation';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const LLMIntegrations: DemoCodePanel = {
-  heading: 'Integrating LLMs with the Agent Factories',
+  singlePanel: true,
+  heading: 'Building the LLM Integrations',
   description: cleanString(`
-    LLM integrations are the connective tissue that transforms Arvo's event-driven primitives into 
-    intelligent, adaptive agents. While the factories define how agents interact with events, services, 
-    and contracts, it is the LLM integration that provides the reasoning layer—interpreting context, 
-    choosing when and how to use tools, and shaping meaningful responses. By keeping LLM integrations 
-    modular and interchangeable, the architecture ensures that you can adopt the best models for their 
-    use cases, switch providers as technologies evolve, and maintain consistent agentic patterns 
-    regardless of the underlying model. This separation of concerns makes LLM integrations both a point 
-    of flexibility and a critical enabler of long-term system adaptability.  
+    Now that you've explored the Agentic Resumable, let's implement the intelligence
+    layer of the agents—the large language model integrations. The factory pattern can 
+    leverage any integration, as long as it follows the correct interface, 
+    providing flexibility in choosing your intelligence layer.
 
-    The \`createAgenticResumable\` and \`createMcpAgent\` factories are deliberately designed to be agnostic to any specific LLM provider. 
-    This abstraction ensures that the same reusable agentic pattern can be applied to any large language model—or 
-    even to other categories of AI systems with minor adaptations—while remaining fully aligned with Arvo's 
-    philosophy of orthogonal, composable abstractions. 
+    ## Integration Examples
+    
+    Two of the most popular integrations are demonstrated here: 
+      - OpenAI's ChatGPT model
+      - Anthropic's Claude model 
+      
+    You can directly copy these integrations into your codebase and supply the correct API keys to 
+    the respective LLM SDKs to get started with the intelligence layer. These implementations 
+    follow the \`LLMIntegration\` function interface, making them completely interchangeable.
 
-    This section creates functions that integrate the LLM of choice with \`ArvoResumable\`. These 
-    functions form the connective tissue between raw model inference and Arvo's event-driven orchestration, 
-    enabling you to create reusable yet fully customizable agentic workflows. Importantly, the integration 
-    function executes only at specific points in the lifecycle i.e. when a new event arrives in the handler that 
-    either represents the initial user message or indicates that all required tool responses have been collected. 
-    This well-defined execution boundary allows developers to make strong assumptions about the state of the system 
-    when implementing integrations.
-
-    As concrete examples, the showcased are integrations with Anthropic's Claude Sonnet 4.0 and OpenAI's ChatGPT 4o Mini 
-    models. However, the interface is intentionally flexible—so long as the integration contract is respected, 
-    any LLM (or compatible AI service) can be plugged into the system with minimal overhead. The error handling of
-    these integration functions is also taken care of by the \`ArvoResumable\` which will automatically emit correct
-    errors or error event during runtime if the integration fails.
+    ## How Integrations Work?
+    
+    Inside each integration, the messages and tool definitions,provided at runtime by the 
+    Agentic Resumable, are formatted correctly for the LLM SDK. The LLM API is then called, 
+    and it outputs either a response or requests for tool calls. These outputs are 
+    formatted back to the expected structure and returned to the Agentic Resumable 
+    for processing and event emission.
+    
+    The integration functions execute only at specific points in the lifecycle:
+    
+    - When a new event marking the initiation of the agentic process arrives
+    - When all the tool call for a give interaction cycle have been collected
+    
+    This well-defined execution boundary enables make strong assumptions about
+    system state when implementing integrations.
   `),
   tabs: [
     {

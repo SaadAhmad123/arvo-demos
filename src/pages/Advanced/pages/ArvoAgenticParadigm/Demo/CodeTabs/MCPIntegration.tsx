@@ -5,66 +5,47 @@ import type { DemoCodePanel } from '../../../../../types';
 export const MCPIntegration: DemoCodePanel = {
   heading: 'Factory for Event-driven MCP Agents',
   description: cleanString(`
-    A powerful way to expand LLM-enabled agents is by connecting them to **external tools
-    and knowledge bases**. The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) 
-    is emerging as a standard for linking large language models with external APIs and systems. 
-    Arvo's event-driven architecture integrates seamlessly with MCP, enabling agents that bridge
-    the internal Arvo ecosystem with the wider universe of MCP-powered tools.
+    Let's expand the Agentic Paradigm further by leveraging the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro), 
+    an emerging industry standard for linking large language models with external APIs and systems. 
+    While Agentic Resumable agents excel at coordinating between Arvo event handlers, MCP enables 
+    a complementary pattern for interfacing with external tools and APIs.
 
-    In Arvo's event-driven agentic fabric, **MCP Agents** complement **ArvoResumable Agents** by extending
-    intelligence beyond the boundaries of the system. While Agentic Resumables orchestrate internal 
-    services and workflows through \`ArvoEvent\`, MCP Agents act as specialized connectors to 
-    **external MCP servers**—invoking tools, processing results, and feeding structured outputs 
-    back into the Arvo ecosystem with the same reliability guarantees.
+    ## The MCP Agent
+    
+    Let's implement a new agent factory that creates agents specialized in interacting with external 
+    tools via the MCP protocol. Since this type of agent doesn't require orchestrating Arvo event 
+    handlers through event emission, it can be implemented using \`ArvoEventHandler\`, which models 
+    a request-response pattern by accepting a specific event as defined by its \`ArvoContract\` and 
+    emitting one or more response events.
 
-    ## Division of Responsibilities    
+    The \`createMcpAgent\` factory takes an \`mcpClient\` object implementing the \`IAgenticMCPClient\` 
+    interface, which manages the connection with an MCP server and handles MCP tool invocations. Like 
+    the Agentic Resumable, it also accepts an LLM integration function via \`agenticLLMCaller\`. The 
+    factory returns a handler contract and an event handler factory that builds the final **MCP Agent** 
+    event handler. This example also provides a complete MCP Client integration implementation.
 
-    - **ArvoResumable Agents** function as event-driven orchestrators. They coordinate 
-    Arvo event handlers, orchestrators, and other agents to manage complex workflows across
-    multiple internal services.
+    ## Runtime Behavior
+    
+    At runtime, the MCP Agent event handler processes incoming events by initiating a connection to 
+    the MCP server via the \`mcpClient\` integration. It collects information about available tools 
+    from the MCP server and provides this to the LLM integration. The LLM then either returns a 
+    response—which the MCP Agent uses to emit the response event—or requests tool calls, which the 
+    MCP Agent executes via the \`mcpClient\` integration through API calls. This cycle continues 
+    until the request is fulfilled or the maximum tool interaction cycles are reached, after which 
+    the final response is returned.
 
-    - **MCP Agents** serve as bridges to external tool ecosystems. When triggered by an \`ArvoEvent\`, 
-    they connect with LLM integration for intelligent decision making, connect to an MCP server, 
-    allow the integrated LLM to invoke the required MCP tools, collect and process responses, 
+    This decoupled abstraction between the MCP client and LLM integration enables any LLM to call 
+    any MCP server, making the MCP Agent highly flexible and adaptable.
+
+    ## Division of Responsibilities
+
+    - **Arvo Resumable Agents** function as event-driven orchestrators, coordinating Arvo event handlers, 
+    orchestrators, and other agents to manage complex workflows across multiple internal services.
+
+    - **MCP Agents** serve as orchestrators for external tool ecosystems. When triggered by an \`ArvoEvent\`, 
+    they connect with the LLM integration for intelligent decision-making, establish connections to 
+    MCP servers, allow the integrated LLM to invoke required MCP tools, collect and process responses, 
     and return results back to Arvo's event-driven fabric.
-
-    This clear separation ensures that external integrations inherit the same consistency, 
-    scalability, and observability as native Arvo components, without blurring responsibilities.
-
-
-    ## The \`createMcpAgent\` Factory
-
-    To make MCP integration production-ready, provided is the \`createMcpAgent\` factory. This 
-    utility builds on top of \`ArvoEventHandler\` and is designed to abstract away the complexities 
-    of external integration. The factory takes in an \`MCPClient\` implementation, which manages the 
-    connection to MCP servers and coordinates tool calls, along with an **LLM integration** (which is 
-    exact the same the LLM integration for Agentic Resumables) that supplies the reasoning and 
-    decision-making layer. In return, it produces both a handler contract and a handler factory, 
-    enabling MCP Agents to participate in the Arvo ecosystem exactly like any other event handler.
-    
-    > This pattern offers an additional advantage by cleanly separating LLM integration from 
-    > MCP client integration. Any LLM can leverage MCP tools, greatly expanding the system's 
-    > potential, while the MCP client itself can be implemented in whatever way best suits 
-    > your needs—giving you complete control over how external tools are accessed and managed.
-
-    
-    ## Why MCP Agents Matter?
-
-    Unlike the Agentic Resumables that orchestrate internal services, MCP Agents specialize 
-    in external tool access. They listen for specific event types, leverage LLM reasoning to determine 
-    actions, interact with MCP servers, and publish results back into the event fabric. This 
-    preserves a clean separation of concerns, while enabling integration with the rapidly expanding
-    MCP ecosystem.
-
-    The result is a dual-agent architecture that balances power and flexibility:
-	  
-    - Full participation in Arvo's event-driven eco-system
-	  -  Seamless access to external eco-system of MCP-based tools and APIs
-	  - Consistent reliability, observability, and type-safety across internal and external integrations
-
-    With this pattern, developers can extend Arvo-powered systems into new domains 
-    effortlessly, while maintaining a uniform agentic architecture that scales gracefully.
-    
   `),
   tabs: [
     {
