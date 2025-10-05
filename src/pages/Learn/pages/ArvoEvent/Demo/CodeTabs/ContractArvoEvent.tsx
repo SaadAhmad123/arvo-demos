@@ -11,7 +11,7 @@ export const ContractArvoEventTab: DemoCodePanel = {
     ensuring reliable and consistent information exchange between event handlers.
 
     Unlike static documentation, Arvo contracts are **enforceable code objects** 
-    called \`ArvoContract\`. A contract formally specifies:
+    called [\`ArvoContract\`](/learn/arvo-contract). A contract formally specifies:
     - The events a handler can accept
     - The events a handler can emit
     - The supported versions of the event specification (as detailed in the 
@@ -34,8 +34,8 @@ export const ContractArvoEventTab: DemoCodePanel = {
 
     While factories are introduced here briefly, they are covered in greater detail 
     in the [dedicated documentation](/learn/arvo-event-factory). The key takeaway 
-    is that **contracts and factories together enable a predictable, validated, and 
-    strongly typed mechanism for creating and consuming events**.
+    is that **contracts and factories together enable a evolvable, predictable, 
+    validated, and strongly typed mechanism for creating and consuming events**.
 
     > **Note on the \`dataschema\` field:**
     The \`dataschema\` field is a core aspect of Arvo’s design. It acts as a canonical 

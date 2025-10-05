@@ -69,33 +69,37 @@ export const ArvoEventPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              Event-driven architectures excel at scalability but face challenges in evolution and reliability due to
-              inconsistent event semantics and formats across teams. While practices like [Event Storming](https://www.eventstorming.com/) help identify
-              event flows and data requirements, the actual implementation often becomes fragmented as teams create
-              incompatible event structures optimised for their specific domains, leading to complex integration
-              challenges and reduced system maintainability as the architecture grows.
-              
-              To address these challenges Arvo enforces a standard event structure, called \`ArvoEvent\`, across all event handlers. It builds this stardard 
-              by basing it upon the standardised [CNCF CloudEvent](https://cloudevents.io/) specification. This approach leverages existing industry knowledge and tooling while adding
-              targeted extensions that support Arvo's enterprise requirements, enabling you to maintain consistent event
-              semantics and structure across your systems without sacrificing the flexibility needed for diverse business needs.
+              Modern software systems require reliable communication mechanisms between components to function effectively. While 
+              traditional architectures rely on synchronous patterns like function calls or API requests, event-driven systems use 
+              self-contained messages called events to enable asynchronous communication. These machine-readable data structures 
+              flow through event brokers, allowing producers and consumers to operate independently and scale efficiently.
+
+              Event-driven architecture offers significant advantages in resource utilization and scalability. Unlike synchronous 
+              systems where components must wait for responses while holding open connections, event handlers can process messages 
+              and immediately release computational resources. This design enables systems to scale horizontally and handle variable 
+              workloads more effectively. However, this flexibility introduces substantial challenges in maintaining consistent event 
+              structures across evolving systems, as different teams and components often develop incompatible formats optimized for 
+              their specific needs.
             `)}
           />
           <Separator padding={18} />
-
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # The Anatomy of ArvoEvent
+            # The ArvoEvent
 
-              \`ArvoEvent\` extends the \`CloudEvent\` specification with additional fields necessary for enterprise-grade
-              event-driven systems. Every event must include standard \`CloudEvent\` fields and incorporates Arvo-specific 
-              extensions for enhanced functionality and routing. Furthermore, just like the \`CloudEvent\`, \`ArvoEvent\` 
-              allows for extensions in the event structure.
+            Arvo addresses the standardization challenge through the \`ArvoEvent\` specification, which extends the
+            [CNCF CloudEvent](https://cloudevents.io/) standard rather than introducing entirely new conventions. By 
+            building on this widely-adopted foundation, \`ArvoEvent\` ensures compatibility with existing \`CloudEvents\`-compliant 
+            infrastructure while adding essential capabilities for Arvo-based event routing and OpenTelemetry distributed tracing. 
+            This approach allows Arvo-based systems to integrate seamlessly with the broader CloudEvents ecosystem while providing 
+            the enhanced functionality needed for sophisticated event-driven architectures.              
 
-              The following table provides a comprehensive overview of \`ArvoEvent\` fields, their classification, and 
-              the rationale behind their inclusion in the event structure.
-            `)}
+            ## The Anatomy of ArvoEvent
+
+            The following table provides a comprehensive overview of \`ArvoEvent\` fields, their classification, and 
+            the rationale behind their inclusion in the event structure.
+          `)}
           />
           <Separator padding={8} />
           <ReMark
