@@ -38,7 +38,7 @@ export const CreatingAgents: DemoCodePanel = {
 import z from 'zod';
 import { createAgenticResumable } from '../agentFactory/createAgenticResumable.js';
 import { openaiLLMCaller } from '../agentFactory/integrations/openai.js';
-import type { CallAgenticLLM } from '../agentFactory/types.js';
+import type { CallAgenticLLMOutput } from '../agentFactory/types.js';
 import { calculatorContract } from './calculator.handler.js';
 import { fibonacciContract } from './fibonacci.handler.js';
 
@@ -68,7 +68,11 @@ export const calculatorAgent = createAgenticResumable({
   }),
   systemPrompt: () =>
     'If, based on the available tools you cannot perform the calculation then just tell me tha you cannot perform it and give me a terse reasoning',
-  agenticLLMCaller: openaiLLMCaller as CallAgenticLLM,
+  agenticLLMCaller: async (param) => {
+    // This way the typescript compiler will be fully satisfied with the types.
+    // The LLM integration is type agnostic
+    return await openaiLLMCaller(param) as CallAgenticLLMOutput<typeof param.services>
+  },
 });
   
 
@@ -162,6 +166,7 @@ export const webInfoAgent = createAgenticResumable({
     astroDocAgent: astroDocsMcpAgent.contract.version('1.0.0'),
     findDomainAgent: findDomainMcpAgent.contract.version('1.0.0'),
   },
+  // This is a simpler way
   agenticLLMCaller: anthropicLLMCaller as CallAgenticLLM,
 });
 

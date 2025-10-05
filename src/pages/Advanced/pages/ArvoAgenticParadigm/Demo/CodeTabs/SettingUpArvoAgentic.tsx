@@ -954,7 +954,13 @@ export type CreateAgenticResumableParams<
   /**
    * Optional domain routing configuration for service execution.
    */
-  serviceDomains?: Record<{ [K in keyof TServices]: TServices[K]['accepts']['type'] }[keyof TServices], string[]>;
+  serviceDomains?: Partial<
+    {
+      [K in keyof TServices]: {
+        [T in TServices[K]['accepts']['type']]: string[];
+      };
+    }[keyof TServices]
+  >;
 
   /**
    * Dynamic system prompt generation function.
