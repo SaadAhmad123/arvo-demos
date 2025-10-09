@@ -2,6 +2,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
+import rehypeRaw from 'rehype-raw';
 import { unified } from 'unified';
 import { CopyButton } from '../buttons/Copy';
 import { Md3Table } from '../../classNames/table';
@@ -9,7 +10,7 @@ import { Md3Typography } from '../../classNames/typography';
 
 const isValidMarkdown = (text: string) => {
   try {
-    unified().use(remarkParse).use(remarkGfm).parse(text);
+    unified().use(remarkParse).use(remarkGfm).use(rehypeRaw).parse(text);
     return true;
   } catch {
     return false;
@@ -27,6 +28,7 @@ export const ReMark: React.FC<{
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw]}
       components={{
         table: ({ node, ...props }) => (
           <div className='grid grid-cols-1 rounded-xl overflow-hidden border border-outline-variant'>
@@ -40,6 +42,9 @@ export const ReMark: React.FC<{
         ),
         h2: ({ node, ...props }) => (
           <h2 className={`${Md3Typography.headline.medium} text-on-surface-variant my-2`} {...props} />
+        ),
+        h3: ({ node, ...props }) => (
+          <h3 className={`${Md3Typography.headline.small} text-on-surface-variant my-2`} {...props} />
         ),
         thead: ({ node, ...props }) => <thead {...props} />,
         th: ({ node, ...props }) => <th className={tableClassNames.header} {...props} />,
