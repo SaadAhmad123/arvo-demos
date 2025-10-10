@@ -10,9 +10,9 @@ import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
 import { PageNavigation } from '../../../../components/PageNavigation';
 import {
+  ArvoContractLearn,
   ArvoEventDataFieldDeepDiveLearn,
   ArvoEventHandlerLearn,
-  ArvoEventLearn,
 } from '../../../../components/LearningTiles/data';
 
 export const ArvoEventFactoryPage = withNavBar(() => {
@@ -156,9 +156,9 @@ export const ArvoEventFactoryPage = withNavBar(() => {
       </ContentContainer>
       <PageNavigation
         previous={{
-          heading: ArvoEventLearn.name,
-          link: ArvoEventLearn.link,
-          content: ArvoEventLearn.summary,
+          heading: ArvoContractLearn.name,
+          link: ArvoContractLearn.link,
+          content: ArvoContractLearn.summary,
         }}
         next={{
           heading: ArvoEventHandlerLearn.name,
