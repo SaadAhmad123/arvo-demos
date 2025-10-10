@@ -158,9 +158,9 @@ export const ArvoContractPage = withNavBar(() => {
 
               ## Why Versioning Matters?
 
-              Once an application runs in production, changing contract versions, and consequently 
+              Once an application runs in production, changing service interfaces, and consequently 
               event structures and handler implementations, can break in-flight processes and 
-              active workflows. Production systems often require gradual rollouts, A/B testing 
+              active workflows. Futhermore, production systems often require gradual rollouts, A/B testing 
               for specific services, or parallel execution of multiple implementation versions. 
               The codebase must maintain complete backward compatibility until the entire system 
               transitions to newer versions.
