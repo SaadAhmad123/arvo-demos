@@ -9,7 +9,7 @@ import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
 import { PageNavigation } from '../../../../components/PageNavigation';
-import { ArvoEventHandlerLearn, ArvoEventLearn } from '../../../../components/LearningTiles/data';
+import { ArvoEventFactoryLearn, ArvoEventLearn } from '../../../../components/LearningTiles/data';
 
 export const ArvoContractPage = withNavBar(() => {
   return (
@@ -285,9 +285,9 @@ export const ArvoContractPage = withNavBar(() => {
           content: ArvoEventLearn.summary,
         }}
         next={{
-          heading: ArvoEventHandlerLearn.name,
-          link: ArvoEventHandlerLearn.link,
-          content: ArvoEventHandlerLearn.summary,
+          heading: ArvoEventFactoryLearn.name,
+          link: ArvoEventFactoryLearn.link,
+          content: ArvoEventFactoryLearn.summary,
         }}
       />
       <Separator padding={54} />

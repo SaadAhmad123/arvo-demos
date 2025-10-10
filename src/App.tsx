@@ -10,6 +10,7 @@ import { ArvoEventDataFieldDeepDivePage } from './pages/Advanced/pages/ArvoEvent
 import { EventRoutingAndBrokersPage } from './pages/Advanced/pages/EventRoutingAndBrokers';
 import { ArvoAgenticParadigmPage } from './pages/Advanced/pages/ArvoAgenticParadigm';
 import { ArvoContractPage } from './pages/Learn/pages/ArvoContract';
+import { ArvoEventFactoryPage } from './pages/Learn/pages/ArvoEventFactory';
 
 export default () => {
   useSystemTheme();
@@ -20,7 +21,7 @@ export default () => {
       <Route path='/learn' element={<LearnPage />} />
       <Route path='/learn/arvo-event' element={<ArvoEventPage />} />
       <Route path='/learn/arvo-contract' element={<ArvoContractPage />} />
-      <Route path='/learn/arvo-event-factory' element={<LearnPage />} />
+      <Route path='/learn/arvo-event-factory' element={<ArvoEventFactoryPage />} />
       <Route path='/learn/arvo-event-handler' element={<LearnPage />} />
       <Route path='/learn/arvo-machine' element={<LearnPage />} />
       <Route path='/learn/arvo-orchestrator' element={<LearnPage />} />
