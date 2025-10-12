@@ -5,49 +5,49 @@ export type LearningTileData = {
 };
 
 export const ArvoEventLearn: LearningTileData = {
-  name: 'ArvoEvent',
+  name: 'The Event',
   summary:
     'Self-describing event structure extending CloudEvents with enterprise-grade routing, observability, and validation capabilities for reliable distributed communication.',
   link: '/learn/arvo-event',
 };
 
 export const ArvoContractLearn: LearningTileData = {
-  name: 'ArvoContract',
+  name: 'The Contract',
   summary:
     'TypeScript-Zod contract system enabling contract-first development with compile-time type safety, runtime validation, and semantic versioning support.',
   link: '/learn/arvo-contract',
 };
 
 export const ArvoEventFactoryLearn: LearningTileData = {
-  name: 'ArvoEventFactory',
+  name: 'The Event Factory',
   summary:
     'Intelligent abstraction layer for creating contract-compliant ArvoEvents with automatic validation, OpenTelemetry integration, and streamlined event construction.',
   link: '/learn/arvo-event-factory',
 };
 
 export const ArvoEventHandlerLearn: LearningTileData = {
-  name: 'ArvoEventHandler',
+  name: 'The Event Handler',
   summary:
     'Basic event handler implementing request-response patterns with contract enforcement, comprehensive error handling, and consistent execution signatures.',
   link: '/learn/arvo-event-handler',
 };
 
 export const ArvoMachineLearn: LearningTileData = {
-  name: 'ArvoMachine',
+  name: 'The State Machine',
   summary:
     'Declarative state machine builder using XState for defining complex workflows with contract binding, synchronous execution, and domain-aware event emission.',
   link: '/learn/arvo-machine',
 };
 
 export const ArvoOrchestratorLearn: LearningTileData = {
-  name: 'ArvoOrchestrator',
+  name: 'The Orchestrator',
   summary:
     'Specialized event handler providing robust execution environment for ArvoMachine with lifecycle management, telemetry integration, and distributed coordination.',
   link: '/learn/arvo-orchestrator',
 };
 
 export const ArvoResumableLearn: LearningTileData = {
-  name: 'ArvoResumable',
+  name: 'The Agent',
   summary:
     'Imperative orchestration handler using familiar async/await patterns to manage distributed workflows with explicit control and simplified debugging.',
   link: '/learn/arvo-resumable',
@@ -79,4 +79,18 @@ export const AgenticSystemExampleLearn: LearningTileData = {
   summary:
     'Discover foundational agentic software patterns that address the most common use cases. While Arvo Agents can go far beyond these examples, they serve as a practical starting point for building adaptable, intelligent systems.',
   link: '/advanced/arvo-agentic-patterns',
+};
+
+export const ErrorBoundariesLearn: LearningTileData = {
+  name: 'Error Handling in Arvo',
+  summary:
+    "Learn how Arvo's error boundary pattern provides resilient failure handling through automatic error event generation, contract-based error propagation, and configurable recovery strategies that maintain system reliability across distributed operations.",
+  link: '/advanced/error-boundaries',
+};
+
+export const MultiDomainBroadcastingLearn: LearningTileData = {
+  name: 'Domained Events',
+  summary:
+    'Explore multi-domain event emission for broadcasting events across different brokers, topics, or environments, enabling cross-system communication, human-in-the-loop workflows, and integration with external services while maintaining clear operational boundaries.',
+  link: '/advanced/multi-domain-broadcasting',
 };

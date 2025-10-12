@@ -9,7 +9,7 @@ import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
 import { PageNavigation } from '../../../../components/PageNavigation';
-import { ArvoEventFactoryLearn, ArvoEventLearn } from '../../../../components/LearningTiles/data';
+import { ArvoContractLearn, ArvoEventFactoryLearn, ArvoEventLearn } from '../../../../components/LearningTiles/data';
 
 export const ArvoContractPage = withNavBar(() => {
   return (
@@ -22,7 +22,7 @@ export const ArvoContractPage = withNavBar(() => {
         >
           <div className={`${Md3Cards.filled} flex flex-col justify-center`}>
             <div className={`${Md3Cards.inner.content}`}>
-              <h1 className={`${Md3Typography.display.large} text-on-surface`}>ArvoContract</h1>
+              <h1 className={`${Md3Typography.display.large} text-on-surface`}>{ArvoContractLearn.name}</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
                 Excutable agreements that make the system predictable and maintainable while keeping services

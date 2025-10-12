@@ -11,6 +11,7 @@ import { EventRoutingAndBrokersPage } from './pages/Advanced/pages/EventRoutingA
 import { ArvoAgenticParadigmPage } from './pages/Advanced/pages/ArvoAgenticParadigm';
 import { ArvoContractPage } from './pages/Learn/pages/ArvoContract';
 import { ArvoEventFactoryPage } from './pages/Learn/pages/ArvoEventFactory';
+import { ArvoEventHandlerPage } from './pages/Learn/pages/ArvoEventHandler';
 
 export default () => {
   useSystemTheme();
@@ -22,7 +23,7 @@ export default () => {
       <Route path='/learn/arvo-event' element={<ArvoEventPage />} />
       <Route path='/learn/arvo-contract' element={<ArvoContractPage />} />
       <Route path='/learn/arvo-event-factory' element={<ArvoEventFactoryPage />} />
-      <Route path='/learn/arvo-event-handler' element={<LearnPage />} />
+      <Route path='/learn/arvo-event-handler' element={<ArvoEventHandlerPage />} />
       <Route path='/learn/arvo-machine' element={<LearnPage />} />
       <Route path='/learn/arvo-orchestrator' element={<LearnPage />} />
       <Route path='/learn/arvo-resumable' element={<LearnPage />} />
@@ -30,6 +31,8 @@ export default () => {
       <Route path='/advanced/arvo-event-data-field-deep-dive' element={<ArvoEventDataFieldDeepDivePage />} />
       <Route path='/advanced/event-routing-and-brokers' element={<EventRoutingAndBrokersPage />} />
       <Route path='/advanced/arvo-agentic-resumables' element={<ArvoAgenticParadigmPage />} />
+      <Route path='/advanced/error-boundaries' element={<AdvancedPage />} />
+      <Route path='/advanced/multi-domain-broadcasting' element={<AdvancedPage />} />
       <Route path='/404' element={<NotFoundPage />} />
       <Route path='*' element={<Navigate to={'/404'} replace />} />
     </Routes>

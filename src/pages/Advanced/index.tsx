@@ -9,7 +9,9 @@ import {
   AgenticResumableDesignLearn,
   AgenticSystemExampleLearn,
   ArvoEventDataFieldDeepDiveLearn,
+  ErrorBoundariesLearn,
   EventRoutingAndBrokerInArvoLearn,
+  MultiDomainBroadcastingLearn,
 } from '../../components/LearningTiles/data';
 
 export const AdvancedPage = withNavBar(() => {
@@ -53,6 +55,8 @@ export const AdvancedPage = withNavBar(() => {
             ArvoEventDataFieldDeepDiveLearn,
             AgenticResumableDesignLearn,
             AgenticSystemExampleLearn,
+            ErrorBoundariesLearn,
+            MultiDomainBroadcastingLearn,
           ]}
         />
       </ContentContainer>

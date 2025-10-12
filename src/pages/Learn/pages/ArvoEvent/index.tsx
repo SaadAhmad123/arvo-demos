@@ -13,6 +13,7 @@ import { LearningTiles } from '../../../../components/LearningTiles';
 import {
   ArvoContractLearn,
   ArvoEventDataFieldDeepDiveLearn,
+  ArvoEventLearn,
   EventRoutingAndBrokerInArvoLearn,
 } from '../../../../components/LearningTiles/data';
 
@@ -27,7 +28,7 @@ export const ArvoEventPage = withNavBar(() => {
         >
           <div className={`${Md3Cards.filled} flex flex-col justify-center`}>
             <div className={`${Md3Cards.inner.content}`}>
-              <h1 className={`${Md3Typography.display.large} text-on-surface`}>ArvoEvent</h1>
+              <h1 className={`${Md3Typography.display.large} text-on-surface`}>{ArvoEventLearn.name}</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
                 A general-purpose self-describing event structure{' '}

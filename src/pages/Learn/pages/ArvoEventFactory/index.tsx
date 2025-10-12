@@ -12,6 +12,7 @@ import { PageNavigation } from '../../../../components/PageNavigation';
 import {
   ArvoContractLearn,
   ArvoEventDataFieldDeepDiveLearn,
+  ArvoEventFactoryLearn,
   ArvoEventHandlerLearn,
 } from '../../../../components/LearningTiles/data';
 
@@ -26,7 +27,7 @@ export const ArvoEventFactoryPage = withNavBar(() => {
         >
           <div className={`${Md3Cards.filled} flex flex-col justify-center`}>
             <div className={`${Md3Cards.inner.content}`}>
-              <h1 className={`${Md3Typography.display.large} text-on-surface`}>The Event Factory</h1>
+              <h1 className={`${Md3Typography.display.large} text-on-surface`}>{ArvoEventFactoryLearn.name}</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
                 Build events with confidence, reliability, and less boilerplate code
