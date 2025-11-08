@@ -1,9 +1,9 @@
 import { cleanString } from '../../../../../../utils';
 import {
   ARVO_PACKAGES,
-  buildInstallTabs,
   OTEL_BROWSER_PACKAGES,
   OTEL_SERVER_PACKAGES,
+  buildInstallTabs,
 } from '../../../../../Home/components/Installation';
 import type { DemoCodePanel } from '../../../../../types';
 

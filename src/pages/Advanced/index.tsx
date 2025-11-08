@@ -1,9 +1,7 @@
+import { Md3ContentPadding } from '../../classNames';
 import { Md3Cards } from '../../classNames/cards';
 import { Md3Typography } from '../../classNames/typography';
 import { ContentContainer } from '../../components/ContentContainer';
-import { withNavBar } from '../../components/Navbar/withNavBar';
-import { Separator } from '../../components/Separator';
-import { Md3ContentPadding } from '../../classNames';
 import { LearningTiles } from '../../components/LearningTiles';
 import {
   AgenticResumableDesignLearn,
@@ -13,6 +11,8 @@ import {
   EventRoutingAndBrokerInArvoLearn,
   MultiDomainBroadcastingLearn,
 } from '../../components/LearningTiles/data';
+import { withNavBar } from '../../components/Navbar/withNavBar';
+import { Separator } from '../../components/Separator';
 
 export const AdvancedPage = withNavBar(() => {
   return (

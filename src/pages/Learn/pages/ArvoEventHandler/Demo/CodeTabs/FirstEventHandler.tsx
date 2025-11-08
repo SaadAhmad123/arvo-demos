@@ -1,4 +1,3 @@
-import { AgenticResumableDesignLearn } from '../../../../../../components/LearningTiles/data';
 import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
@@ -26,10 +25,6 @@ export const FirstEventHandler: DemoCodePanel = {
     - Automatic error event generation when validation fails (resulting in \`sys.calculator.add.error\` events).
     - Successful response emission through the  contract-defined \`evt.calculator.add.success\` event type. 
     
-    The \`toolUseId$$\` field demonstrates optional metadata handling, particularly 
-    useful when integrating with [AI Agents](${AgenticResumableDesignLearn.link}) that require 
-    correlation between tool invocations and results.
-
     All Arvo event handlers implement \`executionunits\`, an \`ArvoEvent\` field 
     representing operational cost within your system. This domain-specific metric 
     adapts to your requirements, whether measuring CPU cycles, memory consumption, 
@@ -56,15 +51,11 @@ export const addContract = createArvoContract({
       // Input schema: array of numbers to sum
       accepts: z.object({
         numbers: z.number().array(),
-        // Optional correlation ID for AI agent tool calls
-        toolUseId$$: z.string().optional(),
       }),
       // Output schema: single success event with the computed result
       emits: {
         'evt.calculator.add.success': z.object({
           result: z.number(),
-          // Echo back the correlation ID if provided
-          toolUseId$$: z.string().optional(),
         }),
       },
     },
@@ -90,8 +81,6 @@ export const addHandler = createArvoEventHandler({
           type: 'evt.calculator.add.success',
           data: {
             result: event.data.numbers.reduce((acc, cur) => acc + cur, 0),
-            // Preserve correlation ID for traceability
-            toolUseId$$: event.data.toolUseId$$,
           },
           // Optional dynamic cost: cost per number processed
           executionunits: event.data.numbers.length * 1e-6,

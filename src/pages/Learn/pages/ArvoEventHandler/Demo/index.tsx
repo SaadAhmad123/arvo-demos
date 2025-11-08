@@ -1,16 +1,16 @@
 import React from 'react';
-import { Md3Typography } from '../../../../../classNames/typography';
-import { ContentContainer } from '../../../../../components/ContentContainer';
-import { Separator } from '../../../../../components/Separator';
-import { Md3Cards } from '../../../../../classNames/cards';
-import { ReMark } from '../../../../../components/ReMark';
-import CodeBlock from '../../../../../components/CodeBlock';
 import { Md3ContentPadding } from '../../../../../classNames';
-import { FirstEventHandler } from './CodeTabs/FirstEventHandler';
-import { ExecutingYourHandler } from './CodeTabs/ExecutingYourHandler';
+import { Md3Cards } from '../../../../../classNames/cards';
+import { Md3Typography } from '../../../../../classNames/typography';
+import CodeBlock from '../../../../../components/CodeBlock';
+import { ContentContainer } from '../../../../../components/ContentContainer';
+import { ReMark } from '../../../../../components/ReMark';
+import { Separator } from '../../../../../components/Separator';
 import { EventHandlerFactory } from './CodeTabs/EventHandlerFactory';
-import { ServiceEvolution } from './CodeTabs/ServiceEvolution';
+import { ExecutingYourHandler } from './CodeTabs/ExecutingYourHandler';
+import { FirstEventHandler } from './CodeTabs/FirstEventHandler';
 import { ObservabilityAndLogging } from './CodeTabs/ObservabilityAndLogging';
+import { ServiceEvolution } from './CodeTabs/ServiceEvolution';
 
 export const Demo: React.FC = () => {
   return (

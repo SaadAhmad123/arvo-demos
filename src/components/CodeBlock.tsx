@@ -1,12 +1,12 @@
 import React from 'react';
+import { MdCheck, MdContentCopy } from 'react-icons/md';
 import type { BundledLanguage, BundledTheme } from 'shiki';
 import { createHighlighter } from 'shiki';
-import { usePromise } from '../hooks/usePromise';
-import { useValueChange } from '../hooks/useValueChange';
+import { Md3Buttons } from '../classNames/buttons';
 import { Md3Cards } from '../classNames/cards';
 import { Md3Typography } from '../classNames/typography';
-import { Md3Buttons } from '../classNames/buttons';
-import { MdContentCopy, MdCheck } from 'react-icons/md';
+import { usePromise } from '../hooks/usePromise';
+import { useValueChange } from '../hooks/useValueChange';
 
 export type CodeBlockProps = {
   tabs: {

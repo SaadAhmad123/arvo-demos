@@ -3,18 +3,18 @@ import { Md3Buttons } from '../../../../classNames/buttons';
 import { Md3Cards } from '../../../../classNames/cards';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
-import { withNavBar } from '../../../../components/Navbar/withNavBar';
-import { ReMark } from '../../../../components/ReMark';
-import { Separator } from '../../../../components/Separator';
-import { cleanString } from '../../../../utils';
-import { Demo } from './Demo';
-import { PageNavigation } from '../../../../components/PageNavigation';
 import {
   ArvoContractLearn,
   ArvoEventDataFieldDeepDiveLearn,
   ArvoEventFactoryLearn,
   ArvoEventHandlerLearn,
 } from '../../../../components/LearningTiles/data';
+import { withNavBar } from '../../../../components/Navbar/withNavBar';
+import { PageNavigation } from '../../../../components/PageNavigation';
+import { ReMark } from '../../../../components/ReMark';
+import { Separator } from '../../../../components/Separator';
+import { cleanString } from '../../../../utils';
+import { Demo } from './Demo';
 
 export const ArvoEventFactoryPage = withNavBar(() => {
   return (

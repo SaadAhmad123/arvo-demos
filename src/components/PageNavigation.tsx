@@ -1,9 +1,9 @@
-import { Link } from 'react-router';
-import { ContentContainer } from './ContentContainer';
-import { Md3Cards } from '../classNames/cards';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa6';
-import { Separator } from './Separator';
+import { Link } from 'react-router';
+import { Md3Cards } from '../classNames/cards';
 import { Md3Typography } from '../classNames/typography';
+import { ContentContainer } from './ContentContainer';
+import { Separator } from './Separator';
 
 type PageNavigationItem = {
   link: string;

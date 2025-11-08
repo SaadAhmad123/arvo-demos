@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { LuCopy, LuCheck } from 'react-icons/lu';
+import { useEffect, useRef, useState } from 'react';
+import { LuCheck, LuCopy } from 'react-icons/lu';
 
 type CopyButtonParam = {
   content: string;

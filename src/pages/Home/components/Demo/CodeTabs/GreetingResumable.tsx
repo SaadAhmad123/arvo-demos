@@ -93,13 +93,11 @@ export const greetingResumableContract = createArvoOrchestratorContract({
       init: z.object({
         name: z.string(),
         age: z.number(),
-        toolUseId$$: z.string().optional(),
       }),
       complete: z.object({
         errors: ArvoErrorSchema.array().min(1).nullable(),
         result: z.string().nullable(),
         sameResultFromWorkflow: z.boolean(),
-        toolUseId$$: z.string().optional(),
       }),
     },
   },
@@ -129,7 +127,6 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
         greeting: string | null;
         updatedAge: number | null;
         errors: ArvoErrorType[];
-        toolUseId: string | null;
         /**
          * Tracks the process ID (subject) of this orchestration.
          * Required when this resumable delegates work to another orchestrator,
@@ -182,7 +179,6 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
               greeting: null,
               updatedAge: null,
               errors: [],
-              toolUseId: input.data.toolUseId$$ ?? null,
               selfSubject$$: input.subject, // Subjects act as workflow IDs; nested orchestrations each have their own subject.
             },
             services: [
@@ -227,7 +223,6 @@ export const greetingResumable: EventHandlerFactory<{ memory: IMachineMemory<Rec
               errors: null,
               sameResultFromWorkflow: lowLevelGeneratedString === orchestratorString,
               result: lowLevelGeneratedString,
-              toolUseId$$: context.toolUseId ?? undefined,
             },
           };
         }

@@ -58,13 +58,9 @@ export const greetingContract = createSimpleArvoContract({
     '1.0.0': {
       accepts: z.object({
         name: z.string(),
-        // This is a useful field when working with AI Agents for tool call correlation
-        toolUseId$$: z.string().optional(),
       }),
       emits: z.object({
         greeting: z.string(),
-        // This is a useful field when working with AI Agents for tool call correlation
-        toolUseId$$: z.string().optional(),
       }),
     },
   },
@@ -81,7 +77,6 @@ export const greetingHandler: EventHandlerFactory = () =>
           type: 'evt.greeting.create.success',
           data: {
             greeting:\`Hello, \${event.data.name}!\`,
-            toolUseId$$: event.data.toolUseId$$,
           },
         };
       },

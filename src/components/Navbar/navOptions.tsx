@@ -1,6 +1,6 @@
-import type { NavOption } from './types';
-import { MdHome } from 'react-icons/md';
 import { FaLightbulb, FaPuzzlePiece } from 'react-icons/fa6';
+import { MdHome } from 'react-icons/md';
+import type { NavOption } from './types';
 
 export const navOptions: NavOption[] = [
   {

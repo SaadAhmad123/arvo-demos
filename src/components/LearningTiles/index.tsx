@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
-import type { LearningTileData } from './data';
 import { Md3Cards } from '../../classNames/cards';
 import { Md3Typography } from '../../classNames/typography';
+import type { LearningTileData } from './data';
 
 export const LearningTiles: React.FC<{ data: LearningTileData[] }> = ({ data }) => {
   return (

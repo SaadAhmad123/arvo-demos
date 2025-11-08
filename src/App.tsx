@@ -1,17 +1,18 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { useSystemTheme } from './hooks/useSystemTheme';
 import './index.css';
-import { HomePage } from './pages/Home';
 import { NotFoundPage } from './pages/404';
-import { LearnPage } from './pages/Learn';
-import { ArvoEventPage } from './pages/Learn/pages/ArvoEvent';
 import { AdvancedPage } from './pages/Advanced';
+import { ArvoAgenticParadigmPage } from './pages/Advanced/pages/ArvoAgenticParadigm';
 import { ArvoEventDataFieldDeepDivePage } from './pages/Advanced/pages/ArvoEventDataFieldDeepDive';
 import { EventRoutingAndBrokersPage } from './pages/Advanced/pages/EventRoutingAndBrokers';
-import { ArvoAgenticParadigmPage } from './pages/Advanced/pages/ArvoAgenticParadigm';
+import { HomePage } from './pages/Home';
+import { LearnPage } from './pages/Learn';
 import { ArvoContractPage } from './pages/Learn/pages/ArvoContract';
+import { ArvoEventPage } from './pages/Learn/pages/ArvoEvent';
 import { ArvoEventFactoryPage } from './pages/Learn/pages/ArvoEventFactory';
 import { ArvoEventHandlerPage } from './pages/Learn/pages/ArvoEventHandler';
+import { ArvoMachinePage } from './pages/Learn/pages/ArvoMachine';
 
 export default () => {
   useSystemTheme();
@@ -24,7 +25,7 @@ export default () => {
       <Route path='/learn/arvo-contract' element={<ArvoContractPage />} />
       <Route path='/learn/arvo-event-factory' element={<ArvoEventFactoryPage />} />
       <Route path='/learn/arvo-event-handler' element={<ArvoEventHandlerPage />} />
-      <Route path='/learn/arvo-machine' element={<LearnPage />} />
+      <Route path='/learn/arvo-machine' element={<ArvoMachinePage />} />
       <Route path='/learn/arvo-orchestrator' element={<LearnPage />} />
       <Route path='/learn/arvo-resumable' element={<LearnPage />} />
       <Route path='/advanced' element={<AdvancedPage />} />

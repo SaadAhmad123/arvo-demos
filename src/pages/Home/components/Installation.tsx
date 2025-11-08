@@ -1,13 +1,13 @@
 import React from 'react';
+import { Md3ContentPadding } from '../../../classNames';
 import { Md3Cards } from '../../../classNames/cards';
 import { Md3Typography } from '../../../classNames/typography';
 import CodeBlock from '../../../components/CodeBlock';
 import { ContentContainer } from '../../../components/ContentContainer';
-import { Separator } from '../../../components/Separator';
 import { Label } from '../../../components/Label';
 import { ReMark } from '../../../components/ReMark';
+import { Separator } from '../../../components/Separator';
 import { cleanString } from '../../../utils';
-import { Md3ContentPadding } from '../../../classNames';
 
 export type PkgMap = Record<string, string>;
 export type PkgManager = 'pnpm' | 'npm' | 'yarn';
@@ -43,11 +43,11 @@ export const PREPARATION_PACKAGES: PkgMap = {
 };
 
 export const ARVO_PACKAGES: PkgMap = {
-  'arvo-core': '^3.0.6',
-  'arvo-event-handler': '^3.0.6',
-  zod: '^3.25.67',
-  xstate: '^5.20.1',
-  'zod-to-json-schema': '^3.24.5',
+  'arvo-core': '^3.0.18',
+  'arvo-event-handler': '^3.0.18',
+  zod: '^3.25.74',
+  xstate: '^5.23.0',
+  'zod-to-json-schema': '^3.24.6',
 };
 
 export const OTEL_BROWSER_PACKAGES: PkgMap = {

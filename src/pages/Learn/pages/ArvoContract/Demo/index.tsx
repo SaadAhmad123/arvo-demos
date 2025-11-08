@@ -1,15 +1,15 @@
 import React from 'react';
-import { Md3Typography } from '../../../../../classNames/typography';
-import { ContentContainer } from '../../../../../components/ContentContainer';
-import { Separator } from '../../../../../components/Separator';
-import { Md3Cards } from '../../../../../classNames/cards';
-import { ReMark } from '../../../../../components/ReMark';
-import CodeBlock from '../../../../../components/CodeBlock';
 import { Md3ContentPadding } from '../../../../../classNames';
-import { FirstArvoContract } from './CodeTabs/FirstArvoContract';
+import { Md3Cards } from '../../../../../classNames/cards';
+import { Md3Typography } from '../../../../../classNames/typography';
+import CodeBlock from '../../../../../components/CodeBlock';
+import { ContentContainer } from '../../../../../components/ContentContainer';
+import { ReMark } from '../../../../../components/ReMark';
+import { Separator } from '../../../../../components/Separator';
 import { ContractAPI } from './CodeTabs/ContractAPI';
-import { SimpleArvoContract } from './CodeTabs/SimpleArvoContract';
+import { FirstArvoContract } from './CodeTabs/FirstArvoContract';
 import { OrchestratorContract } from './CodeTabs/OrchestratorContract';
+import { SimpleArvoContract } from './CodeTabs/SimpleArvoContract';
 
 export const Demo: React.FC = () => {
   return (

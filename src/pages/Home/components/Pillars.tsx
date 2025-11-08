@@ -1,9 +1,9 @@
 import { HiPuzzle, HiShieldCheck, HiTrendingUp } from 'react-icons/hi';
-import { ContentContainer } from '../../../components/ContentContainer';
+import { Md3ContentPadding } from '../../../classNames';
 import { Md3Cards } from '../../../classNames/cards';
 import { Md3Typography } from '../../../classNames/typography';
+import { ContentContainer } from '../../../components/ContentContainer';
 import { Separator } from '../../../components/Separator';
-import { Md3ContentPadding } from '../../../classNames';
 
 export const Pillers: React.FC = () => {
   return (

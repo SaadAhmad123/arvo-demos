@@ -103,12 +103,10 @@ export const greetingOrchestratorContract = createArvoOrchestratorContract({
       init: z.object({
         name: z.string(),
         age: z.number(),
-        toolUseId$$: z.string().optional(),
       }),
       complete: z.object({
         errors: ArvoErrorSchema.array().min(1).nullable(),
         result: z.string().nullable(),
-        toolUseId$$: z.string().optional(),
       }),
     },
   },
@@ -145,7 +143,6 @@ export const greetingMachineV100 = setupArvoMachine({
       greeting: string | null;
       updatedAge: number | null;
       errors: ArvoErrorType[];
-      toolUseId: string | null;
     },
   },
 }).createMachine({
@@ -156,12 +153,10 @@ export const greetingMachineV100 = setupArvoMachine({
     greeting: null,
     updatedAge: null,
     errors: [],
-    toolUseId: input.data.toolUseId$$ ?? null,
   }),
   output: ({ context }) => ({
     errors: context.errors.length ? context.errors : null,
     result: context.errors.length ? null : \`Greeting -> \${context.greeting}, Updated Age -> \${context.updatedAge}\`,
-    toolUseId$$: context.toolUseId ?? undefined,
   }),
   initial: 'process',
   states: {

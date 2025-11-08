@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef } from 'react';
-import type { z } from 'zod';
 import { v4 as uuid4 } from 'uuid';
+import type { z } from 'zod';
 
 /**
  * Context type for the event broker, providing registration, emission, and cleanup capabilities.

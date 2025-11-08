@@ -1,14 +1,14 @@
+import { Md3ContentPadding } from '../../classNames';
 import { Md3Typography } from '../../classNames/typography';
 import { ContentContainer } from '../../components/ContentContainer';
 import { withNavBar } from '../../components/Navbar/withNavBar';
+import { PageNavigation } from '../../components/PageNavigation';
 import { Separator } from '../../components/Separator';
 import { CTA } from './components/CTA';
+import { Demo } from './components/Demo';
 import { Hero } from './components/Hero';
 import { Installation } from './components/Installation';
 import { Pillers } from './components/Pillars';
-import { Demo } from './components/Demo';
-import { Md3ContentPadding } from '../../classNames';
-import { PageNavigation } from '../../components/PageNavigation';
 
 export const HomePage = withNavBar(() => {
   return (
@@ -34,7 +34,7 @@ export const HomePage = withNavBar(() => {
           <p className={`${Md3Typography.body.large}`}>
             Arvo provides TypeScript-native primitives for event-driven applications. Write type-safe, observable
             business logic that integrates with any cloud provider, event broker, or messaging system. Arvo is not a
-            broker or messaging platform—it's the application layer that makes distributed systems predictable and
+            broker or messaging platform—it's the application layer that makes event-driven systems predictable and
             maintainable.
           </p>
         </div>

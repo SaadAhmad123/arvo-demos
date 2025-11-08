@@ -1,26 +1,26 @@
 import {
-  MdAutorenew,
-  MdPsychology,
-  MdPeople,
-  MdVisibility,
-  MdFlag,
-  MdAutoAwesome,
-  MdExtension,
   MdAccountTree,
+  MdAutoAwesome,
+  MdAutorenew,
+  MdExtension,
+  MdFlag,
+  MdPeople,
+  MdPsychology,
+  MdVisibility,
 } from 'react-icons/md';
+import { Link } from 'react-router';
+import { Md3ContentPadding } from '../../../../classNames';
+import { Md3Buttons } from '../../../../classNames/buttons';
 import { Md3Cards } from '../../../../classNames/cards';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
+import { AgenticSystemExampleLearn, EventRoutingAndBrokerInArvoLearn } from '../../../../components/LearningTiles/data';
 import { withNavBar } from '../../../../components/Navbar/withNavBar';
+import { PageNavigation } from '../../../../components/PageNavigation';
 import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
-import { Md3ContentPadding } from '../../../../classNames';
-import { AgenticSystemExampleLearn, EventRoutingAndBrokerInArvoLearn } from '../../../../components/LearningTiles/data';
-import { Demo } from './Demo';
-import { PageNavigation } from '../../../../components/PageNavigation';
-import { Md3Buttons } from '../../../../classNames/buttons';
 import { cleanString } from '../../../../utils';
-import { Link } from 'react-router';
+import { Demo } from './Demo';
 
 export const ArvoAgenticParadigmPage = withNavBar(() => {
   return (

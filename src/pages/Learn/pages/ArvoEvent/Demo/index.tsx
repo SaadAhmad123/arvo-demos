@@ -1,13 +1,13 @@
 import React from 'react';
-import { Md3Typography } from '../../../../../classNames/typography';
-import { ContentContainer } from '../../../../../components/ContentContainer';
-import { Separator } from '../../../../../components/Separator';
-import { CreateArvoEventTab } from './CodeTabs/CreateArvoEvent';
 import { Md3Cards } from '../../../../../classNames/cards';
-import { ReMark } from '../../../../../components/ReMark';
+import { Md3Typography } from '../../../../../classNames/typography';
 import CodeBlock from '../../../../../components/CodeBlock';
-import { ContractArvoEventTab } from './CodeTabs/ContractArvoEvent';
+import { ContentContainer } from '../../../../../components/ContentContainer';
+import { ReMark } from '../../../../../components/ReMark';
+import { Separator } from '../../../../../components/Separator';
 import { ArvoEventOperations } from './CodeTabs/ArvoEventOperations';
+import { ContractArvoEventTab } from './CodeTabs/ContractArvoEvent';
+import { CreateArvoEventTab } from './CodeTabs/CreateArvoEvent';
 
 export const Demo: React.FC = () => {
   return (

@@ -1,8 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router';
+import imageUrl from '/404.png';
 import { ContentContainer } from '../components/ContentContainer';
 import { Separator } from '../components/Separator';
-import imageUrl from '/404.png';
-import { Link } from 'react-router';
 
 export const NotFoundPage: React.FC = () => {
   return (

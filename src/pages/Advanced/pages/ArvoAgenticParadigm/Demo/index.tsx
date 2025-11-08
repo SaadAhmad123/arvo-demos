@@ -1,17 +1,17 @@
 import React from 'react';
-import { Md3Typography } from '../../../../../classNames/typography';
-import { ContentContainer } from '../../../../../components/ContentContainer';
-import { Separator } from '../../../../../components/Separator';
+import { Md3ContentPadding } from '../../../../../classNames';
 import { Md3Cards } from '../../../../../classNames/cards';
-import { ReMark } from '../../../../../components/ReMark';
+import { Md3Typography } from '../../../../../classNames/typography';
 import CodeBlock from '../../../../../components/CodeBlock';
-import { SettingUpArvoAgentic } from './CodeTabs/SettingUpArvoAgentic';
-import { PreparingDependencies } from './CodeTabs/PerparingDependencies';
-import { LLMIntegrations } from './CodeTabs/LLMIntegrations';
+import { ContentContainer } from '../../../../../components/ContentContainer';
+import { ReMark } from '../../../../../components/ReMark';
+import { Separator } from '../../../../../components/Separator';
 import { CreatingAgents } from './CodeTabs/CreatingAgents';
 import { Integration } from './CodeTabs/Integration';
+import { LLMIntegrations } from './CodeTabs/LLMIntegrations';
 import { MCPIntegration } from './CodeTabs/MCPIntegration';
-import { Md3ContentPadding } from '../../../../../classNames';
+import { PreparingDependencies } from './CodeTabs/PerparingDependencies';
+import { SettingUpArvoAgentic } from './CodeTabs/SettingUpArvoAgentic';
 
 export const Demo: React.FC = () => {
   return (

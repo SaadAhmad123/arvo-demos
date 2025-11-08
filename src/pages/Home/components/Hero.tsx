@@ -1,9 +1,9 @@
+import { HiCheckCircle, HiCube, HiLightningBolt } from 'react-icons/hi';
 import { Link } from 'react-router';
 import { Md3Cards } from '../../../classNames/cards';
 import { Md3Typography } from '../../../classNames/typography';
-import { Separator } from '../../../components/Separator';
-import { HiCheckCircle, HiLightningBolt, HiCube } from 'react-icons/hi';
 import { AgenticResumableDesignLearn } from '../../../components/LearningTiles/data';
+import { Separator } from '../../../components/Separator';
 
 export const Hero = () => (
   <div className={`${Md3Cards.filled} flex flex-col justify-center`}>

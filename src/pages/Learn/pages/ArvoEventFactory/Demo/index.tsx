@@ -1,14 +1,14 @@
 import React from 'react';
-import { Md3Typography } from '../../../../../classNames/typography';
-import { ContentContainer } from '../../../../../components/ContentContainer';
-import { Separator } from '../../../../../components/Separator';
-import { Md3Cards } from '../../../../../classNames/cards';
-import { ReMark } from '../../../../../components/ReMark';
-import CodeBlock from '../../../../../components/CodeBlock';
 import { Md3ContentPadding } from '../../../../../classNames';
-import { UnderstandingEventFactory } from './CodeTabs/UnderstandingEventFactory';
+import { Md3Cards } from '../../../../../classNames/cards';
+import { Md3Typography } from '../../../../../classNames/typography';
+import CodeBlock from '../../../../../components/CodeBlock';
+import { ContentContainer } from '../../../../../components/ContentContainer';
+import { ReMark } from '../../../../../components/ReMark';
+import { Separator } from '../../../../../components/Separator';
 import { CreatingEvents } from './CodeTabs/CreatingEvents';
 import { DataValidation } from './CodeTabs/DataValidation';
+import { UnderstandingEventFactory } from './CodeTabs/UnderstandingEventFactory';
 
 export const Demo: React.FC = () => {
   return (

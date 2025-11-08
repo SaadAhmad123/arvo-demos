@@ -1,10 +1,10 @@
 import React from 'react';
-import { Md3Typography } from '../../../../../classNames/typography';
-import { ContentContainer } from '../../../../../components/ContentContainer';
-import { Separator } from '../../../../../components/Separator';
 import { Md3Cards } from '../../../../../classNames/cards';
-import { ReMark } from '../../../../../components/ReMark';
+import { Md3Typography } from '../../../../../classNames/typography';
 import CodeBlock from '../../../../../components/CodeBlock';
+import { ContentContainer } from '../../../../../components/ContentContainer';
+import { ReMark } from '../../../../../components/ReMark';
+import { Separator } from '../../../../../components/Separator';
 import { InheritSubject } from './CodeTabs/InheritSubject';
 import { NewSubject } from './CodeTabs/NewSubject';
 

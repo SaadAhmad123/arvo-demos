@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
-import rehypeRaw from 'rehype-raw';
 import { unified } from 'unified';
-import { CopyButton } from '../buttons/Copy';
 import { Md3Table } from '../../classNames/table';
 import { Md3Typography } from '../../classNames/typography';
+import { CopyButton } from '../buttons/Copy';
 
 const isValidMarkdown = (text: string) => {
   try {

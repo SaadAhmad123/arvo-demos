@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { Tab, TabPanelProps, TabViewProps } from './types';
 import { v4 as uuid4 } from 'uuid';
-import { Md3Tabs } from './Tabs';
 import { Md3TabPanel } from './Panel';
+import { Md3Tabs } from './Tabs';
+import type { Tab, TabPanelProps, TabViewProps } from './types';
 
 export const TabView: React.FC<TabViewProps> = ({
   tabs,

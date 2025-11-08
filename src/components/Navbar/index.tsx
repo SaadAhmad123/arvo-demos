@@ -1,11 +1,11 @@
+import { useState } from 'react';
+import { MdMenu, MdMenuOpen } from 'react-icons/md';
 import { Link, useLocation } from 'react-router';
+import { Md3Buttons } from '../../classNames/buttons';
+import { Md3Typography } from '../../classNames/typography';
+import { SideBar } from '../SideBar';
 import { NavButton } from './button';
 import { navOptions } from './navOptions';
-import { Md3Typography } from '../../classNames/typography';
-import { MdMenu, MdMenuOpen } from 'react-icons/md';
-import { Md3Buttons } from '../../classNames/buttons';
-import { SideBar } from '../SideBar';
-import { useState } from 'react';
 
 export const NavBar = () => {
   const location = useLocation();

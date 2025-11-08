@@ -62,14 +62,10 @@ export const addContract = createArvoContract({
     '1.0.0': {
       accepts: z.object({
         numbers: z.number().array(),
-        // This is a usefull field when working with AI Agents for tool call correlation
-        toolUseId$$: z.string().optional(),
       }),
       emits: {
         'evt.calculator.add.success': z.object({
           result: z.number(),
-          // This is a usefull field when working with AI Agents for tool call correlation
-          toolUseId$$: z.string().optional(),
         }),
       },
     },
@@ -90,7 +86,6 @@ export const addHandler: EventHandlerFactory = () =>
           type: 'evt.calculator.add.success',
           data: {
             result: event.data.numbers.reduce((acc, cur) => acc + cur, 0),
-            toolUseId$$: event.data.toolUseId$$,
           },
           executionunits: event.data.numbers.length * 1e-6,
         };

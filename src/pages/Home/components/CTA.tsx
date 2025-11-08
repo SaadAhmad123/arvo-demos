@@ -1,7 +1,7 @@
-import { Md3Cards } from '../../../classNames/cards';
-import { Link } from 'react-router';
-import { MdArrowForward, MdAutoStories } from 'react-icons/md';
 import { FaGithub } from 'react-icons/fa';
+import { MdArrowForward, MdAutoStories } from 'react-icons/md';
+import { Link } from 'react-router';
+import { Md3Cards } from '../../../classNames/cards';
 
 export const CTA = () => (
   <div className={`${Md3Cards.filled} flex flex-col w-full overflow-hidden`}>
