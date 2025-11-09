@@ -9,6 +9,7 @@ import {
   ArvoEventHandlerLearn,
   ArvoEventLearn,
   ArvoMachineLearn,
+  ArvoMentalModelLearn,
   ArvoOrchestratorLearn,
   ArvoResumableLearn,
 } from '../../components/LearningTiles/data';
@@ -84,6 +85,7 @@ export const LearnPage = withNavBar(() => {
       <ContentContainer content>
         <LearningTiles
           data={[
+            ArvoMentalModelLearn,
             ArvoEventLearn,
             ArvoContractLearn,
             ArvoEventFactoryLearn,

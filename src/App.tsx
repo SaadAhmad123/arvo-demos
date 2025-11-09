@@ -13,6 +13,7 @@ import { ArvoEventPage } from './pages/Learn/pages/ArvoEvent';
 import { ArvoEventFactoryPage } from './pages/Learn/pages/ArvoEventFactory';
 import { ArvoEventHandlerPage } from './pages/Learn/pages/ArvoEventHandler';
 import { ArvoMachinePage } from './pages/Learn/pages/ArvoMachine';
+import { ArvoMentalModelPage } from './pages/Learn/pages/ArvoMentalModel';
 
 export default () => {
   useSystemTheme();
@@ -21,6 +22,7 @@ export default () => {
     <Routes>
       <Route index element={<HomePage />} />
       <Route path='/learn' element={<LearnPage />} />
+      <Route path='/learn/arvo-mental-model' element={<ArvoMentalModelPage />} />
       <Route path='/learn/arvo-event' element={<ArvoEventPage />} />
       <Route path='/learn/arvo-contract' element={<ArvoContractPage />} />
       <Route path='/learn/arvo-event-factory' element={<ArvoEventFactoryPage />} />

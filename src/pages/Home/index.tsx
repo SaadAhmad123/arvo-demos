@@ -32,10 +32,11 @@ export const HomePage = withNavBar(() => {
           </h1>
           <Separator padding={8} />
           <p className={`${Md3Typography.body.large}`}>
-            Arvo provides TypeScript-native primitives for event-driven applications. Write type-safe, observable
-            business logic that integrates with any cloud provider, event broker, or messaging system. Arvo is not a
-            broker or messaging platform—it's the application layer that makes event-driven systems predictable and
-            maintainable.
+            Arvo is an application-layer TypeScript toolkit designed to abstract infrastructure concerns, not replace
+            them. It is neither infrastructure, an event broker, nor a messaging system—those solutions already exist
+            and Arvo enables their integration into your application. Arvo provides code primitives and concepts for
+            writing application logic that is compatible with distributed systems while leveraging the properties of
+            event-driven architectures.
           </p>
         </div>
       </ContentContainer>

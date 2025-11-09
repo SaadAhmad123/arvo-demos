@@ -8,6 +8,7 @@ import {
   ArvoContractLearn,
   ArvoEventDataFieldDeepDiveLearn,
   ArvoEventLearn,
+  ArvoMentalModelLearn,
   EventRoutingAndBrokerInArvoLearn,
 } from '../../../../components/LearningTiles/data';
 import { withNavBar } from '../../../../components/Navbar/withNavBar';
@@ -180,9 +181,9 @@ export const ArvoEventPage = withNavBar(() => {
           content: ArvoContractLearn.summary,
         }}
         previous={{
-          heading: 'Learn Arvo',
-          link: '/learn',
-          content: "Learn about Arvo's concepts and component to start building Arvo based event-driven systems",
+          heading: ArvoMentalModelLearn.name,
+          link: ArvoMentalModelLearn.link,
+          content: ArvoMentalModelLearn.summary,
         }}
       />
       <Separator padding={54} />

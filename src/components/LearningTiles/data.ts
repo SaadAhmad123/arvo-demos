@@ -4,11 +4,12 @@ export type LearningTileData = {
   link: string;
 };
 
-export const ArvoParadigm: LearningTileData = {
+export const ArvoMentalModelLearn: LearningTileData = {
   name: 'The Mental Model',
-  summary: 'Develop the mindset for building with Arvo—thinking in pure event handlers, contract-governed composition, and infrastructure-agnostic business logic that scales from local development to distributed production.',
-  link: '/learn/arvo-mental-model'
-}
+  summary:
+    'Develop the mindset for building with Arvo—thinking in event handlers, composition, and infrastructure-agnostic business logic thats scales as per your needs.',
+  link: '/learn/arvo-mental-model',
+};
 
 export const ArvoEventLearn: LearningTileData = {
   name: 'The Event',
