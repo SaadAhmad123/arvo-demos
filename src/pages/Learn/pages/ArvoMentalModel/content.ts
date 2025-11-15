@@ -119,12 +119,76 @@ export const ArvoMentalModelContent = cleanString(`
               <br/>
               <br/>
 
-              # Orchestration
+              # Virtual Orchestrations - A Modern Approach To Event-Driven Coordination
 
               In Arvo, whenever you need to compose multiple event handlers into a workflow, you use the orchestration pattern. 
               Orchestration follows the same fundamental principle as everything else: handlers transforming events. There are 
               no special orchestration layers and no architectural distinction between "workers" and "orchestrators." An orchestrator 
               is simply an event handler in Arvo that emits events to multiple other handlers and collects their responses.
+
+              ### The Choreography Infrastructure
+
+              For experienced event-driven system engineers, Arvo's operational model at the infrastructure 
+              level implements strict service choreography. The event broker performs content-based routing 
+              without workflow awareness, matching events to handlers based solely on the event's \`to\` field 
+              and handler registration (\`handler.source\`). No centralized coordinator manages execution, 
+              no privileged orchestration layer exists, and no component exercises special control over others. 
+              Handlers function as autonomous peers that react to events according to their contracts, with 
+              the infrastructure treating all handlers identically regardless of their role.
+
+              ### The Virtual Orchestrators
+
+              At the application layer, Arvo enables orchestration for coordinating event handlers into 
+              workflows. The fundamental distinction is that Arvo orchestrators coordinate workflows rather 
+              than control them in the traditional sense. Orchestrators define explicit coordination logic 
+              through state machines or imperative code, specifying which handlers to invoke, in what sequence, 
+              and under what conditions. They maintain centralized workflow state, make routing decisions based 
+              on handler responses, and implement business process rules. This creates **virtual orchestration** - coordination
+              logic that exists in application code while executing through choreographed 
+              infrastructure.
+
+              ### Why this matters?
+
+              This architectural pattern provides the benefits of both models without their traditional 
+              constraints. The choreography infrastructure ensures handlers remain autonomous, scale 
+              independently, and tolerate failures without cascading. Handlers process events on their 
+              own timeline, consume zero resources between events, and can be deployed, scaled, or failed 
+              independently. No handler operationally depends on another handler's availability or execution 
+              context.
+
+              Simultaneously, the orchestration layer provides workflow clarity and control. State 
+              machines visualize business processes explicitly, making coordination logic understandable 
+              to both technical and non-technical stakeholders. The orchestrator maintains workflow 
+              state tracking execution progress, implements error handling and compensation logic, and
+              enforces business rules about handler sequencing. Complex multi-step processes have 
+              clear definitions rather than emerging implicitly from handler reactions.
+
+              ### Event-Driven Coordination Mechanism
+
+              The orchestrator coordinates handlers by emitting events, not by invoking them directly. When an 
+              orchestrator needs a handler to execute, it emits an event that the choreography infrastructure 
+              delivers. The handler processes this event autonomously without knowledge of orchestrator existence. The 
+              orchestrator later receives the handler's response as another event, updates workflow state, and determines 
+              next actions. This event-driven coordination means **orchestration is logical rather than physical** - centralized 
+              in the orchestrator definition but distributed in actual execution.
+
+              ### Operational Implications of Virtual Orchestration
+
+              The result is orchestration without the traditional operational costs. Centralized orchestrators 
+              typically become bottlenecks, requiring scaling infrastructure and introducing single points of 
+              failure. Arvo's virtual orchestrators consume resources only when processing events - the same durable 
+              state execution model as any handler. Between events, orchestrators exist only as workflow state in 
+              persistent memory. Thousands of concurrent workflow executions cost minimal infrastructure because 
+              each is just a JSON state object, not a running process.
+
+              ### Temporal Flexibility
+              
+              This architecture enables workflows to span arbitrary durations naturally. An orchestrator can emit 
+              events, persist state, and terminate. Days later when responses arrive, any orchestrator instance can 
+              load the persisted state and continue. The workflow's logical continuity is maintained through state 
+              even as the physical execution distributes across different instances over time. Multi-day human approval 
+              workflows, asynchronous third-party integrations, and long-running batch processes all use the same 
+              patterns as millisecond API orchestration.
 
               ## Orchestration as Event Coordination
 

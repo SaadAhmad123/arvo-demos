@@ -148,6 +148,40 @@ export const ArvoContractPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
+              # The Value of Contract-First Approach
+
+              At first glance, an \`ArvoContract\` may appear verbose. In practice, this perceived verbosity 
+              represents concentrated leverage: a single, executable definition serves as the canonical source of 
+              truth for your system's behavior.
+
+              Rather than fragmenting types, validation rules, event specifications, and documentation 
+              across disparate files and formats, you define them once within a contract. Arvo then derives 
+              and maintains a comprehensive ecosystem of artifacts that would otherwise require manual creation 
+              and synchronization:
+
+              - **Compile-time type safety** for event producers, consumers, handlers, and orchestrators
+              - **Runtime validation** with precise, actionable error messages
+              - **JSON Schema generation** for documentation and interoperability
+              - **Event factory integration** that eliminates boilerplate while enforcing correctness
+              - **Rich, structured metadata** enabling AI agent discovery and invocation
+              - **Strong foundations** for property-based and contract-based testing
+              - **Deep TypeScript IntelliSense** delivering an ergonomic developer experience
+
+              All of these capabilities flow from a single, versioned contract definition. There exists no 
+              separate specification to update, no parallel validation layer to maintain, and no opportunity 
+              for silent divergence between documentation and implementation. The contract itself constitutes 
+              executable governance: it enforces what events can be sent, what responses can be emitted, and 
+              how services are permitted to evolve.
+
+              Because contracts support explicit versioning, multiple versions can safely coexist within the
+              same system. This enables incremental feature rollouts, A/B testing of service behaviors, and gradual 
+              consumer migration—all without disrupting existing workflows. Instead of relying on ad-hoc compatibility 
+              layers or requiring tightly coordinated deployments, you establish clear, enforced boundaries 
+              with a predictable evolution path, anchored in one definitive contract per interface.
+
+              <br/>
+              <br/>
+
               # Contract Versioning and System Evolution
 
               Throughout the \`ArvoContract\` examples, you've encountered version definitions 
@@ -230,6 +264,8 @@ export const ArvoContractPage = withNavBar(() => {
 
 
               <br/>
+              <br/>
+              
 
               ## Best practices for evolution
 
