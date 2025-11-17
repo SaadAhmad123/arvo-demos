@@ -14,6 +14,7 @@ import { PageNavigation } from '../../../../components/PageNavigation';
 import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
+import { Demo } from './Demo';
 
 export const ArvoMachinePage = withNavBar(() => {
   return (
@@ -174,12 +175,54 @@ export const ArvoMachinePage = withNavBar(() => {
 
               These three components work together to provide complete orchestration capabilities 
               while maintaining conceptual clarity and operational simplicity.
-              
             `)}
           />
         </div>
       </ContentContainer>
       <Separator padding={18} />
+      <Demo />
+      <Separator padding={18} />
+      <Separator padding={18} />
+      <ContentContainer content>
+        <div className={`${Md3ContentPadding} py-0!`}>
+          <a href='/state-machine-viz.png' target='_blank' rel='noreferrer'>
+            <img alt='Demo state machine visualization' src='/state-machine-viz.png' className='rounded-3xl shadow' />
+          </a>
+        </div>
+      </ContentContainer>
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              > **Note:** This is a screenshot of the state machine visualization using the [XState VSCode extension](https://stately.ai/docs/xstate-vscode-extension).
+
+              The State Machine in Arvo represents a powerful paradigm for managing complex, multi-step 
+              workflows in event-driven systems. By combining XState's mature state machine implementation 
+              with Arvo's event-driven architecture, \`ArvoMachine\` provides a declarative approach to 
+              workflow orchestration that is both visualizable and formally verifiable.
+
+              This architectural pattern excels in scenarios requiring well-defined states and 
+              transitions, enabling developers to express complex coordination logic through pure, 
+              testable state definitions rather than imperative code. The clear separation between 
+              \`ArvoMachine\` (declarative workflow definition) and \`ArvoOrchestrator\` (event-driven 
+              execution runtime) ensures that workflow logic remains independent of infrastructure 
+              concerns, while the synchronous subset design maintains predictability and determinism.
+
+              Whether coordinating human-in-the-loop processes, orchestrating parallel service calls, 
+              or managing long-running asynchronous workflows and much more, Arvo's state machine implementation 
+              provides the tools needed to build robust and scalable workflows. The framework's comprehensive 
+              testing capabilities—from isolated unit tests to full integration testing—combined with 
+              contract-driven type safety, ensure that complex workflows can be developed with confidence 
+              and maintained with clarity. As demonstrated in this tutorial, even deceptively simple workflows 
+              reveal sophisticated patterns that scale to production-grade distributed systems, making the 
+              state machine approach an essential tool in the Arvo ecosystem for building reliable, event-driven 
+              applications.
+
+            `)}
+          />
+        </div>
+      </ContentContainer>
       <ContentContainer content>
         <div className={`${Md3ContentPadding}`}>
           <ReMark
