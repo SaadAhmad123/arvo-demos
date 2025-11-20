@@ -15,7 +15,7 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
-import { ExecutionDiagram } from './executionDiagram';
+import { ExecutionDiagram } from './ExecutionDiagram';
 
 export const ArvoEventHandlerPage = withNavBar(() => {
   return (
