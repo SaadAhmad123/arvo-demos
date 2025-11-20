@@ -3,14 +3,11 @@ import { Md3Buttons } from '../../../../classNames/buttons';
 import { Md3Cards } from '../../../../classNames/cards';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
-import { LearningTiles } from '../../../../components/LearningTiles';
 import {
   ArvoEventFactoryLearn,
   ArvoEventHandlerLearn,
   ArvoMachineLearn,
-  ErrorBoundariesLearn,
   EventRoutingAndBrokerInArvoLearn,
-  MultiDomainBroadcastingLearn,
 } from '../../../../components/LearningTiles/data';
 import { withNavBar } from '../../../../components/Navbar/withNavBar';
 import { PageNavigation } from '../../../../components/PageNavigation';
@@ -18,6 +15,7 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
+import { ExecutionDiagram } from './executionDiagram';
 
 export const ArvoEventHandlerPage = withNavBar(() => {
   return (
@@ -94,18 +92,92 @@ export const ArvoEventHandlerPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              # Advanced Topics
+              # For Advanced Engineers Only
 
-              Event handlers in Arvo support advanced features including error 
-              boundaries for resilient failure handling and multi-domain event 
-              emission for cross-system communication. The following sections 
-              explore these capabilities.
+              <br/>
+
+              The \`ArvoEventHandler\` is a sophisticated component that streamlines event-driven 
+              development by automating request-response patterns, validation, routing, and contract 
+              enforcement. To help you understand its internal execution lifecycle, the detailed 
+              sequence diagram below visualizes every phase—from event validation and contract resolution 
+              through handler execution and response broadcasting. This diagram serves as an essential 
+              reference for system design and debugging, allowing you to trace exactly how events flow 
+              through the handler, understand error propagation paths, identify validation checkpoints, 
+              and diagnose execution failures. When building complex workflows or troubleshooting production 
+              issues, this diagram helps you map theoretical contract definitions to concrete runtime behavior, 
+              making it invaluable for both initial architecture design and long-term system maintenance.
+
+              > **Pro Tip:** Click the copy button below to extract the diagram definition. Paste 
+               it into any AI chat interface (ChatGPT, Claude, etc.) to ask questions like "What happens when 
+               validation fails?", "Where are OpenTelemetry spans created?", or "How does version resolution 
+               work?". This makes the diagram interactive—you can query specific execution paths, understand 
+               error flows, or get explanations of complex decision points without manually parsing the 
+               entire sequence.
+
+              <br/>
+              <br/>
+
+              \`\`\`mermaid
+            ${ExecutionDiagram}
+              \`\`\`
+
+              <br/>
+              <br/>
+
+              ## Error Handling Strategies
+
+              Arvo's \`ArvoEventHandler\` implements a dual-path error handling strategy 
+              that separates **violation errors** from **error events**. Violation errors 
+              throw exceptions for external infrastructure to handle (dead letter queues, 
+              external retry mechanisms, monitoring systems), while error events become 
+              part of the workflow itself, flowing through the system as events for orchestrators 
+              and handlers to process. This dual-path approach provides a comprehensive error 
+              handling vocabulary that enables flexible implementation strategies tailored to 
+              your system's requirements. Arvo manages default error behavior automatically, 
+              while maintaining extensibility for custom error handling patterns when needed.
+
+              ### Violation Errors
+
+              Violation errors can indicate problems with event structure, contract compliance, or 
+              configuration. These errors throw exceptions that must be handled by infrastructure 
+              outside Arvo—whether through retry mechanisms for transient issues or dead letter 
+              queues for permanent failures.
+
+              <br/>
+
+              | When It Occurs | Error Type |
+              |----------------|------------|
+              | Incoming event type doesn't match the contract's expected type | \`ConfigViolation\` |
+              | Requested contract version doesn't exist in the handler | \`ConfigViolation\` |
+              | Event references a different contract URI than the handler expects | \`ContractViolation\` |
+              | Event payload fails input schema validation | \`ContractViolation\` |
+              | Handler returns data that fails output schema validation | \`ContractViolation\` |
+              | Handler explicitly throws a violation for business rule enforcement | \`ExecutionViolation\` |
+
+              <br/>
+
+              ### Error Events
+
+              Error events occur when handlers encounter operational failures during execution. Unlike 
+              violations, these errors become system error events that flow through the event-driven 
+              architecture as part of the workflow, allowing orchestrators and handlers to process 
+              them within the business logic.
+
+              <br/>
+
+              | When It Occurs | Result |
+              |----------------|--------|
+              | Handler throws any non-violation error (database failures, network timeouts, external service errors, business logic failures, etc.) | System error events (\`sys.*.error\`) are generated and emitted as part of the workflow for downstream processing |
+
+              <br/>
+              
+              Violations require external handling mechanisms outside the workflow, while error events 
+              integrate into the workflow itself, enabling orchestrators to implement fallback 
+              behaviors and compensating transactions as designed business logic.
+              
             `)}
           />
         </div>
-      </ContentContainer>
-      <ContentContainer content>
-        <LearningTiles data={[ErrorBoundariesLearn, MultiDomainBroadcastingLearn]} />
       </ContentContainer>
       <ContentContainer content>
         <div className={`${Md3ContentPadding}`}>

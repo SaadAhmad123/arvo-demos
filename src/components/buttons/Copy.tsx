@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { LuCheck, LuCopy } from 'react-icons/lu';
+import { Md3Buttons } from '../../classNames/buttons';
 
 type CopyButtonParam = {
   content: string;
+  className?: string;
 };
 
-export const CopyButton: React.FC<CopyButtonParam> = ({ content }) => {
+export const CopyButton: React.FC<CopyButtonParam> = ({ content, className }) => {
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -31,11 +33,7 @@ export const CopyButton: React.FC<CopyButtonParam> = ({ content }) => {
   }, []);
 
   return (
-    <button
-      type='button'
-      onClick={handleCopy}
-      className='size-8 hover:bg-gray-200 hover:text-gray-800 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200'
-    >
+    <button type='button' onClick={handleCopy} className={className ?? Md3Buttons.icon}>
       {copied ? <LuCheck className='text-green-600' /> : <LuCopy />}
     </button>
   );
