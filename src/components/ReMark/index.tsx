@@ -7,6 +7,7 @@ import { unified } from 'unified';
 import { Md3Table } from '../../classNames/table';
 import { Md3Typography } from '../../classNames/typography';
 import { CopyButton } from '../buttons/Copy';
+import Mermaid from './Mermaid';
 
 const isValidMarkdown = (text: string) => {
   try {
@@ -65,6 +66,12 @@ export const ReMark: React.FC<{
         code: ({ children, className }) => {
           if (!className)
             return <code className='inline-block bg-surface-container-highest px-1 rounded'>{children}</code>;
+          // Todo - ENABle mermaid rendering here ```mermaid <cojntetn> ```
+          // Enable mermaid rendering
+          if (className?.includes('language-mermaid')) {
+            const chartContent = Array.isArray(children) ? children.join('') : String(children);
+            return <Mermaid chart={chartContent.trim()} />;
+          }
           return (
             <div className='relative grid grid-col-1 my-4 px-4 py-2 bg-surface-container-highest text-on-surface-container rounded-xl'>
               <div className='overflow-auto'>
