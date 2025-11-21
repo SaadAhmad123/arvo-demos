@@ -4,10 +4,12 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
+import { HiClipboardDocumentCheck, HiLink } from 'react-icons/hi2'; // or use any icon you prefer
 import { Md3Table } from '../../classNames/table';
 import { Md3Typography } from '../../classNames/typography';
-import { CopyButton } from '../buttons/Copy';
 import Mermaid from './Mermaid';
+import CodeBlock from '../CodeBlock';
+import type { BundledLanguage } from 'shiki';
 
 const isValidMarkdown = (text: string) => {
   try {
@@ -16,6 +18,68 @@ const isValidMarkdown = (text: string) => {
   } catch {
     return false;
   }
+};
+
+// Generate slug from heading text
+const generateSlug = (text: string | React.ReactNode): string => {
+  const textContent = typeof text === 'string' ? text : React.Children.toArray(text).join('');
+
+  return textContent
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
+};
+
+// Heading component with animated link icon
+const HeadingWithAnchor: React.FC<{
+  level: 1 | 2 | 3;
+  children: React.ReactNode;
+  className: string;
+}> = ({ level, children, className }) => {
+  const [copied, setCopied] = React.useState(false);
+  const slug = generateSlug(children);
+  const Tag = `h${level}` as 'h1' | 'h2' | 'h3';
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.history.pushState(null, '', `#${slug}`);
+    document.getElementById(slug)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleLinkClick = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent heading click event
+    const url = `${window.location.origin}${window.location.pathname}#${slug}`;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy URL:', err);
+    }
+  };
+
+  return (
+    <Tag id={slug} className={`${className} group scroll-mt-20 relative cursor-pointer`} onClick={handleClick}>
+      <span className='flex items-center'>
+        <span className='group-hover:translate-x-0 transition-transform duration-300 ease-in-out'>{children}</span>
+        <button
+          type='button'
+          onClick={handleLinkClick}
+          className='hidden md:block opacity-0 group-hover:opacity-100 w-0 group-hover:w-5 group-hover:ml-4 transition-all duration-100 ease-in-out flex-shrink-0 border-none bg-transparent p-0 cursor-pointer'
+          aria-label='Copy link to clipboard'
+        >
+          {copied ? (
+            <HiClipboardDocumentCheck className='h-5 w-5 text-primary' />
+          ) : (
+            <HiLink className='h-5 w-5 text-primary' />
+          )}
+        </button>
+      </span>
+    </Tag>
+  );
 };
 
 export const ReMark: React.FC<{
@@ -38,14 +102,20 @@ export const ReMark: React.FC<{
             </div>
           </div>
         ),
-        h1: ({ node, ...props }) => (
-          <h1 className={`${Md3Typography.headline.large} text-on-surface-variant my-2`} {...props} />
+        h1: ({ children }) => (
+          <HeadingWithAnchor level={1} className={`${Md3Typography.headline.large} text-on-surface-variant my-2`}>
+            {children}
+          </HeadingWithAnchor>
         ),
-        h2: ({ node, ...props }) => (
-          <h2 className={`${Md3Typography.headline.medium} text-on-surface-variant my-2`} {...props} />
+        h2: ({ children }) => (
+          <HeadingWithAnchor level={2} className={`${Md3Typography.headline.medium} text-on-surface-variant my-2`}>
+            {children}
+          </HeadingWithAnchor>
         ),
-        h3: ({ node, ...props }) => (
-          <h3 className={`${Md3Typography.headline.small} text-on-surface-variant my-2`} {...props} />
+        h3: ({ children }) => (
+          <HeadingWithAnchor level={3} className={`${Md3Typography.headline.small} text-on-surface-variant my-2`}>
+            {children}
+          </HeadingWithAnchor>
         ),
         thead: ({ node, ...props }) => <thead {...props} />,
         th: ({ node, ...props }) => <th className={tableClassNames.header} {...props} />,
@@ -57,7 +127,7 @@ export const ReMark: React.FC<{
             {...props}
           />
         ),
-        a: ({ node, ...props }) => <a className='hover:underline text-blue-600' target='_blank' {...props} />,
+        a: ({ node, ...props }) => <a className='text-blue-600 no-underline' target='_blank' {...props} />,
         p: ({ node, ...props }) => <p className={`py-2 ${bodyTextClassNames}`} {...props} />,
         ul: ({ node, ...props }) => <ul className={`list-disc ml-5 my-2 ${bodyTextClassNames}`} {...props} />,
         ol: ({ node, ...props }) => <ol className={`list-decimal ml-5 my-2 ${bodyTextClassNames}`} {...props} />,
@@ -66,26 +136,20 @@ export const ReMark: React.FC<{
         code: ({ children, className }) => {
           if (!className)
             return <code className='inline-block bg-surface-container-highest px-1 rounded'>{children}</code>;
-          // Todo - ENABle mermaid rendering here ```mermaid <cojntetn> ```
-          // Enable mermaid rendering
+          const content = Array.isArray(children) ? children.join('') : String(children);
           if (className?.includes('language-mermaid')) {
-            const chartContent = Array.isArray(children) ? children.join('') : String(children);
-            return <Mermaid chart={chartContent.trim()} />;
+            return <Mermaid chart={content.trim()} />;
           }
           return (
-            <div className='relative grid grid-col-1 my-4 px-4 py-2 bg-surface-container-highest text-on-surface-container rounded-xl'>
-              <div className='overflow-auto'>
-                <code>
-                  <span className='!font-sans text-xs'>{className?.replace('language-', '')}</span>
-                  <br />
-                  <br />
-                  {children}
-                </code>
-              </div>
-              <div className='absolute top-2 right-2'>
-                <CopyButton content={children as string} />
-              </div>
-            </div>
+            <CodeBlock
+              tabs={[
+                {
+                  title: className?.split('-')?.[1] ?? 'code',
+                  lang: (className?.split('-')?.[1] ?? 'typescript') as BundledLanguage,
+                  code: content,
+                },
+              ]}
+            />
           );
         },
       }}
