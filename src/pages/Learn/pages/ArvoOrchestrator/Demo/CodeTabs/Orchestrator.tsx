@@ -3,8 +3,7 @@ import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const Orchestrator: DemoCodePanel = {
-  singlePanel: false,
-  heading: 'Using It Is Simple',
+  heading: 'Getting Started',
   description: cleanString(`
     This builds directly on the demo machine from [the state machine documentation](${ArvoMachineLearn.link}). 
     If you haven't read that yet, start there—it shows how to build the state machine definition this 
@@ -18,6 +17,9 @@ export const Orchestrator: DemoCodePanel = {
     in-memory storage during testing and switch to Redis, DynamoDB, Postgres, or any other backend 
     for production. The machines array supports multiple versions of your state machine, allowing 
     old and new workflows to run side by side during deployments.
+
+    > **Note:** The following documentation is only relevant if you are implementing a production system 
+    > with state management, locking, error handling and other life-cycle requirements. 
  `),
   tabs: [
     {

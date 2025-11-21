@@ -7,6 +7,7 @@ import { ContentContainer } from '../../../../../components/ContentContainer';
 import { ReMark } from '../../../../../components/ReMark';
 import { Separator } from '../../../../../components/Separator';
 import { Orchestrator } from './CodeTabs/Orchestrator';
+import { MachineMemoryInterface } from './CodeTabs/MachineMemoryInterface';
 
 export const Demo: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ export const Demo: React.FC = () => {
       <ContentContainer>
         <div>
           <div className='grid grid-cols-1 gap-4'>
-            {[Orchestrator].map((item, index) => {
+            {[Orchestrator, MachineMemoryInterface].map((item, index) => {
               if (item.singlePanel) {
                 return (
                   <React.Fragment key={index.toString()}>
