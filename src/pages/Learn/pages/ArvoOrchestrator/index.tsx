@@ -57,27 +57,88 @@ export const ArvoOrchestratorPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
-              The \`ArvoOrchestrator\` is the execution engine that powers Arvo's workflow 
-              system. It's a sophisticated runtime that transforms declarative state machine 
-              definitions into production-ready, event-driven orchestrations. By bridging the 
-              gap between your workflow logic and the distributed infrastructure underneath, it 
-              handles all the operational complexity so you can focus on building reliable
-              workflows. It handles event routing and management, state persistence, state machine 
-              version management, and state machine execution error handling so your workflow 
-              logic stays clean and declarative.
+              The \`ArvoMachine\` is a declarative piece of code which defines how the workflow 
+              looks and what it should do—but it needs an execution engine that can take this 
+              definition and act on it in an Arvo-compliant, event-driven format. 
+              That execution engine is \`ArvoOrchestrator\`. It's a sophisticated runtime that 
+              transforms declarative state machine definitions into production-ready, Arvo-compliant, 
+              event-driven orchestrations. By bridging the gap between your workflow logic and the distributed 
+              infrastructure underneath, it handles all operational complexity—event routing, state 
+              persistence, version management, and error handling—so your workflow logic stays clean
+              and declarative.
             `)}
           />
         </div>
       </ContentContainer>
+      <Separator padding={18} />
       <Demo />
       <ContentContainer content>
         <div className={Md3ContentPadding}>
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
+              > Note: The following documentation is designed for production deployments or scaling requirements. These 
+              > concepts are essential for reliability engineering but unnecessary for initial exploration. If you're learning Arvo, 
+              > feel free to skip to [the next topic](${ArvoResumableLearn.link}), which covers imperative orchestration using familiar 
+              > async/await patterns. Return here when you're ready to optimize for deployment, fault tolerance, or state persistence 
+              > in databases.
+
+              <br/>
+              <br/>
+
+              # The Lifecycle
+
+              When an event arrives at the \`ArvoOrchestrator\`, it first determines whether the event is 
+              relevant by examining its type and subject. The event's \`subject\` field acts as a unique 
+              identifier that remains constant across all events belonging to the same workflow instance, 
+              following the CNCF CloudEvents specification. For relevant events, the orchestrator attempts 
+              to acquire an exclusive lock on the workflow state stored in the memory backend as a key-value pair, 
+              where the event's \`subject\` serves as the key. This locking mechanism prevents multiple 
+              instances from processing the same workflow simultaneously, ensuring consistency in distributed 
+              environments.
+
+              Once the lock is successfully acquired, the orchestrator reads the stored state to determine 
+              how to proceed. If no state exists, the event is treated as an initialization request and 
+              validated against the \`init\` schema defined in the bound \`ArvoOrchestratorContract\`. Invalid 
+              initialization events are ignored without further processing. For valid events, the orchestrator 
+              extracts the appropriate machine version from the event's \`dataschema\` or \`subject\` (which is a 
+              encoded unique string) field and begins execution. When state already exists, the orchestrator 
+              enters resume mode, validating the incoming event as a legitimate resumption trigger before loading 
+              the machine version encoded in the \`subject\` and continuing execution from where the workflow 
+              previously stopped.
+
+              After the state machine processes the event and produces output events, the orchestrator 
+              constructs properly formatted events for emission. Events destined for parent orchestrations 
+              use the initiating event's \`parentSubject$$\` field as their \`subject\` string, ensuring 
+              they route correctly to the parent workflow. This \`parentSubject$$\` is stored in the 
+              orchestration context via the memory backend so that it is persisted across event executions. 
+              System error events follow the same routing pattern. All other events receive the current 
+              orchestration's subject before being returned for emission, and the updated state is persisted 
+              to the memory backend. When the next event arrives for this workflow instance, the entire process 
+              repeats, creating a continuous cycle of event reception, state machine execution, and state 
+              persistence that enables long-running workflows to progress incrementally across distributed 
+              infrastructure without maintaining persistent execution contexts between events.
+
+              The complete execution lifecycle is illustrated in the following sequence diagram, which details 
+              every phase from event reception through state persistence and cleanup.
+
+              > **Pro Tip:** Copy the diagram definition and paste it into any AI assistant to explore specific scenarios 
+               interactively. Ask questions like "What happens during lock contention?", "How are child orchestrations initialized?", 
+               or "When do system error events get created?" to understand execution paths without manually tracing the entire flow.
+
+              <br/>
+              <br/>
+
+              \`\`\`mermaid
+              ${ExecutionDiagram}
+              \`\`\`
+              
+              <br/>
+              <br/>
+
               # The Memory Backend
 
-              Arvo's execution model for orchestrations (state machine based and imperative) is executionally 
+              Arvo's execution model for orchestrations (state machine based and imperative) is operationally 
               stateless with a start-stop pattern but logically stateful. This enables the [virtual orchestration 
               paradigm](${ArvoMentalModelLearn.link}) in Arvo. One of the bedrocks of this architecture
               is the memory backend which stores the 
@@ -277,30 +338,6 @@ export class DynamoDBMachineMemory implements IMachineMemory<Record<string, unkn
               Once an orchestration reaches failure status, all subsequent events for that orchestration instance return empty event 
               arrays. The span is marked with ERROR status, and no further state mutations occur. Failed orchestrations require administrative 
               intervention to reset or clean up, as the system will not automatically process events for failed instances.
-
-              <br/>
-
-              # Execution Flow
-
-              The \`ArvoOrchestrator\` orchestrates complex, stateful workflows by managing state machines, enforcing contracts, 
-              coordinating distributed locks, and maintaining execution context across multiple services. The sequence diagram 
-              below maps the complete execution journey—from initial event reception and subject validation through state machine 
-              execution, event creation, and state persistence. Use this diagram to understand how orchestrators handle concurrent 
-              executions, propagate parent-child relationships, manage failure states, and route events across your distributed 
-              system. Whether you're designing new orchestration patterns or debugging production workflows, this visualization 
-              reveals the critical checkpoints where validation occurs, errors are caught, and state transitions happen.
-
-              > **Pro Tip:** Copy the diagram definition and paste it into any AI assistant to explore specific scenarios 
-               interactively. Ask questions like "What happens during lock contention?", "How are child orchestrations initialized?", 
-               or "When do system error events get created?" to understand execution paths without manually tracing the entire flow.
-
-              <br/>
-              <br/>
-
-              \`\`\`mermaid
-              ${ExecutionDiagram}
-              \`\`\`
-
             `)}
           />
         </div>

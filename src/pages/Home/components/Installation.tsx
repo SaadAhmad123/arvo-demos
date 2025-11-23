@@ -177,7 +177,7 @@ export const Installation: React.FC = () => {
           <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
             <div className={Md3Cards.filled}>
               <div className={Md3Cards.inner.content}>
-                <h2 className={Md3Typography.headline.large}>Preparation</h2>
+                <ReMark content={'# Preparation'} />
                 <Separator padding={8} />
                 <p className={Md3Typography.body.medium}>
                   Before setting up Arvo, make sure your development environment has the necessary tooling in place.
@@ -191,7 +191,7 @@ export const Installation: React.FC = () => {
 
             <div className={Md3Cards.filled}>
               <div className={Md3Cards.inner.content}>
-                <h2 className={Md3Typography.headline.large}>Install Arvo</h2>
+                <ReMark content={'# Install Arvo'} />
                 <Separator padding={8} />
                 <p className={Md3Typography.body.medium}>
                   Once the environment is ready, install Arvo itself and its required core dependencies. This step
@@ -211,7 +211,7 @@ export const Installation: React.FC = () => {
             <div className={Md3Cards.filled}>
               <div className={Md3Cards.inner.content}>
                 <Label content='Optional' />
-                <h2 className={Md3Typography.headline.large}>Observability</h2>
+                <ReMark content={'# Observability'} />
                 <Separator padding={8} />
                 <p className={Md3Typography.body.medium}>
                   Monitoring and observability are first-class features in Arvo through OpenTelemetry (OTel). Depending
@@ -249,7 +249,7 @@ export const Installation: React.FC = () => {
             <div className={Md3Cards.filled}>
               <div className={Md3Cards.inner.content}>
                 <Label content='Optional' />
-                <h2 className={Md3Typography.headline.large}>Experience Telemetry</h2>
+                <ReMark content={'# Experience Telemetry'} />
                 <Separator padding={8} />
                 <p className={Md3Typography.body.medium}>
                   To view and analyze the telemetry data collected from Arvo, you need an OTel backend. While production
