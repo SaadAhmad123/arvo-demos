@@ -43,8 +43,8 @@ export const PREPARATION_PACKAGES: PkgMap = {
 };
 
 export const ARVO_PACKAGES: PkgMap = {
-  'arvo-core': '^3.0.18',
-  'arvo-event-handler': '^3.0.18',
+  'arvo-core': '^3.0.19',
+  'arvo-event-handler': '^3.0.19',
   zod: '^3.25.74',
   xstate: '^5.23.0',
   'zod-to-json-schema': '^3.24.6',
