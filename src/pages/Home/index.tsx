@@ -43,7 +43,7 @@ export const HomePage = withNavBar(() => {
       </ContentContainer>
       <Pillers />
       <ContentContainer content>
-        <div className={`${Md3ContentPadding} pb-0!`}>
+        <div className={Md3ContentPadding}>
           <ReMark
             content={cleanString(`
               # What is Arvo?

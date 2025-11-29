@@ -43,11 +43,11 @@ export const PREPARATION_PACKAGES: PkgMap = {
 };
 
 export const ARVO_PACKAGES: PkgMap = {
-  'arvo-core': '^3.0.19',
-  'arvo-event-handler': '^3.0.19',
+  'arvo-core': '^3.0.22',
+  'arvo-event-handler': '^3.0.22',
   zod: '^3.25.74',
-  xstate: '^5.23.0',
-  'zod-to-json-schema': '^3.24.6',
+  xstate: '5.24.0',
+  'zod-to-json-schema': '^3.25.0',
 };
 
 export const OTEL_BROWSER_PACKAGES: PkgMap = {
@@ -105,7 +105,7 @@ export const OTEL_SERVER_PACKAGES: PkgMap = {
   '@opentelemetry/sdk-metrics': '^2.0.1',
   '@opentelemetry/sdk-node': '^0.203.0',
   '@opentelemetry/sdk-trace-node': '^2.0.1',
-  '@opentelemetry/semantic-conventions': '^1.36.0',
+  '@opentelemetry/semantic-conventions': '^1.38.0',
 };
 
 const OTEL_SERVER_CODE_SNIPPET = `
