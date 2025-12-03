@@ -10,7 +10,7 @@ export const TwoHandlerBrokerTab: DemoCodePanel = {
       events to their intended handlers. You can explore the complete broker design philosophy in the 
       [dedicated documentation](/advanced/event-routing-and-brokers).
 
-      **The essence is elegantly simple:** regardless of system complexity or scale, if your broker can match 
+      **The essence is elegantly simple** that regardless of system complexity or scale, if your broker can match 
       the \`event.to\` field of an \`ArvoEvent\` to a registered handler's \`handler.source\` value, you 
       have everything needed. Complex routing logic is managed by orchestration event handlers, making the 
       broker design exceptionally lightweight and scalable.

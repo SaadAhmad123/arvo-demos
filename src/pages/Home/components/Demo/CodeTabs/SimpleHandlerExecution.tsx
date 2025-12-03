@@ -18,8 +18,8 @@ export const SimpleHandlerExecutionTab: DemoCodePanel = {
     Every event handler exposes a consistent \`.execute()\` function that accepts a properly formatted 
     \`ArvoEvent\` and returns a list of events along with optional metadata. This uniformity extends 
     across all handler types, from basic request-response handlers to state machine-based and imperative 
-    orchestration handlers. They all inherit from \`AbstractArvoEventHandler\` and share the same 
-    execution signature: \`(ArvoEvent) => Promise<{events: ArvoEvent[]}>\`
+    orchestration handlers. They all implement \`IArvoEventHandler\` interface and share the same 
+    execution signature, \`(ArvoEvent) => Promise<{events: ArvoEvent[]}>\`
 
 
     ## Event Creation Factory
@@ -40,6 +40,7 @@ import { addContract, addHandler } from './handlers/add.handler.js';
 
 export async function executeAddHandler() {
   const event = createArvoEventFactory(addContract.version('1.0.0')).accepts({
+    // This can be any valid string. It denotes the source of the initiating event  
     source: 'test.test.test',
     data: {
       numbers: [1, 2],
