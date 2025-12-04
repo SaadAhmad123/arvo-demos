@@ -28,10 +28,6 @@ export const Demo: React.FC = () => {
               through a fully functional EDA application that runs and tests locally without requiring any 
               cloud infrastructure.
 
-              As you progress through the documentation, you'll discover how this same console application 
-              can be deployed as a web service using frameworks like HonoJS, then scaled to distributed 
-              microservices architectures with event brokers—all without modifying your business logic.
-
               > **Key Concept**: Arvo's architecture is elegantly simple. Every functional component is an 
               > event handler that communicates through \`ArvoEvent\` messages. Handlers maintain cohesion 
               > through enforced contracts called \`ArvoContract\`, ensuring reliable interactions without 
