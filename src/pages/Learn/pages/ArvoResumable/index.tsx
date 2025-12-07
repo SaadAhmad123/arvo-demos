@@ -16,6 +16,7 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
+import { ExecutionDiagram } from './ExecutionDiagram';
 
 export const ArvoResumablePage = withNavBar(() => {
   return (
@@ -131,6 +132,88 @@ export const ArvoResumablePage = withNavBar(() => {
       </ContentContainer>
       <Separator padding={18} />
       <Demo />
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              # Lock Duration and the Collect-Before-Process Pattern
+
+              When \`ArvoResumable\` eventually get deployed and executes in distributed environments, it 
+              acquires an optimistic lock to ensure consistent state during event processing. This lock is 
+              held from the moment your handler begins execution until state is persisted. Operations 
+              with high or unpredictable latency like external API requests, very complex database queries, or complex 
+              computations can hold this lock for extended periods, causing other events for the same workflow to queue up, 
+              timeout, and fail.
+
+              Consider a workflow where each service response triggers an immediate expensive computation. 
+              If that computation takes 15 seconds and you have three services executing in parallel, each 
+              result holds the lock for those 15 seconds. The second service result arrives while the first 
+              computation is still processing and must wait. The third result waits even longer. This creates 
+              cascading delays where events timeout waiting for the lock, triggering retries that further 
+              increase contention. The operational complexity becomes significant as you need sophisticated 
+              retry logic, timeout tuning, and monitoring to handle these failures.
+
+              The weighted average example demonstrates Arvo's recommended pattern by collecting all 
+              required data through fast operations before performing expensive processing. When a product 
+              calculation completes, the handler simply checks if all results have arrived. This check 
+              takes milliseconds. The lock is acquired, the event is registered in the collected events 
+              map, and the lock is immediately released. The handler returns nothing, entering the implicit 
+              wait state. Only when the final product result arrives and the handler detects all data is 
+              ready does it proceed to the aggregation step. At this point no more events are expected, 
+              so performing the expensive addition and averaging calculations holds the lock without risk 
+              of contention.
+
+              This collect-before-process approach transforms lock hold times from potentially tens of 
+              seconds per event to mere milliseconds for data collection, with expensive operations only 
+              executing once all required data is available. The result is dramatically reduced operational 
+              complexity, improved throughput across your distributed system, and elimination of timeout 
+              related failures that would otherwise require complex retry mechanisms.
+
+              <br/>
+              <br/>
+
+              # Internal Architecture
+
+              \`ArvoResumable\` shares the same foundational architecture as \`ArvoOrchestrator\`—both use 
+              identical memory backends, event handling strategies, and lifecycle management. The key 
+              difference lies in how they execute handler logic. While ArvoOrchestrator runs declarative 
+              state machines, ArvoResumable executes imperative async functions directly.
+
+              For comprehensive details on memory management, event lifecycle, distributed locking, and 
+              observability patterns, see the [${ArvoOrchestratorLearn.name}](${ArvoOrchestratorLearn.link}) 
+              documentation. These concepts apply identically to both orchestration approaches.
+
+              ### Execution Flow
+
+              The diagram below illustrates ArvoResumable's internal execution model, showing how events 
+              trigger handler execution, state persistence, and service emission in the start-stop pattern:
+              
+              <br/>
+              <br/>
+
+              \`\`\`mermaid
+              ${ExecutionDiagram}
+              \`\`\`
+
+              <br/>
+              <br/>
+
+              **Key Differences from ArvoOrchestrator:**
+
+              - **Handler Resolution**: \`ArvoOrchestrator\` resolves XState machine transitions; \`ArvoResumable\` 
+                executes your async function directly
+              - **State Management**: \`ArvoOrchestrator\` maintains machine state internally; \`ArvoResumable\` 
+                persists whatever context object you return
+              - **Execution Model**: Both start-stop, but \`ArvoResumable\` gives you explicit control over 
+                what happens at each resume point
+
+              Everything else—memory persistence, distributed locking, event validation, telemetry, error 
+              boundaries—works identically between the two orchestration primitives.
+            `)}
+          />
+        </div>
+      </ContentContainer>
       <ContentContainer content>
         <div className={`${Md3ContentPadding}`}>
           <ReMark

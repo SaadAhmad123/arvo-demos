@@ -118,6 +118,7 @@ const orchestratorUnitTest: ArvoTestSuite = {
               subject: prev?.[0]?.data?.parentSubject$$ ?? prev?.[0]?.subject ?? undefined,
               parentid: prev?.[0]?.id ?? undefined,
               to: prev?.[0]?.source ?? undefined,
+              accesscontrol: prev?.[0]?.accesscontrol ?? undefined,
               // Defining the next event data
               type: 'evt.human.approval.success',
               source: TEST_EVENT_SOURCE,
@@ -238,6 +239,7 @@ const orchestratorIntegrationTest: ArvoTestSuite = {
               subject: prev?.[0]?.data?.parentSubject$$ ?? prev?.[0]?.subject ?? undefined,
               parentid: prev?.[0]?.id ?? undefined,
               to: prev?.[0]?.source ?? undefined,
+              accesscontrol: prev?.[0]?.accesscontrol ?? undefined,
               // Defining the next event data
               type: 'evt.human.approval.success',
               source: TEST_EVENT_SOURCE,

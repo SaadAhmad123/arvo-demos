@@ -22,7 +22,7 @@ export const ResumableContract: DemoCodePanel = {
   `),
   tabs: [
     {
-      title: 'orchestrator.demo/index.ts',
+      title: 'resumable.demo/contract.ts',
       lang: 'ts',
       code: `
 import {
