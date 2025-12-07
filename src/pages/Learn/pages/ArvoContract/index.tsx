@@ -10,6 +10,7 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
+import { RiDoubleQuotesL } from 'react-icons/ri';
 
 export const ArvoContractPage = withNavBar(() => {
   return (
@@ -43,6 +44,29 @@ export const ArvoContractPage = withNavBar(() => {
         </section>
       </ContentContainer>
       <Separator padding={18} />
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <blockquote>
+            <RiDoubleQuotesL className='text-on-surface text-4xl opacity-50 mb-2' />
+            <p className={Md3Typography.headline.large}>
+              Complexity is not difficulty. Complexity isn't a system's breadth, either.{' '}
+              <strong>Complexity is when systems interact with each other</strong>. A complex system can become{' '}
+              unreasonable.
+            </p>
+            <footer className={`${Md3Typography.headline.small} opacity-75 mt-4`}>
+              —{' '}
+              <a
+                target='_blank'
+                href='https://youtu.be/czzAVuVz7u4?si=2wNGiLW8puZafi4P'
+                rel='noreferrer'
+                className='underline hover:text-blue-500 cursor-pointer'
+              >
+                Peter van Hardenberg
+              </a>
+            </footer>
+          </blockquote>
+        </div>
+      </ContentContainer>
       <ContentContainer content>
         <div className={Md3ContentPadding}>
           <ReMark

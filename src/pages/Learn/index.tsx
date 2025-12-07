@@ -4,6 +4,7 @@ import { Md3Typography } from '../../classNames/typography';
 import { ContentContainer } from '../../components/ContentContainer';
 import { LearningTiles } from '../../components/LearningTiles';
 import {
+  AdvancedLearnPattern,
   ArvoContractLearn,
   ArvoEventFactoryLearn,
   ArvoEventHandlerLearn,
@@ -12,6 +13,7 @@ import {
   ArvoMentalModelLearn,
   ArvoOrchestratorLearn,
   ArvoResumableLearn,
+  GettingStartedLearn,
 } from '../../components/LearningTiles/data';
 import { withNavBar } from '../../components/Navbar/withNavBar';
 import { PageNavigation } from '../../components/PageNavigation';
@@ -123,15 +125,14 @@ export const LearnPage = withNavBar(() => {
       <Separator padding={18} />
       <PageNavigation
         previous={{
-          link: '/',
-          heading: 'Getting Started',
-          content: 'Set up your environment to start building with Arvo. See a getting started example to get inspired',
+          link: GettingStartedLearn.link,
+          heading: GettingStartedLearn.name,
+          content: GettingStartedLearn.summary,
         }}
         next={{
-          link: '/advanced',
-          heading: 'Advanced Patterns',
-          content:
-            'Learn about advanced Arvo patterns which will enable you to understand operational and scalability aspect of Arvo',
+          link: AdvancedLearnPattern.link,
+          heading: AdvancedLearnPattern.name,
+          content: AdvancedLearnPattern.summary,
         }}
       />
       <Separator padding={54} />

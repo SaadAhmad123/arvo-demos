@@ -12,7 +12,7 @@ export const ExecutingYourHandler: DemoCodePanel = {
 
     This uniformity extends across all handler types in Arvo—from basic request-response 
     handlers to state machine-based and imperative orchestration handlers. They all 
-    inherit from \`AbstractArvoEventHandler\` and share the same execution signature: 
+    inherit from \`IArvoEventHandler\` and share the same execution signature: 
     \`(ArvoEvent) => Promise<{events: ArvoEvent[]}>\`. This consistency enables 
     predictable integration patterns regardless of handler complexity.
 

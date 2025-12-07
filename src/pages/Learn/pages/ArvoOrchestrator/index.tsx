@@ -23,12 +23,12 @@ export const ArvoOrchestratorPage = withNavBar(() => {
       <Separator padding={8} />
       <ContentContainer>
         <section
-          className='grid grid-cols-1 xl:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'
+          className='grid grid-cols-1 lg:grid-cols-2 gap-2 min-h-[600px] lg:min-h-[500px]'
           aria-labelledby='hero-title'
         >
           <div className={`${Md3Cards.filled} flex flex-col justify-center`}>
             <div className={`${Md3Cards.inner.content}`}>
-              <h1 className={`${Md3Typography.display.large} text-on-surface`}>{ArvoOrchestratorLearn.name}</h1>
+              <h1 className={`${Md3Typography.display.medium} text-on-surface`}>{ArvoOrchestratorLearn.name}</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
                 An execution engine that brings state machines to life in Arvo's event-driven ecosystem
@@ -214,6 +214,7 @@ export const ArvoOrchestratorPage = withNavBar(() => {
             `)}
           />
           <Separator padding={32} />
+
           <ReMark
             content={`
 \`\`\`typescript
@@ -260,6 +261,7 @@ export class DynamoDBMachineMemory implements IMachineMemory<Record<string, unkn
 \`\`\`
               `}
           />
+
           <Separator padding={32} />
           <ReMark
             bodyTextSize='large'

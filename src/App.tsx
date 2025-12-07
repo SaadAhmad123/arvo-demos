@@ -15,6 +15,7 @@ import { ArvoEventHandlerPage } from './pages/Learn/pages/ArvoEventHandler';
 import { ArvoMachinePage } from './pages/Learn/pages/ArvoMachine';
 import { ArvoMentalModelPage } from './pages/Learn/pages/ArvoMentalModel';
 import { ArvoOrchestratorPage } from './pages/Learn/pages/ArvoOrchestrator';
+import { ArvoResumablePage } from './pages/Learn/pages/ArvoResumable';
 
 export default () => {
   useSystemTheme();
@@ -30,7 +31,7 @@ export default () => {
       <Route path='/learn/arvo-event-handler' element={<ArvoEventHandlerPage />} />
       <Route path='/learn/arvo-machine' element={<ArvoMachinePage />} />
       <Route path='/learn/arvo-orchestrator' element={<ArvoOrchestratorPage />} />
-      <Route path='/learn/arvo-resumable' element={<LearnPage />} />
+      <Route path='/learn/arvo-resumable' element={<ArvoResumablePage />} />
       <Route path='/advanced' element={<AdvancedPage />} />
       <Route path='/advanced/arvo-event-data-field-deep-dive' element={<ArvoEventDataFieldDeepDivePage />} />
       <Route path='/advanced/event-routing-and-brokers' element={<EventRoutingAndBrokersPage />} />

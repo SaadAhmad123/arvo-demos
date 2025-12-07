@@ -5,7 +5,7 @@ export const FirstEventHandler: DemoCodePanel = {
   heading: 'Your First Event Handler',
   description: cleanString(`
     The \`ArvoEventHandler\` class in the \`arvo-event-handler\` package extends 
-    [\`AbstractArvoEventHandler\`](https://saadahmad123.github.io/arvo-event-handler/classes/index.AbstractArvoEventHandler.html), 
+    [\`IArvoEventHandler\`](https://saadahmad123.github.io/arvo-event-handler/interfaces/index.IArvoEventHandler.html), 
     which serves as the foundation for all Arvo event handler implementations. While 
     direct instantiation is possible, the \`createArvoEventHandler\` factory method 
     provides a more consistant and ergonomic interface by handling default values and simplifying 

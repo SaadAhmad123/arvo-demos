@@ -54,9 +54,9 @@ export const ArvoOrchestratorLearn: LearningTileData = {
 };
 
 export const ArvoResumableLearn: LearningTileData = {
-  name: 'The Agent',
+  name: 'The Resumable',
   summary:
-    'Imperative orchestration handler using familiar async/await patterns to manage distributed workflows with explicit control and simplified debugging.',
+    'Imperative orchestration handler using familiar coding patterns to build dynamic control flows which react to their internal state and incoming events.',
   link: '/learn/arvo-resumable',
 };
 
@@ -100,4 +100,23 @@ export const MultiDomainBroadcastingLearn: LearningTileData = {
   summary:
     'Explore multi-domain event emission for broadcasting events across different brokers, topics, or environments, enabling cross-system communication, human-in-the-loop workflows, and integration with external services while maintaining clear operational boundaries.',
   link: '/advanced/multi-domain-broadcasting',
+};
+
+export const GettingStartedLearn: LearningTileData = {
+  link: '/',
+  name: 'Getting Started',
+  summary: 'Set up your environment to start building with Arvo. See a getting started example to get inspired',
+};
+
+export const AdvancedLearnPattern: LearningTileData = {
+  link: '/advanced',
+  name: 'Advanced Patterns',
+  summary:
+    'Learn about advanced Arvo patterns which will enable you to understand operational and scalability aspect of Arvo',
+};
+
+export const ArvoLearn: LearningTileData = {
+  link: '/learn',
+  name: 'Learn Arvo',
+  summary: "Let's learn more about Arvo and how to build your next application with it.",
 };

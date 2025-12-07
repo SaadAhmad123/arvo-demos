@@ -45,7 +45,7 @@ export const ArvoMentalModelPage = withNavBar(() => {
       <Separator padding={18} />
       <ContentContainer content>
         <div className={Md3ContentPadding}>
-          <Label content={`${readingStats.wordCount} words · ${readingStats.estimatedMinutes} min read`}/>
+          <Label content={`${readingStats.wordCount} words · ${readingStats.estimatedMinutes} min read`} />
           <Separator padding={16} />
           <h1 className={Md3Typography.headline.small}>
             Arvo is <strong>not an infrastructure layer</strong>—it's an application-layer TypeScript toolkit that{' '}

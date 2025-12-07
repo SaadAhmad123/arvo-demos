@@ -300,7 +300,7 @@ export const ArvoEventDataFieldDeepDivePage = withNavBar(() => {
 
               This dual role creates clear event trails and enables automatic response routing. 
               You can access a handler's source through the \`handler.source\` property, as all Arvo handlers 
-              inherit from \`AbstractArvoEventHandler\` and have a consistent interface.
+              inherit from \`IArvoEventHandler\` and have a consistent interface.
 
               > The Arvo event handlers will automatically populate the event \`source\` field for all the events
               > them emit based on \`this.<handler>.source\`.

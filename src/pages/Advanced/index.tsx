@@ -5,14 +5,15 @@ import { ContentContainer } from '../../components/ContentContainer';
 import { LearningTiles } from '../../components/LearningTiles';
 import {
   AgenticResumableDesignLearn,
-  AgenticSystemExampleLearn,
   ArvoEventDataFieldDeepDiveLearn,
-  ErrorBoundariesLearn,
+  ArvoLearn,
   EventRoutingAndBrokerInArvoLearn,
-  MultiDomainBroadcastingLearn,
 } from '../../components/LearningTiles/data';
 import { withNavBar } from '../../components/Navbar/withNavBar';
+import { PageNavigation } from '../../components/PageNavigation';
+import { ReMark } from '../../components/ReMark';
 import { Separator } from '../../components/Separator';
+import { cleanString } from '../../utils';
 
 export const AdvancedPage = withNavBar(() => {
   return (
@@ -50,17 +51,31 @@ export const AdvancedPage = withNavBar(() => {
       <Separator padding={18} />
       <ContentContainer content>
         <LearningTiles
-          data={[
-            EventRoutingAndBrokerInArvoLearn,
-            ArvoEventDataFieldDeepDiveLearn,
-            AgenticResumableDesignLearn,
-            AgenticSystemExampleLearn,
-            ErrorBoundariesLearn,
-            MultiDomainBroadcastingLearn,
-          ]}
+          data={[EventRoutingAndBrokerInArvoLearn, ArvoEventDataFieldDeepDiveLearn, AgenticResumableDesignLearn]}
         />
       </ContentContainer>
-      <Separator padding={72} />
+      <Separator padding={18} />
+      <ContentContainer content>
+        <div className={`${Md3ContentPadding}`}>
+          <ReMark
+            bodyTextSize='large'
+            content={cleanString(`
+              # Learn More
+      
+              Continue exploring additional concepts to deepen your understanding of Arvo and 
+              its ecosystem.
+            `)}
+          />
+        </div>
+      </ContentContainer>
+      <PageNavigation
+        previous={{
+          link: ArvoLearn.link,
+          heading: ArvoLearn.name,
+          content: ArvoLearn.summary,
+        }}
+      />
+      <Separator padding={54} />
     </main>
   );
 });

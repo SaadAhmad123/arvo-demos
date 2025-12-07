@@ -1,7 +1,7 @@
 import { Md3ContentPadding } from '../../classNames';
 import { Md3Typography } from '../../classNames/typography';
 import { ContentContainer } from '../../components/ContentContainer';
-import { ArvoMentalModelLearn } from '../../components/LearningTiles/data';
+import { ArvoLearn, ArvoMentalModelLearn } from '../../components/LearningTiles/data';
 import { withNavBar } from '../../components/Navbar/withNavBar';
 import { PageNavigation } from '../../components/PageNavigation';
 import { ReMark } from '../../components/ReMark';
@@ -97,9 +97,9 @@ export const HomePage = withNavBar(() => {
       <Separator padding={18} />
       <PageNavigation
         next={{
-          link: '/learn',
-          heading: 'Learn Arvo',
-          content: "Let's learn more about Arvo and how to build your next application with it.",
+          link: ArvoLearn.link,
+          heading: ArvoLearn.name,
+          content: ArvoLearn.summary,
         }}
       />
       <Separator padding={54} />

@@ -141,15 +141,17 @@ export const ReMark: React.FC<{
             return <Mermaid chart={content.trim()} />;
           }
           return (
-            <CodeBlock
-              tabs={[
-                {
-                  title: className?.split('-')?.[1] ?? 'code',
-                  lang: (className?.split('-')?.[1] ?? 'typescript') as BundledLanguage,
-                  code: content,
-                },
-              ]}
-            />
+            <div className='grid grid-cols-1'>
+              <CodeBlock
+                tabs={[
+                  {
+                    title: className?.split('-')?.[1] ?? 'code',
+                    lang: (className?.split('-')?.[1] ?? 'typescript') as BundledLanguage,
+                    code: content,
+                  },
+                ]}
+              />
+            </div>
           );
         },
       }}
