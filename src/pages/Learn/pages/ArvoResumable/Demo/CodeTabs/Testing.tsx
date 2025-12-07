@@ -83,7 +83,6 @@ const resumableIntegrationTest: ArvoTestSuite = {
         productHandler(),
         weightedAverageResumable({ memory }),
       ], {
-        // deno-lint-ignore require-await
         onDomainedEvents: async ({ event }) => {
           domainedEvents.push(event);
         },
