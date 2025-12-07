@@ -52,18 +52,21 @@ export const ARVO_PACKAGES: PkgMap = {
 
 export const OTEL_BROWSER_PACKAGES: PkgMap = {
   '@opentelemetry/api': '^1.9.0',
-  '@opentelemetry/context-zone': '^2.1.0',
-  '@opentelemetry/exporter-trace-otlp-http': '^0.205.0',
-  '@opentelemetry/instrumentation': '^0.205.0',
-  '@opentelemetry/instrumentation-document-load': '^0.50.0',
-  '@opentelemetry/resources': '^2.1.0',
   '@opentelemetry/sdk-trace-web': '^2.1.0',
+  '@opentelemetry/context-zone': '^2.1.0',
+  '@opentelemetry/instrumentation': '^0.205.0',
+  '@opentelemetry/resources': '^2.1.0',
   '@opentelemetry/semantic-conventions': '^1.37.0',
+  '@opentelemetry/exporter-trace-otlp-http': '^0.205.0',
 };
 
 const OTEL_BROWSER_CODE_SNIPPET = `
-// Run this code in your application \`index.tsx\` or equivalent. In case of NextJS
-// see NextJS Otel documentation. This code sets up the OTEL connection to the OTEL collector
+/**
+ * Run this code in your application \`index.tsx\` or equivalent. 
+ * 
+ * In case of NextJS see NextJS Otel documentation. This code sets 
+ * up the OTEL connection to the OTEL collector
+ */
 import { WebTracerProvider, ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-web';
 import { ZoneContextManager } from '@opentelemetry/context-zone';
 import { registerInstrumentations } from '@opentelemetry/instrumentation';
@@ -71,11 +74,8 @@ import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { OTLPTraceExporter as HTTPExporter } from '@opentelemetry/exporter-trace-otlp-http';
 
-// Setting it to false will log the telemetry data to broswer console
-const exportToJaeger = true;
 const serviceName = 'arvo-browser';
-
-const httpExporter = new HTTPExporter({
+const jaegerExporter = new HTTPExporter({
   url: 'http://localhost:4318/v1/traces',   // Jaeger HTTP Trace endpoint
 });
 
@@ -84,7 +84,7 @@ const provider = new WebTracerProvider({
     [ATTR_SERVICE_NAME]: serviceName,
   }),
   spanProcessors: [
-    exportToJaeger ? new SimpleSpanProcessor(httpExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
+    new SimpleSpanProcessor(jaegerExporter)
   ],
 });
 
@@ -99,39 +99,32 @@ registerInstrumentations({
 
 export const OTEL_SERVER_PACKAGES: PkgMap = {
   '@opentelemetry/api': '^1.9.0',
-  '@opentelemetry/auto-instrumentations-node': '^0.62.1',
-  '@opentelemetry/exporter-trace-otlp-grpc': '^0.203.0',
-  '@opentelemetry/resources': '^2.0.1',
-  '@opentelemetry/sdk-metrics': '^2.0.1',
-  '@opentelemetry/sdk-node': '^0.203.0',
-  '@opentelemetry/sdk-trace-node': '^2.0.1',
+  '@opentelemetry/exporter-trace-otlp-http': '^0.208.0',
+  '@opentelemetry/resources': '^2.2.0',
+  '@opentelemetry/sdk-node': '^0.208.0',
+  '@opentelemetry/sdk-trace-node': '^2.2.0',
   '@opentelemetry/semantic-conventions': '^1.38.0',
 };
 
 const OTEL_SERVER_CODE_SNIPPET = `
-import { OTLPTraceExporter as GRPCTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { BatchSpanProcessor, ConsoleSpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-node';
+import { OTLPTraceExporter as HTTPExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-node';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 
-// Setting it to false will log the telemetry data to broswer console
-const exportToJaeger = true;
 const serviceName = 'arvo-node';
-
-// The GRPC export is responsible to export telemetry data to the 
-// OTel collector (in this case Jaeger)
-const grpcExporter = new GRPCTraceExporter();
+const jaegerExporter = new HTTPExporter({
+  url: 'http://localhost:4318/v1/traces',   // Jaeger HTTP Trace endpoint
+});
 
 export const telemetrySdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: serviceName,
   }),
   spanProcessors: [
-    exportToJaeger ? new BatchSpanProcessor(grpcExporter) : new SimpleSpanProcessor(new ConsoleSpanExporter()),
+    new SimpleSpanProcessor(jaegerExporter),
   ],
-  instrumentations: [getNodeAutoInstrumentations()], // Comment this out - if you only want to see Arvo traces
 });
 
 // Call this function in your application 'index.ts'
@@ -226,7 +219,7 @@ export const Installation: React.FC = () => {
                 {
                   lang: 'bash' as const,
                   title: 'Server',
-                  code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_SERVER_PACKAGES))}`,
+                  code: `${PM_INSTALL_PREFIX.pnpm.prod} --save-dev \\\n${withContinuations(mapToPkgLines(OTEL_SERVER_PACKAGES))}`,
                 },
                 {
                   lang: 'ts' as const,
@@ -236,7 +229,7 @@ export const Installation: React.FC = () => {
                 {
                   lang: 'bash' as const,
                   title: 'Client',
-                  code: `${PM_INSTALL_PREFIX.pnpm.prod} \\\n${withContinuations(mapToPkgLines(OTEL_BROWSER_PACKAGES))}`,
+                  code: `${PM_INSTALL_PREFIX.pnpm.prod} --save-dev \\\n${withContinuations(mapToPkgLines(OTEL_BROWSER_PACKAGES))}`,
                 },
                 {
                   lang: 'ts' as const,
@@ -265,14 +258,11 @@ export const Installation: React.FC = () => {
                   lang: 'bash' as const,
                   title: 'Jaeger (Docker)',
                   code: [
-                    '# Start Jaeger all‑in‑one locally',
+                    '# Start Jaeger all-in-one locally',
                     'docker run --rm \\',
-                    '  -e COLLECTOR_ZIPKIN_HOST_PORT=:9411 \\',
                     '  -p 16686:16686 \t# Web UI',
-                    '  -p 4317:4317   \t# OTLP gRPC',
                     '  -p 4318:4318   \t# OTLP HTTP',
-                    '  -p 9411:9411   \t# Zipkin',
-                    '  jaegertracing/all-in-one:latest',
+                    '  cr.jaegertracing.io/jaegertracing/jaeger:2.10.0',
                   ].join('\n'),
                 },
               ]}
