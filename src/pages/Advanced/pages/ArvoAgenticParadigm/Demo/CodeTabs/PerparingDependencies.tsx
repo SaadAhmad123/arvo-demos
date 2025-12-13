@@ -1,10 +1,5 @@
 import { cleanString } from '../../../../../../utils';
-import {
-  ARVO_PACKAGES,
-  OTEL_BROWSER_PACKAGES,
-  OTEL_SERVER_PACKAGES,
-  buildInstallTabs,
-} from '../../../../../Home/components/Installation';
+import { ARVO_PACKAGES, buildInstallTabs } from '../../../../../Home/components/Installation';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const PreparingDependencies: DemoCodePanel = {
@@ -23,13 +18,8 @@ export const PreparingDependencies: DemoCodePanel = {
   `),
   tabs: buildInstallTabs({
     ...{
-      openai: '^5.22.0',
-      '@anthropic-ai/sdk': '^0.57.0',
-      '@arizeai/openinference-semantic-conventions': '^2.1.1',
-      '@modelcontextprotocol/sdk': '^1.18.2',
+      '@arvo-tools/agentic': '^1.2.6',
     },
     ...ARVO_PACKAGES,
-    ...OTEL_BROWSER_PACKAGES,
-    ...OTEL_SERVER_PACKAGES,
   }),
 };
