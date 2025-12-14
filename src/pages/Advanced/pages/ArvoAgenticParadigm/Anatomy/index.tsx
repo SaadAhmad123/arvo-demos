@@ -41,7 +41,7 @@ export const ArvoAgentAnatomy: React.FC = () => {
   return (
     <>
       <section className='grid grid-cols-1 border border-outline/20 bg-surface-container-lowest rounded-3xl overflow-x-auto '>
-        <div className='min-w-[800px]'>
+        <div className='min-w-[1000px]'>
           <div className='grid grid-cols-12 gap-3 p-4 text-on-surface'>
             <div className='col-span-12 text-lg flex items-center justify-start gap-2'>
               <CopyButton

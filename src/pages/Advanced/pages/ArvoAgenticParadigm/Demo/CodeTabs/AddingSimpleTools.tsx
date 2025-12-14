@@ -16,7 +16,7 @@ export const AddingSimpleTools: DemoCodePanel = {
     Once defined, tools are registered in the agent's \`tools\` configuration. The Actions Registry makes 
     them available to the LLM during execution. Notice that the context builder receives a \`tools\` 
     parameter exposing all registered tools. This lets you reference tool names safely in your system 
-    prompt, as the Actions Registry may transform tool names internally.
+    prompt, as the Actions Registry transforms tool names internally.
 
     When the LLM decides to use a tool, the Actions Engine validates the input against the tool's schema, 
     executes the function, and appends the result to the conversation history. The agent then continues 
@@ -80,7 +80,7 @@ export const simpleAgent: EventHandlerFactory
     },
     memory,
     llm: openaiLLMIntegration(
-      new OpenAI.OpenAI({ apiKey: Deno.env.get('OPENAI_API_KEY') }),
+      new OpenAI.OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
     ),
     handler: {
       '1.0.0': {
@@ -95,6 +95,62 @@ export const simpleAgent: EventHandlerFactory
       },
     },
   });
+      `,
+    },
+    {
+      title: 'main.ts',
+      lang: 'ts',
+      code: `
+import { simpleAgent, simpleAgentContract } from './handlers/simple.agent.ts';
+import { createArvoEventFactory } from 'arvo-core';
+import { SimpleMachineMemory } from 'arvo-event-handler';
+
+async function main() {
+  const memory = new SimpleMachineMemory();
+  
+  const event = createArvoEventFactory(simpleAgentContract.version('1.0.0'))
+    .accepts({
+      source: 'test.application',
+      data: {
+        parentSubject$$: null,
+        message: 'What day is today? Show me the exact tool output you received.',
+      },
+    });
+
+  const { events } = await simpleAgent({ memory }).execute(event);
+
+  for (const evt of events) {
+    console.log(evt.toString(2));
+  }
+}
+
+main();
+
+/*
+  Example output showing the agent used the tool:
+
+  {
+    "id": "aa802800-93a8-435e-8414-77be758f7cfe",
+    "source": "arvo.orc.agent.simple",
+    "specversion": "1.0",
+    "type": "arvo.orc.agent.simple.done",
+    "subject": "eJw9jt0KgzAMhd8l17ZULJv6NrGmW6A/o0YZiO++sMFuzkW+8J1zQm3hSZs0lNpgPqFgJpgB21GtMosPKmI3zq9E0MFBbeNa9KO3zjq4OqA3hV2+xxN4VTQ439M4oOnDFI1fJm9wGIPBKSw3R3cfXVQXFxb+9YLoBvsPhWvNyKose0pakklQ/df1AW/TOh0=",
+    "datacontenttype": "application/cloudevents+json;charset=UTF-8;profile=arvo",
+    "dataschema": "#/org/amas/agent/simple/1.0.0",
+    "data": {
+      "response": "Today is December 13, 2025. I determined this by using the internal tool that provides the current date and time. The exact output from the tool was \"2025-12-13T10:01:11.403Z\"."
+    },
+    "time": "2025-12-13T21:01:13.248+00:00",
+    "to": "test.test.test",
+    "accesscontrol": null,
+    "redirectto": "arvo.orc.agent.simple",
+    "executionunits": 286,
+    "traceparent": null,
+    "tracestate": null,
+    "parentid": "c532defc-4f6d-481f-ad55-bfa15f53086a",
+    "domain": null
+  }
+*/
       `,
     },
   ],

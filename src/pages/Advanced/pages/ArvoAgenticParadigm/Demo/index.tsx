@@ -4,7 +4,10 @@ import { SettingUpArvoAgentic } from './CodeTabs/SettingUpArvoAgentic';
 import { DemoView } from '../../../../../components/DemoView';
 import { ExecutingFirstAgent } from './CodeTabs/ExecutingFirstAgent';
 import { AddingSimpleTools } from './CodeTabs/AddingSimpleTools';
+import { AddingMcpServer } from './CodeTabs/AddingMcpServer';
 
 export const Demo: React.FC = () => (
-  <DemoView panels={[PreparingDependencies, SettingUpArvoAgentic, ExecutingFirstAgent, AddingSimpleTools]} />
+  <DemoView
+    panels={[PreparingDependencies, SettingUpArvoAgentic, ExecutingFirstAgent, AddingSimpleTools, AddingMcpServer]}
+  />
 );
