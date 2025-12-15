@@ -21,6 +21,15 @@ export const AddingSimpleTools: DemoCodePanel = {
     When the LLM decides to use a tool, the Actions Engine validates the input against the tool's schema, 
     executes the function, and appends the result to the conversation history. The agent then continues 
     reasoning with the tool's output available in context.
+
+    ### Controlling Tool Interaction Cycles
+
+    The \`maxToolInteractions\` parameter limits how many tool execution cycles the agent can perform, 
+    including self-correction loops triggered by validation errors. This prevents runaway execution where 
+    the agent gets stuck in infinite reasoning loops or consumes excessive tokens trying to solve 
+    unsolvable problems. The default limit is 5 cycles. When the quota is exhausted, the Action Interaction 
+    Manager injects a termination prompt forcing the LLM to provide a final answer without additional tool 
+    calls. You can adjust this limit based on your use case complexity and cost tolerance.
   `),
   tabs: [
     {
@@ -78,6 +87,9 @@ export const simpleAgent: EventHandlerFactory
     tools: {
       currentDateTool,
     },
+    // Limiting the max interaction cycle (including the error feedback)
+    // By default, this is 5
+    maxToolInteractions: 10,
     memory,
     llm: openaiLLMIntegration(
       new OpenAI.OpenAI({ apiKey: process.env.OPENAI_API_KEY }),

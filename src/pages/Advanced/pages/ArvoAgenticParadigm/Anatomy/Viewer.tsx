@@ -1,6 +1,6 @@
+import { IoClose } from 'react-icons/io5';
 import { Md3Cards } from '../../../../../classNames/cards';
 import { ReMark } from '../../../../../components/ReMark';
-import { IoClose } from 'react-icons/io5';
 
 interface TopicViewerProps {
   content: string;

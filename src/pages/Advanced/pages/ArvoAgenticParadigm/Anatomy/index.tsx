@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Md3Cards } from '../../../../../classNames/cards';
+import { CopyButton } from '../../../../../components/buttons/Copy';
+import { cleanString } from '../../../../../utils';
 import { TopicViewer } from './Viewer';
 import { topicsMap } from './topics';
-import { CopyButton } from '../../../../../components/buttons/Copy';
 
 export const ArvoAgentAnatomy: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useState<keyof typeof topicsMap | null>(null);
@@ -45,9 +46,15 @@ export const ArvoAgentAnatomy: React.FC = () => {
           <div className='grid grid-cols-12 gap-3 p-4 text-on-surface'>
             <div className='col-span-12 text-lg flex items-center justify-start gap-2'>
               <CopyButton
-                content={Object.entries(topicsMap)
-                  .map(([key, value]) => `---\nCategory: ${getCategory(key as keyof typeof topicsMap)}\n${value}`)
-                  .join('\n\n')}
+                content={cleanString(`
+                  # The Anatomy of Arvo Agent
+
+                  Following are the key component of the Arvo Agent
+                  
+                  ${Object.entries(topicsMap)
+                    .map(([key, value]) => `---\nCategory: ${getCategory(key as keyof typeof topicsMap)}\n${value}`)
+                    .join('\n\n')}  
+                `)}
               />
               <h1 className='text-center'>ArvoResumable</h1>
             </div>

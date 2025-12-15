@@ -101,6 +101,7 @@ export const simpleAgent: EventHandlerFactory<
     tools: {
       currentDateTool,
     },
+    maxToolInteractions: 10,
     memory,
 
     // Direct MCP configuration with static values

@@ -1,13 +1,27 @@
 import React from 'react';
+import { DemoView } from '../../../../../components/DemoView';
+import { AddingEventDrivenService } from './CodeTabs/AddingEventDrivenService';
+import { AddingMcpServer } from './CodeTabs/AddingMcpServer';
+import { AddingPermissionManager } from './CodeTabs/AddingPermissionManager';
+import { AddingSimpleTools } from './CodeTabs/AddingSimpleTools';
+import { ExecutingFirstAgent } from './CodeTabs/ExecutingFirstAgent';
 import { PreparingDependencies } from './CodeTabs/PerparingDependencies';
 import { SettingUpArvoAgentic } from './CodeTabs/SettingUpArvoAgentic';
-import { DemoView } from '../../../../../components/DemoView';
-import { ExecutingFirstAgent } from './CodeTabs/ExecutingFirstAgent';
-import { AddingSimpleTools } from './CodeTabs/AddingSimpleTools';
-import { AddingMcpServer } from './CodeTabs/AddingMcpServer';
+import { MutliAgentSystem } from './CodeTabs/MutliAgentSystem';
+import { HumanCollaboration } from './CodeTabs/AddingHumanInLoop';
 
 export const Demo: React.FC = () => (
   <DemoView
-    panels={[PreparingDependencies, SettingUpArvoAgentic, ExecutingFirstAgent, AddingSimpleTools, AddingMcpServer]}
+    panels={[
+      PreparingDependencies,
+      SettingUpArvoAgentic,
+      ExecutingFirstAgent,
+      AddingSimpleTools,
+      AddingMcpServer,
+      AddingPermissionManager,
+      AddingEventDrivenService,
+      MutliAgentSystem,
+      HumanCollaboration,
+    ]}
   />
 );

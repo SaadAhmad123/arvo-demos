@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
 import mermaid, { type MermaidConfig } from 'mermaid';
 import pako from 'pako';
-import { CopyButton } from '../buttons/Copy';
+import React, { useEffect, useState } from 'react';
+import { LuExpand, LuMaximize, LuZoomIn, LuZoomOut } from 'react-icons/lu';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
 import { Md3Buttons } from '../../classNames/buttons';
-import { LuMaximize, LuZoomIn, LuZoomOut, LuExpand } from 'react-icons/lu';
-import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { CopyButton } from '../buttons/Copy';
 
 interface MermaidProps {
   chart: string;

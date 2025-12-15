@@ -1,6 +1,7 @@
 import React from 'react';
 import { Md3ContentPadding } from '../../../../classNames';
 import { ContentContainer } from '../../../../components/ContentContainer';
+import { DemoView } from '../../../../components/DemoView';
 import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
@@ -11,7 +12,6 @@ import { GreetingResumableTab } from './CodeTabs/GreetingResumable';
 import { SecondSimpleHandlerTab } from './CodeTabs/SecondSimpleHandler';
 import { SimpleHandlerExecutionTab } from './CodeTabs/SimpleHandlerExecution';
 import { TwoHandlerBrokerTab } from './CodeTabs/TwoHandlerEventBroker';
-import { DemoView } from '../../../../components/DemoView';
 
 export const Demo: React.FC = () => {
   return (

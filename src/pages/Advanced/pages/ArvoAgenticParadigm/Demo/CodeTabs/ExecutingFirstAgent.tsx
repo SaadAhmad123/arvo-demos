@@ -14,9 +14,9 @@ export const ExecutingFirstAgent: DemoCodePanel = {
     \`createArvoEventFactory\`, which is the recommended Arvo approach. You can learn more about event 
     factories in the [${ArvoEventFactoryLearn.name.toLowerCase()}](${ArvoEventFactoryLearn.link}) documentation.
 
-    ### Why so much ceremony?
+    ### This Is A Production-Ready Agent
 
-    Defining your first agent might feel like significant ceremony for simple functionality, but what you 
+    Defining your first agent might feel like some ceremony for simple functionality, but what you 
     gain becomes clear as you build more complex systems. **The design of \`ArvoAgent\` deliberately does 
     not optimize for simple agent implementations. It's designed to make complex agents and agentic systems 
     accessible to develop, grow naturally as your needs expand, and remain maintainable as your system 

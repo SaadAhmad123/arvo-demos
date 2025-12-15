@@ -14,8 +14,8 @@ import { PageNavigation } from '../../../../components/PageNavigation';
 import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
-import { Demo } from './Demo';
 import { ArvoAgentAnatomy } from './Anatomy';
+import { Demo } from './Demo';
 
 export const ArvoAgenticParadigmPage = withNavBar(() => {
   return (
