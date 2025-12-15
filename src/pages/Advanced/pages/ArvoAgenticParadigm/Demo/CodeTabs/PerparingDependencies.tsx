@@ -20,7 +20,7 @@ export const PreparingDependencies: DemoCodePanel = {
   `),
   tabs: buildInstallTabs({
     ...{
-      '@arvo-tools/agentic': '^1.2.6',
+      '@arvo-tools/agentic': '^1.2.8',
     },
     ...ARVO_PACKAGES,
   }),
