@@ -1,15 +1,15 @@
 import React from 'react';
+import { HiClipboardDocumentCheck, HiLink } from 'react-icons/hi2'; // or use any icon you prefer
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
+import type { BundledLanguage } from 'shiki';
 import { unified } from 'unified';
-import { HiClipboardDocumentCheck, HiLink } from 'react-icons/hi2'; // or use any icon you prefer
 import { Md3Table } from '../../classNames/table';
 import { Md3Typography } from '../../classNames/typography';
-import Mermaid from './Mermaid';
 import CodeBlock from '../CodeBlock';
-import type { BundledLanguage } from 'shiki';
+import Mermaid from './Mermaid';
 
 const isValidMarkdown = (text: string) => {
   try {

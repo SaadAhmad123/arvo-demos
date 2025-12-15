@@ -1,3 +1,4 @@
+import { RiDoubleQuotesL } from 'react-icons/ri';
 import { Md3ContentPadding } from '../../../../classNames';
 import { Md3Buttons } from '../../../../classNames/buttons';
 import { Md3Cards } from '../../../../classNames/cards';
@@ -10,7 +11,6 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { Demo } from './Demo';
-import { RiDoubleQuotesL } from 'react-icons/ri';
 
 export const ArvoContractPage = withNavBar(() => {
   return (

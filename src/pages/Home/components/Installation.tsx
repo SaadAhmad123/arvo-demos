@@ -37,20 +37,20 @@ export const buildInstallTabs = (
   }));
 };
 
-export const PREPARATION_PACKAGES: PkgMap = {
+export const PREPARATION_PACKAGES = {
   typescript: '',
   '@biomejs/biome': '',
-};
+} as const;
 
-export const ARVO_PACKAGES: PkgMap = {
+export const ARVO_PACKAGES = {
   'arvo-core': '^3.0.25',
   'arvo-event-handler': '^3.0.25',
   zod: '^3.25.74',
   xstate: '5.24.0',
   'zod-to-json-schema': '^3.25.0',
-};
+} as const;
 
-export const OTEL_BROWSER_PACKAGES: PkgMap = {
+export const OTEL_BROWSER_PACKAGES = {
   '@opentelemetry/api': '^1.9.0',
   '@opentelemetry/sdk-trace-web': '^2.1.0',
   '@opentelemetry/context-zone': '^2.1.0',
@@ -58,7 +58,7 @@ export const OTEL_BROWSER_PACKAGES: PkgMap = {
   '@opentelemetry/resources': '^2.1.0',
   '@opentelemetry/semantic-conventions': '^1.37.0',
   '@opentelemetry/exporter-trace-otlp-http': '^0.205.0',
-};
+} as const;
 
 const OTEL_BROWSER_CODE_SNIPPET = `
 /**
@@ -97,14 +97,14 @@ registerInstrumentations({
 });
 `;
 
-export const OTEL_SERVER_PACKAGES: PkgMap = {
+export const OTEL_SERVER_PACKAGES = {
   '@opentelemetry/api': '^1.9.0',
   '@opentelemetry/exporter-trace-otlp-http': '^0.208.0',
   '@opentelemetry/resources': '^2.2.0',
   '@opentelemetry/sdk-node': '^0.208.0',
   '@opentelemetry/sdk-trace-node': '^2.2.0',
   '@opentelemetry/semantic-conventions': '^1.38.0',
-};
+} as const;
 
 const OTEL_SERVER_CODE_SNIPPET = `
 import { OTLPTraceExporter as HTTPExporter } from '@opentelemetry/exporter-trace-otlp-http';

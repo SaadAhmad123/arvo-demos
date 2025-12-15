@@ -1,35 +1,27 @@
 import { cleanString } from '../../../../../../utils';
-import {
-  ARVO_PACKAGES,
-  OTEL_BROWSER_PACKAGES,
-  OTEL_SERVER_PACKAGES,
-  buildInstallTabs,
-} from '../../../../../Home/components/Installation';
+import { ARVO_PACKAGES, buildInstallTabs } from '../../../../../Home/components/Installation';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const PreparingDependencies: DemoCodePanel = {
   singlePanel: true,
-  heading: 'Prepare Your Environment',
+  heading: 'Getting Started',
   description: cleanString(`
-    Let's begin by configuring your development environment for AI agent development with Arvo.
-    Your setup extends the core requirements from the [Getting Started section](/),
-    adding dependencies specific to AI agent workflows.
+    Getting started with \`ArvoAgent\` does not require adopting the entire Arvo event-driven architecture. 
+    Since \`ArvoAgent\` is built on Arvo's core primitives, you can add the required dependencies to your 
+    existing application and start using it immediately. As your needs grow and you build more sophisticated 
+    systems, you can progressively explore Arvo's additional capabilities and incorporate what you need.
 
-    The essential additions include Large Language Model SDKs and a robust observability stack.
-    **For observability**, Arvo recommends the [OpenInference standard](https://arize.com/docs/ax/observe/tracing/tracing-concepts/openinference-semantic-conventions)
-    for AI telemetry collection, ensuring vendor-neutral monitoring compatible with any 
-    OTEL-compliant platform. For this guide, let's use [Arize Phoenix](https://phoenix.arize.com/),
-    an open-source OTEL-compliant platform that natively captures OpenInference LLM metrics.
+    All you need is a NodeJS runtime. Infrastructure details like brokers, persistence backends, and 
+    observability platforms are pluggable concerns that can be configured later. You can follow the 
+    [installation](/#installation) documentation to understand all available dependencies, installation 
+    options, and OpenTelemetry setup. For this tutorial, we will install only the core dependencies 
+    needed to explore Arvo's agentic paradigm. Refer to the installation documentation for comprehensive details 
+    on each dependency and advanced configuration options.
   `),
   tabs: buildInstallTabs({
     ...{
-      openai: '^5.22.0',
-      '@anthropic-ai/sdk': '^0.57.0',
-      '@arizeai/openinference-semantic-conventions': '^2.1.1',
-      '@modelcontextprotocol/sdk': '^1.18.2',
+      '@arvo-tools/agentic': '^1.2.6',
     },
     ...ARVO_PACKAGES,
-    ...OTEL_BROWSER_PACKAGES,
-    ...OTEL_SERVER_PACKAGES,
   }),
 };

@@ -3,6 +3,7 @@ import { Md3ContentPadding } from '../../../../classNames';
 import { Md3Cards } from '../../../../classNames/cards';
 import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
+import { Label } from '../../../../components/Label';
 import { ArvoEventLearn, ArvoMentalModelLearn } from '../../../../components/LearningTiles/data';
 import { withNavBar } from '../../../../components/Navbar/withNavBar';
 import { PageNavigation } from '../../../../components/PageNavigation';
@@ -10,7 +11,6 @@ import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString, getReadingStats } from '../../../../utils';
 import { ArvoMentalModelContent } from './content';
-import { Label } from '../../../../components/Label';
 
 export const ArvoMentalModelPage = withNavBar(() => {
   const readingStats = useMemo(() => {
