@@ -445,22 +445,38 @@ async function main() {
         const humanConversationEvent = events.find(
           (item) => item.type === humanConversationContract.type, // The type stays the same across version
         );
-        // Check for both permission requests and conversation events.
-        // Permission events gate tool execution with yes/no decisions.
-        // Conversation events enable open dialogue for collaboration and clarification.
-        if (toolRequestEvent) {
-          eventToProcess = await handlePermissionRequest(toolRequestEvent);
-        }
-        // Route conversation events to the dialogue handler.
-        // The agent suspends while awaiting human response.
-        // Loop continues after human provides input, allowing multi-turn dialogue.
-        if (humanConversationEvent) {
-          eventToProcess = await handleHumanConversation(
-            humanConversationEvent,
+        
+        // Address the tool permission request in the events list
+        // and remove it to avoid duplicate requests
+        const toolRequestEventIndex = events.findIndex(
+          (item) =>
+            item.type ===
+              SimplePermissionManager.VERSIONED_CONTRACT.accepts.type,
+        );
+        if (toolRequestEventIndex !== -1) {
+          eventToProcess = await handlePermissionRequest(
+            events[toolRequestEventIndex],
           );
-        } else {
-          break;
+          events.splice(toolRequestEventIndex, 1);
+          continue;
         }
+
+
+        // Address the human conversation event in the events list
+        // and remove it to avoid duplicate requests
+        const humanConversationEventIndex = events.findIndex(
+          // The type stays the same across version
+          (item) => item.type === humanConversationContract.type, 
+        );
+        if (humanConversationEventIndex !== -1) {
+          eventToProcess = await handleHumanConversation(
+            events[humanConversationEventIndex],
+          );
+          events.splice(humanConversationEventIndex, 1);
+          continue;
+        }
+
+        break;
       }
       console.log('==== Agent final output ====');
       for (const evt of events) {
@@ -489,10 +505,97 @@ Console Log
       "originalName": "arvo.orc.agent.calculator"
     },
     "usage": {
-      "prompt": 708,
-      "completion": 112
+      "prompt": 741,
+      "completion": 232
     },
-    "executionunits": 820
+    "executionunits": 973
+  }
+}
+==== [Agent Stream] Tool call requested by Agent ====
+{
+  "type": "agent.tool.request",
+  "sourceAgent": "arvo.orc.agent.operator",
+  "data": {
+    "tool": {
+      "name": "service_arvo_orc_agent_simple",
+      "kind": "arvo",
+      "originalName": "arvo.orc.agent.simple"
+    },
+    "usage": {
+      "prompt": 741,
+      "completion": 232
+    },
+    "executionunits": 973
+  }
+}
+==== [Agent Stream] Tool call requested by Agent ====
+{
+  "type": "agent.tool.request",
+  "sourceAgent": "arvo.orc.agent.operator",
+  "data": {
+    "tool": {
+      "name": "service_arvo_orc_agent_simple",
+      "kind": "arvo",
+      "originalName": "arvo.orc.agent.simple"
+    },
+    "usage": {
+      "prompt": 741,
+      "completion": 232
+    },
+    "executionunits": 973
+  }
+}
+==== [Agent Stream] Tool call requested by Agent ====
+{
+  "type": "agent.tool.request",
+  "sourceAgent": "arvo.orc.agent.simple",
+  "data": {
+    "tool": {
+      "name": "internal_current_date_tool",
+      "kind": "internal",
+      "originalName": "currentDateTool"
+    },
+    "usage": {
+      "prompt": 112,
+      "completion": 12
+    },
+    "executionunits": 124
+  }
+}
+==== [Agent Stream] Tool call requested by Agent ====
+{
+  "type": "agent.tool.request",
+  "sourceAgent": "arvo.orc.agent.simple",
+  "data": {
+    "tool": {
+      "name": "mcp_search_astro_docs",
+      "kind": "mcp",
+      "originalName": "search_astro_docs"
+    },
+    "usage": {
+      "prompt": 123,
+      "completion": 21
+    },
+    "executionunits": 144
+  }
+}
+==== [Agent Stream] Tool permission requested by Agent ====
+{
+  "type": "agent.tool.permission.requested",
+  "sourceAgent": "arvo.orc.agent.simple",
+  "data": {
+    "tools": [
+      {
+        "name": "mcp_search_astro_docs",
+        "kind": "mcp",
+        "originalName": "search_astro_docs"
+      }
+    ],
+    "usage": {
+      "prompt": 123,
+      "completion": 21
+    },
+    "executionunits": 144
   }
 }
 ==== [Agent Stream] Tool call requested by Agent ====
@@ -506,39 +609,40 @@ Console Log
       "originalName": "com.human.conversation"
     },
     "usage": {
-      "prompt": 1782,
-      "completion": 332
+      "prompt": 1783,
+      "completion": 314
     },
-    "executionunits": 2114
+    "executionunits": 2097
   }
 }
-// The calculator agent initiates conversation before executing calculations.
-// Notice the agent doesn't just request approval - it engages in dialogue,
-// answers questions about methodology, and explains specific tool calls
-// before receiving approval to proceed.
+
+// The permission request and human conversation events are both
+// emitted and pushed in the events list. They are being addressed
+// one by one by the main loop.
+
+==== Agent Requesting Tool Use Permission ====
+✔ Agent arvo.orc.agent.simple is requesting permission to execute following tools 
+[User Input: No]
+
+// Permission is explicitly denied so no MCP tool is called
+
 ==== Agent Initiated Conversation ====
 ✔ I need to solve the quadratic equation 3x + 3x² + 45 = 100 for x. Here's my execution plan:
 
-1. First, I'll rearrange the equation to standard form by subtracting 100 from both sides:
-   3x² + 3x + 45 - 100 = 0
-   3x² + 3x - 55 = 0
+1. First, I'll rearrange the equation to standard form: 3x² + 3x + 45 - 100 = 0, which simplifies to 3x² + 3x - 55 = 0
 
-2. I'll use the quadratic formula: x = (-b ± √(b² - 4ac)) / (2a)
-   Where a = 3, b = 3, c = -55
+2. I'll use the quadratic formula: x = (-b ± √(b² - 4ac)) / (2a), where a = 3, b = 3, c = -55
 
 3. I'll calculate the discriminant: b² - 4ac = 3² - 4(3)(-55) = 9 + 660 = 669
 
-4. Then calculate both solutions:
-   x₁ = (-3 + √669) / 6
-   x₂ = (-3 - √669) / 6
+4. Then calculate the two solutions:
+   - x₁ = (-3 + √669) / 6
+   - x₂ = (-3 - √669) / 6
 
-I'll use the calculator to compute:
-- The discriminant: 9 + 660
-- The square root of 669
-- Both final solutions
+5. I'll use the calculator to compute √669 and then the final values for both solutions.
 
 Does this approach look correct to you? Should I proceed with these calculations? 
-[User Input: why choose this method]
+[User Input: why this way?]
 ==== [Agent Stream] Tool call requested by Agent ====
 {
   "type": "agent.tool.request",
@@ -550,30 +654,26 @@ Does this approach look correct to you? Should I proceed with these calculations
       "originalName": "com.human.conversation"
     },
     "usage": {
-      "prompt": 3916,
-      "completion": 700
+      "prompt": 3899,
+      "completion": 623
     },
-    "executionunits": 4616
+    "executionunits": 4522
   }
 }
 ==== Agent Initiated Conversation ====
-✔ Good question! I chose the quadratic formula method because:
+✔ Good question! I'm using the quadratic formula because this is a quadratic equation (it has an x² term). Let me explain why this is the most reliable approach:
 
-1. **Standard approach**: The equation 3x² + 3x - 55 = 0 is a quadratic equation (has x² term), so the quadratic formula is the most reliable method.
+The equation 3x + 3x² + 45 = 100 is a quadratic equation because of the x² term. When rearranged to standard form (ax² + bx + c = 0), it becomes 3x² + 3x - 55 = 0.
 
-2. **Factoring is difficult**: The coefficients (3, 3, -55) don't factor nicely, making factoring by inspection very challenging.
+For quadratic equations, we have a few options:
+1. **Quadratic formula** - Always works for any quadratic equation
+2. **Factoring** - Only works if the equation factors nicely (which this one doesn't appear to)
+3. **Completing the square** - Works but is more complex for this particular equation
 
-3. **Completing the square is complex**: With these particular coefficients, completing the square would involve more steps and fractional arithmetic.
+The quadratic formula is the most systematic and reliable method here. It will give us the exact solutions.
 
-4. **Guaranteed to work**: The quadratic formula works for any quadratic equation, regardless of whether the roots are rational or irrational.
-
-Alternative methods I could use:
-- **Factoring**: Try to find two numbers that multiply to give ac = 3(-55) = -165 and add to give b = 3, but this is difficult with these numbers
-- **Completing the square**: Rearrange to (x + h)² = k form, but involves more complex fractions
-- **Graphical/numerical methods**: But these give approximations rather than exact answers
-
-The quadratic formula will give us the exact solutions efficiently. Would you like me to proceed with this method, or would you prefer I try a different approach?
-[User Input: yep. tell me the tools calls you will make in this quadratic method]
+Would you prefer I try a different approach, or shall I proceed with the quadratic formula method I outlined? 
+[User Input: in quadratic way how many tool calls will be done show me all of them]
 ==== [Agent Stream] Tool call requested by Agent ====
 {
   "type": "agent.tool.request",
@@ -585,35 +685,36 @@ The quadratic formula will give us the exact solutions efficiently. Would you li
       "originalName": "com.human.conversation"
     },
     "usage": {
-      "prompt": 6425,
-      "completion": 1089
+      "prompt": 6327,
+      "completion": 966
     },
-    "executionunits": 7514
+    "executionunits": 7293
   }
 }
 ==== Agent Initiated Conversation ====
-✔ Perfect! Here are the specific calculator tool calls I will make for the quadratic formula method:
+✔ Great question! Let me break down all the calculator tool calls I'll need for the quadratic formula approach:
 
-**Step 1: Calculate the discriminant (b² - 4ac)**
-- Tool call: \`9 + 4 * 3 * 55\` (since -4ac = -4(3)(-55) = +4×3×55)
+**Tool Call 1:** Calculate the discriminant
+- Expression: "3**2 - 4*3*(-55)"
+- This gives us b² - 4ac = 9 + 660 = 669
 
-**Step 2: Calculate the square root of the discriminant**
-- Tool call: \`sqrt(669)\` (assuming step 1 gives us 669)
+**Tool Call 2:** Calculate √669
+- Expression: "sqrt(669)"
+- This gives us the square root of the discriminant
 
-**Step 3: Calculate the first solution x₁ = (-b + √discriminant) / (2a)**
-- Tool call: \`(-3 + sqrt(669)) / 6\`
+**Tool Call 3:** Calculate the first solution x₁
+- Expression: "(-3 + sqrt(669)) / (2*3)"
+- This is (-b + √discriminant) / (2a)
 
-**Step 4: Calculate the second solution x₂ = (-b - √discriminant) / (2a)**
-- Tool call: \`(-3 - sqrt(669)) / 6\`
+**Tool Call 4:** Calculate the second solution x₂
+- Expression: "(-3 - sqrt(669)) / (2*3)"
+- This is (-b - √discriminant) / (2a)
 
-I can execute steps 3 and 4 in parallel since they're independent calculations once I have the square root value.
+**Total: 4 tool calls**
 
-The equation setup:
-- Original: 3x + 3x² + 45 = 100
-- Rearranged: 3x² + 3x - 55 = 0
-- So a = 3, b = 3, c = -55
+Since some of these calculations are independent (like calculating √669 separately), I can potentially run some in parallel to be more efficient.
 
-Should I proceed with these four calculator tool calls? 
+Would you like me to proceed with this plan, or would you prefer to see a different approach? 
 [User Input: do it]
 ==== [Agent Stream] Tool call requested by Agent ====
 {
@@ -626,10 +727,10 @@ Should I proceed with these four calculator tool calls?
       "originalName": "com.calculator.execute"
     },
     "usage": {
-      "prompt": 9316,
-      "completion": 1331
+      "prompt": 9092,
+      "completion": 1209
     },
-    "executionunits": 10647
+    "executionunits": 10301
   }
 }
 ==== [Agent Stream] Tool call requested by Agent ====
@@ -643,10 +744,10 @@ Should I proceed with these four calculator tool calls?
       "originalName": "com.calculator.execute"
     },
     "usage": {
-      "prompt": 9316,
-      "completion": 1331
+      "prompt": 9092,
+      "completion": 1209
     },
-    "executionunits": 10647
+    "executionunits": 10301
   }
 }
 ==== [Agent Stream] Tool call requested by Agent ====
@@ -660,10 +761,10 @@ Should I proceed with these four calculator tool calls?
       "originalName": "com.calculator.execute"
     },
     "usage": {
-      "prompt": 9316,
-      "completion": 1331
+      "prompt": 9092,
+      "completion": 1209
     },
-    "executionunits": 10647
+    "executionunits": 10301
   }
 }
 ==== [Agent Stream] Tool call requested by Agent ====
@@ -677,41 +778,37 @@ Should I proceed with these four calculator tool calls?
       "originalName": "com.calculator.execute"
     },
     "usage": {
-      "prompt": 9316,
-      "completion": 1331
+      "prompt": 9092,
+      "completion": 1209
     },
-    "executionunits": 10647
+    "executionunits": 10301
   }
 }
-
-// All four calculator tool calls execute in parallel (identical token counts: 10647).
-// This happens only after the approval conversation completes.
-// The human interaction enabled collaborative understanding rather than just gating execution.
-
 ==== Agent final output ====
 {
-  "id": "c5c03ced-5cf9-4a76-bbdb-a90e7d1f54b5",
+  "id": "7efc16cb-7fe6-436e-a772-baaaaeb80630",
   "source": "arvo.orc.agent.operator",
   "specversion": "1.0",
   "type": "arvo.orc.agent.operator.done",
-  "subject": "eJw9jtEKgzAMRf8lz7bUTVvn36Rt3ArajhplIP77woS95OGey7k5oNTwopUrcqkwHpBxIRgB6160MI1PyqzLm65GAzvVNZUsnVYbbeBsgD4UNv6FB6QoyNLUI7qobD951d2GXuHQofKGvH3cnQutFVfKidO1DCxf6P8RGMuCSZR5m2cZWYhR/Of5BRidOwo=",
+  "subject": "eJw9jtEKgzAMRf8lz7a0Tjvn38Q2bgXbjhplIP77woS95OGey7k5oFT/opUrcqkwHpAxEYyAdS9amMYnZdblTVejgZ3qGkuWjtVGGzgboA/5jX/hATEIotk553ur7DAE1bX+oaYZb6pzw70NfWfayYgr5sjxWgaWL/T/CAwlYRRl3pZFRhIxiv88v+sOOnU=",
   "datacontenttype": "application/cloudevents+json;charset=UTF-8;profile=arvo",
   "dataschema": "#/org/amas/agent/operator/1.0.0",
   "data": {
-    "response": "**Tool Used:** I used the \`service_arvo_orc_agent_calculator\` tool.\n\n**Strategy Employed:** I sent the quadratic equation directly to the calculator agent with a clear request to solve for x. The calculator agent handled the mathematical computation internally.\n\n**Answer:** The equation 3x + 3x² + 45 = 100 has two solutions:\n- x₁ ≈ 3.811\n- x₂ ≈ -4.811\n\nThe calculator agent solved this by:\n1. Rearranging the equation to standard form: 3x² + 3x - 55 = 0\n2. Applying the quadratic formula with coefficients a=3, b=3, c=-55\n3. Computing the discriminant (669) and finding the two roots\n\nThe exact solutions are x = 3.810839052125854 and x = -4.810839052125854."
+    "response": "## Answers to your queries:\n\n1. **Solving 3x + 3x² + 45 = 100:**\n   The equation has two solutions: x ≈ 3.811 or x ≈ -4.811. The calculator agent rearranged it to standard form (3x² + 3x - 55 = 0) and used the quadratic formula to find both solutions.\n\n2. **About Astro:**\n   Astro is a modern web framework designed for building fast, content-focused websites. It emphasizes performance by delivering only the necessary JavaScript to the browser, and it supports a wide range of UI frameworks like React, Vue, and Svelte. Astro is particularly well-suited for static site generation and offers a component-based architecture.\n\n3. **Yesterday's day:**\n   Yesterday was December 14, 2025, which was a Sunday.\n\n## Tools Used and Strategy:\n\n**Tools Used:**\n- \`service_arvo_orc_agent_calculator\` for the mathematical equation\n- \`service_arvo_orc_agent_simple\` for both the Astro information and the date question\n\n**Strategy Employed:**\nI used a **parallel execution strategy** since all three queries were independent and could be processed simultaneously. I made all three tool calls at once rather than sequentially, which is more efficient and follows the directive to parallelize when possible. Each query was routed to the most appropriate agent - the calculator agent for the mathematical problem and the simple agent for the informational queries about Astro and the date."
   },
-  "time": "2025-12-15T17:58:59.637+00:00",
+  "time": "2025-12-16T00:32:41.890+00:00",
   "to": "test.test.test",
   "accesscontrol": null,
   "redirectto": "arvo.orc.agent.operator",
-  "executionunits": 2028,
-  "traceparent": "00-0076715526cad1642abfd9f3a6600a7a-3d4aabc12d9fae31-01",
+  "executionunits": 2608,
+  "traceparent": "00-033a331168a70644cdfd2290cf224d60-1a4e299fcce4fec8-01",
   "tracestate": null,
-  "parentid": "76b887e2-d986-4c53-a9ac-d328a35c6a18",
+  "parentid": "ea92c23b-88d0-4a45-99c6-d3098afa156a",
   "domain": null
 }
 
 */
+
 
       
       `,
