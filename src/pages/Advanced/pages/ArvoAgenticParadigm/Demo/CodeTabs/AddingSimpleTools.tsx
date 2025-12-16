@@ -37,7 +37,7 @@ export const AddingSimpleTools: DemoCodePanel = {
       lang: 'ts',
       code: `
 import { createArvoOrchestratorContract, cleanString } from 'arvo-core';
-import type { EventHandlerFactory, IMachineMemory } from 'arvo-event-handler';
+import type { EventHandlerFactory } from 'arvo-event-handler';
 import {
   AgentDefaults,
   createAgentTool,
@@ -75,9 +75,7 @@ export const simpleAgentContract = createArvoOrchestratorContract({
   },
 });
 
-export const simpleAgent: EventHandlerFactory
-  { memory: IMachineMemory<Record<string, unknown>> }
-> = ({ memory }) =>
+export const simpleAgent: EventHandlerFactory = () =>
   createArvoAgent({
     contracts: {
       self: simpleAgentContract,
@@ -90,7 +88,6 @@ export const simpleAgent: EventHandlerFactory
     // Limiting the max interaction cycle (including the error feedback)
     // By default, this is 5
     maxToolInteractions: 10,
-    memory,
     llm: openaiLLMIntegration(
       new OpenAI.OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
     ),
@@ -115,21 +112,18 @@ export const simpleAgent: EventHandlerFactory
       code: `
 import { simpleAgent, simpleAgentContract } from './handlers/simple.agent.ts';
 import { createArvoEventFactory } from 'arvo-core';
-import { SimpleMachineMemory } from 'arvo-event-handler';
 
 async function main() {
-  const memory = new SimpleMachineMemory();
-  
   const event = createArvoEventFactory(simpleAgentContract.version('1.0.0'))
     .accepts({
-      source: 'test.application',
+      source: 'test.test.test',
       data: {
         parentSubject$$: null,
         message: 'What day is today? Show me the exact tool output you received.',
       },
     });
 
-  const { events } = await simpleAgent({ memory }).execute(event);
+  const { events } = await simpleAgent().execute(event);
 
   for (const evt of events) {
     console.log(evt.toString(2));

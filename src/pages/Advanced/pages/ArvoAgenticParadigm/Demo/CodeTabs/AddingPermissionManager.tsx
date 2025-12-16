@@ -1,3 +1,4 @@
+import { ArvoOrchestratorLearn } from '../../../../../../components/LearningTiles/data';
 import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
@@ -35,6 +36,25 @@ export const AddingPermissionManager: DemoCodePanel = {
     budget. This prevents permission workflows from bypassing interaction limits. If your agent requires 
     multiple permission approvals or operates in scenarios with frequent authorization checks, adjust 
     \`maxToolInteractions\` accordingly to accommodate both tool execution and permission request cycles.
+
+    ### Persisting Agent State with Memory Backends
+
+    Agents that emit events to external handlers must persist their state before suspending execution. 
+    The memory backend fulfills this requirement by capturing the agent's complete context as a 
+    JSON object. This enables the agent to release all computational resources while waiting for 
+    response events. Upon receiving a response, the memory backend restores the agent's state, 
+    allowing execution to resume exactly where it paused. This suspend-resume pattern supports 
+    all forms of event-driven coordination, from permission management to service orchestration and 
+    human collaboration.
+
+    Arvo includes \`SimpleMachineMemory\`, an in-memory implementation ideal for development, 
+    testing, and lightweight deployments. Production systems needing durability, crash recovery, 
+    or distributed coordination require custom implementations. You provide these by implementing 
+    the \`IMachineMemory\` interface with database of your choice. The dependency injection pattern 
+    demonstrated here makes swapping memory backends straightforward—no agent code changes required. 
+    For implementation details and the optimistic locking patterns that prevent concurrent 
+    modifications, consult the machine memory section in the
+    [${ArvoOrchestratorLearn.name.toLowerCase()}](${ArvoOrchestratorLearn.link}) documentation.
 
     ### The \`SimplePermissionManager\`
 
@@ -124,8 +144,8 @@ export const simpleAgentContract = createArvoOrchestratorContract({
   },
 });
 
-// Enable dependency injection for the permission manager
-// Multiple agents can share the same permission manager instance across executions
+// Enable dependency injection for the permission manager and the memory backend.
+// This allows to pass these dependency to the agent without updating the agent code.
 export const simpleAgent: EventHandlerFactory<{
   memory: IMachineMemory<Record<string, unknown>>;
   permissionManager?: IPermissionManager;
@@ -138,6 +158,11 @@ export const simpleAgent: EventHandlerFactory<{
     tools: {
       currentDateTool,
     },
+    // Adding a pluggable memory backend. So that the agent can
+    // persist its resumable state. This is because, now, due
+    // to the permissions manager the agent can emit events external 
+    // to it and when it does that it suspends and persists its
+    // resumable state in the memory backend as a JSON object
     memory,
     // The permission event emission is also consider a tool interaction
     // by the ArvoAgent

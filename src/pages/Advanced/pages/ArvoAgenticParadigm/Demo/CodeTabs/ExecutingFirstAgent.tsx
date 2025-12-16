@@ -40,16 +40,12 @@ export const ExecutingFirstAgent: DemoCodePanel = {
       code: `
 import { simpleAgent, simpleAgentContract } from './handlers/simple.agent.ts';
 import { createArvoEventFactory } from 'arvo-core';
-import { SimpleMachineMemory } from 'arvo-event-handler';
 
 async function main() {
-  // Create an in-memory backend
-  const memory = new SimpleMachineMemory();
-
   // Create the initialization event for the agent
   const event = createArvoEventFactory(simpleAgentContract.version('1.0.0'))
     .accepts({
-      source: 'test.application',
+      source: 'test.test.test',
       data: {
         parentSubject$$: null,  // Arvo's convention for root orchestration events
         message: 'Hello, what are you?',
@@ -57,7 +53,7 @@ async function main() {
     });
 
   // Build the agent via the factory and execute it
-  const { events } = await simpleAgent({ memory }).execute(event);
+  const { events } = await simpleAgent().execute(event);
   
   // Arvo event handlers always return a list of events
   for (const evt of events) {

@@ -54,7 +54,7 @@ export const AddingMcpServer: DemoCodePanel = {
       lang: 'ts',
       code: `
 import { createArvoOrchestratorContract } from 'arvo-core';
-import type { EventHandlerFactory, IMachineMemory } from 'arvo-event-handler';
+import type { EventHandlerFactory } from 'arvo-event-handler';
 import {
   AgentDefaults,
   createAgentTool,
@@ -90,9 +90,7 @@ export const simpleAgentContract = createArvoOrchestratorContract({
   },
 });
 
-export const simpleAgent: EventHandlerFactory<
-  { memory: IMachineMemory<Record<string, unknown>> }
-> = ({ memory }) =>
+export const simpleAgent: EventHandlerFactory = () =>
   createArvoAgent({
     contracts: {
       self: simpleAgentContract,
@@ -102,7 +100,6 @@ export const simpleAgent: EventHandlerFactory<
       currentDateTool,
     },
     maxToolInteractions: 10,
-    memory,
 
     // Direct MCP configuration with static values
     // mcp: new MCPClient({
@@ -159,16 +156,11 @@ export const simpleAgent: EventHandlerFactory<
       title: 'main.ts',
       lang: 'ts',
       code: `
-import {
-  simpleAgent,
-  simpleAgentContract,
-} from './handlers/simple.agent/index.ts';
+import { simpleAgent, simpleAgentContract } from './handlers/simple.agent.ts';
 import { createArvoEventFactory } from 'arvo-core';
-import { SimpleMachineMemory } from 'arvo-event-handler';
 import { cleanString } from 'arvo-core';
 
 async function main() {
-  const memory = new SimpleMachineMemory();
   const event = createArvoEventFactory(simpleAgentContract.version('1.0.0'))
     .accepts({
       source: 'test.test.test',
@@ -185,12 +177,14 @@ async function main() {
       },
     });
 
-  const { events } = await simpleAgent({ memory }).execute(event);
+  const { events } = await simpleAgent().execute(event);
 
   for (const evt of events) {
     console.log(evt.toString(2));
   }
 }
+
+main()
 
 /*
   Console logs

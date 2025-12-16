@@ -1,4 +1,8 @@
-import { ArvoContractLearn, ArvoMentalModelLearn } from '../../../../../../components/LearningTiles/data';
+import {
+  ArvoContractLearn,
+  ArvoEventHandlerLearn,
+  ArvoMentalModelLearn,
+} from '../../../../../../components/LearningTiles/data';
 import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
@@ -17,10 +21,13 @@ export const SettingUpArvoAgentic: DemoCodePanel = {
   documentation. For understanding the orchestration model, see [${ArvoMentalModelLearn.name.toLowerCase()}](${ArvoMentalModelLearn.link}). 
   Neither is required to build your first agent.
 
-  Notice the agent is defined as a factory function that receives a \`memory\` backend. This pattern 
-  enables dependency injection, so you can provide different memory implementations for testing and 
-  production without changing your agent code. The memory backend is essential because it allows the 
-  agent to persist state when suspending and resuming during long-running operations.
+  Notice the agent is defined as a factory function pattern. This pattern 
+  enables dependency injection, so that you can provide infrastructure level
+  dependencies to your agent without changing the agent code. Currently, 
+  no dependency is needed by the agent, however, it is good to introduce this
+  pattern to you earlier because it is Arvo's standard pattern across all
+  [event handlers](${ArvoEventHandlerLearn.link}#dependency-injection-in-your-event-handlers) 
+  and in the subsequent sections you will leverage this a lot. 
 
   The configuration has a few key pieces. The \`contracts\` section defines your agent's interface 
   (\`self\`) and any external services it can call (\`services\`). We leave services empty for now 
@@ -48,7 +55,7 @@ export const SettingUpArvoAgentic: DemoCodePanel = {
       lang: 'ts',
       code: `
 import { createArvoOrchestratorContract } from 'arvo-core';
-import type { EventHandlerFactory, IMachineMemory } from 'arvo-event-handler';
+import type { EventHandlerFactory } from 'arvo-event-handler';
 import {
   AgentDefaults,
   createArvoAgent,
@@ -72,9 +79,7 @@ export const simpleAgentContract = createArvoOrchestratorContract({
 });
 
 // Define the agent using the factory pattern for dependency injection
-export const simpleAgent: EventHandlerFactory
-  { memory: IMachineMemory<Record<string, unknown>> }
-> = ({ memory }) =>
+export const simpleAgent: EventHandlerFactory = () =>
   createArvoAgent({
     contracts: {
       // The agent's own contract
@@ -82,8 +87,6 @@ export const simpleAgent: EventHandlerFactory
       // No external services yet
       services: {},
     },
-    // Pluggable memory backend for state persistence
-    memory,
     // Default LLM integration used across all versions
     llm: openaiLLMIntegration(
       new OpenAI.OpenAI({ apiKey: process.env.OPENAI_API_KEY }),
