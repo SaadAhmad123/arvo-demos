@@ -213,7 +213,7 @@ export const simpleAgent: EventHandlerFactory<
       '1.0.0': {
         // The tools parameter provides type-safe access to service names
         // just like internal tools and MCP resources.
-        explicityPermissionRequired: (tools) => [
+        explicitPermissionRequired: (tools) => [
           tools.mcp.search_astro_docs.name,
         ],
         context: AgentDefaults.CONTEXT_BUILDER(({ tools }) =>

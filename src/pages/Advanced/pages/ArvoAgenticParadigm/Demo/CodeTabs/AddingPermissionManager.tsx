@@ -23,7 +23,7 @@ export const AddingPermissionManager: DemoCodePanel = {
     ### Declaring Permission Requirements
 
     Permission policies are version-specific. Each agent version independently declares which tools require 
-    explicit authorization through the \`explicityPermissionRequired\` function in its handler configuration. 
+    explicit authorization through the \`explicitPermissionRequired\` function in its handler configuration. 
     Versions don't inherit permission policies from each other, enabling you to evolve authorization 
     requirements as your agent matures without affecting existing deployments.
 
@@ -196,7 +196,7 @@ export const simpleAgent: EventHandlerFactory<{
         // Each version defines its own permission requirements independently
         // Versions don't inherit permission policies from each other
         // The function receives all registered tools for safe name resolution
-        explicityPermissionRequired: (tools) => [
+        explicitPermissionRequired: (tools) => [
           tools.mcp.search_astro_docs.name,
         ],
         context: AgentDefaults.CONTEXT_BUILDER(({ tools }) =>
