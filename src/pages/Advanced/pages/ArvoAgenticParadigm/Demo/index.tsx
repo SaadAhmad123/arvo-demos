@@ -9,6 +9,7 @@ import { PreparingDependencies } from './CodeTabs/PerparingDependencies';
 import { SettingUpArvoAgentic } from './CodeTabs/SettingUpArvoAgentic';
 import { MutliAgentSystem } from './CodeTabs/MutliAgentSystem';
 import { HumanCollaboration } from './CodeTabs/AddingHumanInLoop';
+import { AddingWorkflow } from './CodeTabs/AddingWorkflow';
 
 export const Demo: React.FC = () => (
   <DemoView
@@ -22,6 +23,7 @@ export const Demo: React.FC = () => (
       AddingEventDrivenService,
       MutliAgentSystem,
       HumanCollaboration,
+      AddingWorkflow,
     ]}
   />
 );

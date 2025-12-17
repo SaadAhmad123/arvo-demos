@@ -31,8 +31,8 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               <h1 className={`${Md3Typography.display.large} text-on-surface`}>{AgenticResumableDesignLearn.name}</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
-                Build ecosystems of Agents, Workflow, Services and People—all coordinating through the same event-driven
-                patterns.
+                Build applications, systems, and experiences where intelligence, automation, and human judgment
+                collaborate naturally to achieve value.
               </p>
               <Separator padding={24} />
               <a
