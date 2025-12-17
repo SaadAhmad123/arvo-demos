@@ -6,16 +6,20 @@ import { Md3Typography } from '../../../../classNames/typography';
 import { ContentContainer } from '../../../../components/ContentContainer';
 import {
   AgenticResumableDesignLearn,
-  AgenticSystemExampleLearn,
-  EventRoutingAndBrokerInArvoLearn,
+  ArvoContractLearn,
+  ArvoMachineLearn,
+  ArvoMentalModelLearn,
+  ArvoOrchestratorLearn,
+  ArvoResumableLearn,
 } from '../../../../components/LearningTiles/data';
 import { withNavBar } from '../../../../components/Navbar/withNavBar';
-import { PageNavigation } from '../../../../components/PageNavigation';
 import { ReMark } from '../../../../components/ReMark';
 import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { ArvoAgentAnatomy } from './Anatomy';
 import { Demo } from './Demo';
+import { LearningTiles } from '../../../../components/LearningTiles';
+import { executionDiagram } from './ExecutionDiagram';
 
 export const ArvoAgenticParadigmPage = withNavBar(() => {
   return (
@@ -36,12 +40,12 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               </p>
               <Separator padding={24} />
               <a
-                href='https://seanfalconer.medium.com/ai-agents-must-act-not-wait-a-case-for-event-driven-multi-agent-design-d8007b50081f'
+                href='https://www.confluent.io/blog/the-future-of-ai-agents-is-event-driven/'
                 target='_blank'
                 rel='noreferrer'
                 className={Md3Buttons.filled}
               >
-                Read, <i>"AI Agents Must Act; Not Wait"</i>
+                Read <i>"Future of Agentic AI is Event-Driven"</i>
               </a>
             </div>
           </div>
@@ -140,6 +144,11 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
+              # Telemetry Integration
+
+
+              Just like every component in Arvo, \`ArvoAgent\` is also fully 
+              integrated with Opentelemetry and OpenInference. 
               The following examples illustrate representative execution traces of AI Agents, captured using **Arize Phoenix**.  
               These traces provide visibility into agent behavior, decision-making, and workflow execution, helping developers 
               analyze performance and refine system design.
@@ -169,57 +178,73 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
           <ReMark
             bodyTextSize='large'
             content={cleanString(`
+              # Advanced Topics
+
+              The \`ArvoAgent\` represents a sophisticated implementation of the agentic pattern 
+              built on the \`ArvoResumable\` foundation, orchestrating complex interactions between 
+              LLMs, tools, permission systems, and event-driven coordination. To help you understand 
+              its internal execution lifecycle, the detailed sequence diagram below visualizes every 
+              critical phase—from initialization and context building through tool execution, 
+              permission validation, and output generation.
+
+              This diagram serves as an essential reference for advanced use cases including custom 
+              tool execution strategies, debugging complex agent behaviors, understanding suspend-resume 
+              mechanics, and implementing custom permission managers or LLM integrations. When building 
+              sophisticated multi-agent systems or troubleshooting production issues, this diagram 
+              helps you trace exactly how agents process events, manage state, and coordinate with 
+              external systems.
+
+              For **error boundary behavior and violation handling**, \`ArvoAgent\` inherits the same 
+              robust patterns from [\`ArvoResumable\`](${ArvoResumableLearn.link}). Visit the 
+              ArvoResumable documentation to understand how agents handle operational errors, 
+              configuration violations, and state persistence failures.
+
+              > **Pro Tip**: Click the copy button to extract the diagram definition. Paste it into any 
+              AI chat interface (ChatGPT, Claude, etc.) to ask questions like "How does the priority 
+              manager work?", "What happens when a tool requires permission?", or "How are MCP tools 
+              executed?". This makes the diagram interactive—you can query specific execution paths 
+              without manually parsing the entire sequence.
+
+              <br/>
+              <br/>
+
+              \`\`\`mermaid
+              ${executionDiagram}
+              \`\`\`
+
+              <br/>
+              <br/>
+
+
               # The Agentic Approach in Arvo
 
               Arvo takes a pragmatic stance on agentic development. **AI agents are not the centerpiece of the system**, but 
               rather one of many composable tools for delivering value to users. The focus remains **value-centric, with agents 
               treated as standard components** that seamlessly integrate into broader workflows.
-            `)}
-          />
-          <Separator padding={8} />
-          <ReMark
-            bodyTextSize='large'
-            content={cleanString(`
+
               Arvo guiding principal here is that your **AI Agents must become a part of the system rather than making the system a part of the Agent**.
               The factory and integration patterns may initially appear sophisticated, but they are intentionally designed for ease of use and flexibility. 
               They are provided so that you as developer can copy them directly into your projects, gaining both immediate productivity 
               and full transparency over the internal architecture. This approach avoids constant version churn and gives you 
               complete control to adapt agents as AI technologies evolve.
-            `)}
-          />
-          <Separator padding={8} />
-          <ReMark
-            bodyTextSize='large'
-            content={cleanString(`
+
+
               A **key strength of this Agent design approach is its uniformity**. These Arvo-based agents interoperate with other Arvo-based agents, 
               orchestrators, and event handlers using the same communication patterns—without special protocols or bespoke infrastructure. 
               This consistency reduces architectural overhead, simplifies integration, and increases system reliability.
               Furthermore, just like the rest of Arvo, this agentic factory is built with developer experience and operational robustness in mind. 
             `)}
           />
-          <Separator padding={8} />
-          <ReMark
-            bodyTextSize='large'
-            content={cleanString(`
-              In further sections, we will explore practical agentic patterns you can adopt to build software that delivers meaningful 
-              value—where agents enhance your system naturally.
-            `)}
-          />
         </div>
       </ContentContainer>
-      <Separator padding={18} />
-      <PageNavigation
-        previous={{
-          link: EventRoutingAndBrokerInArvoLearn.link,
-          heading: EventRoutingAndBrokerInArvoLearn.name,
-          content: EventRoutingAndBrokerInArvoLearn.summary,
-        }}
-        next={{
-          link: AgenticSystemExampleLearn.link,
-          heading: AgenticSystemExampleLearn.name,
-          content: AgenticSystemExampleLearn.summary,
-        }}
-      />
+      <ContentContainer content>
+        <div className={`${Md3ContentPadding} pb-8!`}>
+          <ReMark content={'# Related Topics'} />
+        </div>
+        <LearningTiles
+          data={[ArvoMentalModelLearn, ArvoMachineLearn, ArvoOrchestratorLearn, ArvoResumableLearn, ArvoContractLearn]}
+        />
+      </ContentContainer>
       <Separator padding={72} />
     </main>
   );

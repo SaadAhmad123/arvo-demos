@@ -10,6 +10,7 @@ import { SettingUpArvoAgentic } from './CodeTabs/SettingUpArvoAgentic';
 import { MutliAgentSystem } from './CodeTabs/MutliAgentSystem';
 import { HumanCollaboration } from './CodeTabs/AddingHumanInLoop';
 import { AddingWorkflow } from './CodeTabs/AddingWorkflow';
+import { ComposingAgentsWorkflows } from './CodeTabs/ComposingAgentsWorkflows';
 
 export const Demo: React.FC = () => (
   <DemoView
@@ -24,6 +25,7 @@ export const Demo: React.FC = () => (
       MutliAgentSystem,
       HumanCollaboration,
       AddingWorkflow,
+      ComposingAgentsWorkflows,
     ]}
   />
 );

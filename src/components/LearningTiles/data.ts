@@ -75,9 +75,9 @@ export const EventRoutingAndBrokerInArvoLearn: LearningTileData = {
 };
 
 export const AgenticResumableDesignLearn: LearningTileData = {
-  name: 'Agentic Ecosystem',
+  name: 'Agentic Paradigm',
   summary:
-    'See how Arvo naturally unlock agentic ecosystems—where AIs, services, workflows, and humans collaborate seamlessly.',
+    'Build applications, systems, and experiences where intelligence, automation, and human judgment collaborate naturally to achieve value.',
   link: '/advanced/arvo-agentic-resumables',
 };
 

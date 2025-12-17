@@ -155,7 +155,7 @@ const currentDateTool = createAgentTool({
 export const simpleAgentContract = createArvoOrchestratorContract({
   uri: '#/org/amas/agent/simple',
   name: 'agent.simple',
-  description: 'A simple AI agent which answers qu1estions',
+  description: 'A simple AI agent which answers questions',
   versions: {
     '1.0.0': {
       init: AgentDefaults.INIT_SCHEMA,

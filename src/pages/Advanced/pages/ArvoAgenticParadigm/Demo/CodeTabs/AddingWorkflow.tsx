@@ -8,7 +8,7 @@ import { cleanString } from '../../../../../../utils';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const AddingWorkflow: DemoCodePanel = {
-  heading: 'Creating Workflow',
+  heading: 'Building Agentic Workflows',
   description: cleanString(`
     Multi-agent systems demonstrate substantial power for intelligent task execution, yet they represent 
     only one modality within Arvo's capabilities. Many production scenarios demand workflow-based systems 
@@ -90,7 +90,7 @@ export const AddingWorkflow: DemoCodePanel = {
   `),
   tabs: [
     {
-      title: 'essay.builder.workflow/machineV100.ts',
+      title: 'handlers/essay.builder.workflow/machineV100.ts',
       lang: 'ts',
       code: `
 import { ArvoDomain, setupArvoMachine, xstate } from 'arvo-event-handler';
@@ -312,7 +312,7 @@ export const machineV100 = setupArvoMachine({
       `,
     },
     {
-      title: 'essay.builder.workflow/contract.ts',
+      title: 'handlers/essay.builder.workflow/contract.ts',
       lang: 'ts',
       code: `
 import { ArvoErrorSchema, createArvoOrchestratorContract } from 'arvo-core';
@@ -341,7 +341,7 @@ export const essayBuilderWorkflowContract = createArvoOrchestratorContract({
       `,
     },
     {
-      title: 'essay.builder.workflow/index.ts',
+      title: 'handlers/essay.builder.workflow/index.ts',
       lang: 'ts',
       code: `
 import {
@@ -366,7 +366,7 @@ export const essayBuilderWorkflow: EventHandlerFactory<
       `,
     },
     {
-      title: 'essay-outline.agent.ts',
+      title: 'handlers/essay-outline.agent.ts',
       lang: 'ts',
       code: `
 import { createArvoOrchestratorContract } from 'arvo-core';
@@ -428,7 +428,7 @@ export const essayOutlineAgent: EventHandlerFactory<
       `,
     },
     {
-      title: 'essay-writer.agent.ts',
+      title: 'handlers/essay-writer.agent.ts',
       lang: 'ts',
       code: `
 import { createArvoOrchestratorContract } from 'arvo-core';
@@ -482,6 +482,33 @@ export const essayWriterAgent: EventHandlerFactory<
     },
   });
 
+
+      `,
+    },
+    {
+      title: 'handlers/human.approval.contract.ts',
+      lang: 'ts',
+      code: `
+import { createSimpleArvoContract } from 'arvo-core';
+import z from 'zod';
+
+export const humanApprovalContract = createSimpleArvoContract({
+  uri: '#/org/amas/external/human_approval',
+  type: 'human.approval',
+  domain: 'human.interaction',
+  description:
+    'This is a service which gets approval from the human based on the provided prompt',
+  versions: {
+    '1.0.0': {
+      accepts: z.object({
+        prompt: z.string(),
+      }),
+      emits: z.object({
+        approval: z.boolean(),
+      }),
+    },
+  },
+});
 
       `,
     },
@@ -789,9 +816,7 @@ async function main() {
   );
 }
 
-if (import.meta.main) {
-  await main();
-}
+main();
 
 /*
 
