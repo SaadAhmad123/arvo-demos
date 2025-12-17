@@ -50,6 +50,10 @@ export const ARVO_PACKAGES = {
   'zod-to-json-schema': '^3.25.0',
 } as const;
 
+export const ARVO_TOOLS = {
+  '@arvo-tools/agentic': '^1.2.13',
+} as const;
+
 export const OTEL_BROWSER_PACKAGES = {
   '@opentelemetry/api': '^1.9.0',
   '@opentelemetry/sdk-trace-web': '^2.1.0',

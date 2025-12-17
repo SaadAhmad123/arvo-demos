@@ -1,5 +1,5 @@
 import { cleanString } from '../../../../../../utils';
-import { ARVO_PACKAGES, buildInstallTabs } from '../../../../../Home/components/Installation';
+import { ARVO_PACKAGES, ARVO_TOOLS, buildInstallTabs } from '../../../../../Home/components/Installation';
 import type { DemoCodePanel } from '../../../../../types';
 
 export const PreparingDependencies: DemoCodePanel = {
@@ -20,7 +20,7 @@ export const PreparingDependencies: DemoCodePanel = {
   `),
   tabs: buildInstallTabs({
     ...{
-      '@arvo-tools/agentic': '^1.2.12',
+      '@arvo-tools/agentic': ARVO_TOOLS['@arvo-tools/agentic'],
     },
     ...ARVO_PACKAGES,
   }),

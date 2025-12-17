@@ -81,13 +81,6 @@ export const AgenticResumableDesignLearn: LearningTileData = {
   link: '/advanced/arvo-agentic-resumables',
 };
 
-export const AgenticSystemExampleLearn: LearningTileData = {
-  name: 'Agentic Patterns',
-  summary:
-    'Discover foundational agentic software patterns that address the most common use cases. While Arvo Agents can go far beyond these examples, they serve as a practical starting point for building adaptable, intelligent systems.',
-  link: '/advanced/arvo-agentic-patterns',
-};
-
 export const ErrorBoundariesLearn: LearningTileData = {
   name: 'Error Handling in Arvo',
   summary:
