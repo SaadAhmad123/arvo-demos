@@ -1,39 +1,34 @@
+import { EventRoutingAndBrokerInArvoLearn } from '../../../../../components/LearningTiles/data';
 import { cleanString } from '../../../../../utils';
 import type { DemoCodePanel } from '../../../../types';
 
 export const TwoHandlerBrokerTab: DemoCodePanel = {
   heading: 'The Event Broker Pattern',
   description: cleanString(`
-      The event broker pattern is Arvo's native operation paradigm. What distinguishes Arvo is its 
-      requirement for a remarkably simple broker design as the operational minimum. At its core, Arvo 
-      requires only a basic event broker capable of content-based filtering and targeted delivery—matching 
-      events to their intended handlers. You can explore the complete broker design philosophy in the 
-      [dedicated documentation](/advanced/event-routing-and-brokers).
+    The event broker pattern is Arvo's native operational paradigm. What distinguishes Arvo is its remarkably 
+    [simple broker requirements](${EventRoutingAndBrokerInArvoLearn.link}). At its core, Arvo needs only basic 
+    content-based filtering and targeted delivery, matching events to their intended handlers. If your broker 
+    can match the \`event.to\` field of an \`ArvoEvent\` to a registered handler's \`handler.source\` value, 
+    you have everything needed. The routing logic lives in handlers, keeping the broker 
+    design lightweight and scalable.
 
-      **The essence is elegantly simple** that regardless of system complexity or scale, if your broker can match 
-      the \`event.to\` field of an \`ArvoEvent\` to a registered handler's \`handler.source\` value, you 
-      have everything needed. Complex routing logic is managed by orchestration event handlers, making the 
-      broker design exceptionally lightweight and scalable.
+    ### The \`SimpleEventBroker\`
 
-      ## Local Development with \`SimpleEventBroker\`
+    Arvo is a toolkit. It doesn't provide native integrations with external brokers like RabbitMQ 
+    or Kafka, expecting you to implement the necessary logic and networking for your infrastructure. However, for 
+    local development, testing, and non-distributed execution, Arvo provides \`SimpleEventBroker\`, an in-memory 
+    FIFO queue-based broker that executes entirely within your process.
 
-      Arvo being a toolkit and not a framework expects you to implement the necessary logic and networking 
-      for your event broker, and therefore doesn't provide native integrations with external brokers like RabbitMQ 
-      or Kafka. However, for local and non-distributed execution, development, and testing, Arvo provides \`SimpleEventBroker\`
-      which is a FIFO in-memory queue-based broker that executes entirely within your code. This eliminates external dependencies
-      for simpler use cases and testing scenarios, providing exceptional flexibility during development.
+    The example demonstrates how handlers register with the broker. You create a broker instance with an array of 
+    handlers, then call \`.resolve()\` with an event. The broker examines the event's \`to\` field, matches it to 
+    a registered handler's source identifier, executes that handler, and returns the result.
 
-      ## Registration and Execution
-
-      This example demonstrates the registration pattern where event handlers register themselves with the 
-      broker. You send events to the broker, which decides which handler to execute based on the routing 
-      logic. This same pattern extends to all subsequent examples, including orchestrator event handlers 
-      registering with the same broker. This exemplifies the power of composition in Arvo where every component, 
-      from simple handlers to complex orchestrators, participates in the system through the same unified 
-      interface. Rather than being tightly coupled to each other, components maintain cohesion through 
-      \`ArvoContract\` definitions, enabling flexibility and independent evolution while preserving 
-      system-wide coordination.
-    `),
+    This same registration pattern extends throughout Arvo. Rather than tight coupling between components, 
+    Arvo maintains cohesion through \`ArvoContract\` definitions. Components communicate through events conforming 
+    to contracts, enabling independent evolution while preserving system-wide coordination. You can swap handler 
+    implementations, add new handlers, or modify existing ones without affecting other system components as long as 
+    contracts remain compatible.
+  `),
   tabs: [
     {
       title: 'execute.ts',
@@ -89,7 +84,7 @@ export const executeWithEventBrokerPattern = async () => {
       "to": "test.test.test",
       "accesscontrol": null,
       "redirectto": null,
-      "executionunits": 0.000004,
+      "executionunits": 0,
       "traceparent": "00-582e4a4d20e56ec93f804e8eda00138a-3c1389d5a4717fe4-01",
       "tracestate": null,
       "parentid": "291bc961-bdfb-467f-a4db-a36a1177f0bb",

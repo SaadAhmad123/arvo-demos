@@ -1,60 +1,88 @@
+import { ArvoEventFactoryLearn } from '../../../../../components/LearningTiles/data';
 import { cleanString } from '../../../../../utils';
 import type { DemoCodePanel } from '../../../../types';
 
 export const SimpleHandlerExecutionTab: DemoCodePanel = {
   heading: 'Executing Your First Event Handler',
   description: cleanString(`
-    Arvo event handlers are functions wrapped in objects that perform intelligent operations 
-    crucial to event handling. What sets Arvo apart from other EDA toolchains is its execution simplicity—handlers 
-    don't require special execution environments or event brokers to run. By treating these as deployment and
-    infrastructure concerns, Arvo allows you to defer such decisions and change them later as your needs evolve.
+    Arvo event handlers execute without requiring special runtime environments or event brokers. This design treats 
+    deployment and infrastructure as separate concerns, allowing you to defer those decisions and change them as 
+    requirements evolve. Your handlers remain pure functions that process events and return events, independent of 
+    how those events are delivered.
 
-    In this example, the add handler is invoked directly via its \`.execute\` function—no 
-    ceremony required. The factory creates the event, the handler processes it, and outputs 
-    the result.
-    
-    ## Handler Execution Interface
+    The \`main.ts\` file demonstrates the simplest execution pattern. Create an event using the factory, call 
+    the handler's \`.execute()\` method with that event, and receive emitted events in response. No brokers, 
+    no queues, no infrastructure setup. The handler processes the event synchronously in your local process and 
+    returns results immediately. This makes development, testing, and debugging straightforward since you can 
+    invoke handlers like regular functions.
 
-    Every event handler exposes a consistent \`.execute()\` function that accepts a properly formatted 
-    \`ArvoEvent\` and returns a list of events along with optional metadata. This uniformity extends 
-    across all handler types, from basic request-response handlers to state machine-based and imperative 
-    orchestration handlers. They all implement \`IArvoEventHandler\` interface and share the same 
-    execution signature, \`(ArvoEvent) => Promise<{events: ArvoEvent[]}>\`
+    ### Uniform Execution Interface
 
+    Every Arvo event handler, regardless of complexity, implements the same \`IArvoEventHandler\` interface with 
+    an identical execution signature of \`(ArvoEvent) => Promise<{events: ArvoEvent[]}>\`. Whether you're executing 
+    a simple request-response handler like this addition service, a state machine-based workflow, or an imperative 
+    orchestration handler, the execution pattern remains consistent. This uniformity simplifies testing, composition, 
+    and deployment because all handlers are called the same way.
 
-    ## Event Creation Factory
+    The handler returns an object containing an \`events\` array rather than a single event because some handler 
+    types emit multiple events during execution. Simple handlers typically return a single success or error event, 
+    but the uniform interface accommodates more complex patterns without special-casing different handler types.
 
-    Creating events manually can be complex, requiring careful management of numerous fields formatted 
-    according to both the base structure and the handler's \`ArvoContract\`. Arvo simplifies this through 
-    a powerful factory pattern. Using \`createArvoEventFactory\` with a contract version, you can easily 
-    create events that handlers can **accept** or **emit**. You will learn more about this in the \`ArvoEventFactory\`
-    documentation
+    ### Event Factory Pattern
+
+    Manually constructing \`ArvoEvent\` objects requires managing numerous fields following both CloudEvents 
+    specification and your contract's schemas. The [\`createArvoEventFactory\`](${ArvoEventFactoryLearn.link}) 
+    function eliminates this complexity. Bind it to a specific contract version and you get a factory with 
+    type-safe methods for creating events that handlers accept or emit. The factory enforces schema compliance 
+    at compile time through TypeScript and at runtime through validation, preventing malformed events from 
+    entering your system.
+
+    The \`.accepts()\` method creates events conforming to the contract's input schema, while \`.emits()\` creates 
+    events matching emission schemas. IntelliSense guides you through required fields and their types. The source 
+    field identifies where the event originated using reverse-domain notation. The data field provides the typed 
+    payload matching your contract schema. The factory handles everything else automatically, including generating 
+    unique identifiers, timestamps, trace context, and subject encoding.
+
+    ### What happened here?
+
+    The logged event reveals Arvo's event structure. The \`type\` field matches the emission key from the contract 
+    (\`evt.calculator.add.success\`). The \`source\` field shows the handler's identifier (\`com.calculator.add\`), 
+    different from the triggering event's source. The \`to\` field contains the original source 
+    (\`test.test.test\`), establishing response routing. The \`subject\` field encodes workflow context enabling 
+    correlation across multi-step processes. The \`traceparent\` field provides distributed tracing context 
+    following W3C standards. The \`executionunits\` field tracks computational cost for the operation.
+
+    This execution pattern works identically whether you're testing locally, running in Lambda functions, processing 
+    from Kafka topics, or coordinating through custom event brokers. The handler doesn't know or care about its 
+    deployment context. It simply receives events and emits events. Your infrastructure layer handles routing and 
+    delivery according to your operational requirements.
   `),
   tabs: [
     {
-      title: 'handlers/execute.add.handler.ts',
+      title: 'main.ts',
       lang: 'ts',
       code: `
 import { createArvoEventFactory } from 'arvo-core';
-import { addContract, addHandler } from './handlers/add.handler.js';
+import { addContract, addHandler } from './handlers/add.handler.ts';
 
-export async function executeAddHandler() {
+async function main() {
   const event = createArvoEventFactory(addContract.version('1.0.0')).accepts({
-    // This can be any valid string. It denotes the source of the initiating event  
+    // This can be any valid reverse-domain string. 
+    // It denotes the source of the initiating event  
     source: 'test.test.test',
     data: {
       numbers: [1, 2],
     },
   });
 
-  const { events: emittedEvents } = await addHandler().execute(event, { inheritFrom: 'EVENT' });
+  const { events: emittedEvents } = await addHandler().execute(event);
 
   for (const item of emittedEvents) {
     console.log(item.toString(2));
   }
 }
 
-executeAddHandler()
+main()
 
 /**
  * Console log output

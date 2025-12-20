@@ -4,33 +4,34 @@ import type { DemoCodePanel } from '../../../../types';
 export const SecondSimpleHandlerTab: DemoCodePanel = {
   heading: 'Your Second Event Handler',
   description: cleanString(`
-    Now that you're familiar with creating a simple handler, you can apply this same pattern 
-    to build any handler following the request-response model. Within these handlers, you have 
-    complete flexibility—call external APIs, transform and process data, trigger email services, 
-    or even emit no events at all. The possibilities are limited only by your imagination.
+    Building additional handlers follows the same pattern. Create a contract defining the interface, implement 
+    a handler function that processes events, and bind them together. Within handlers, you have complete freedom 
+    to call external APIs, transform data, trigger services, or perform any business logic your application requires.
 
-    The true power of event-driven architecture emerges when multiple event handlers participate 
-    in a system, collaborating to complete tasks and workflows. To demonstrate this, let's create 
-    a second handler that accepts a name and outputs a greeting message. This simple handler serves 
-    as Arvo's equivalent to "Hello World" while setting the stage for more complex interactions 
-    between handlers.
+    The greeting handler demonstrates a minimal request-response pattern. It accepts a name and returns a greeting 
+    message. While simple, this establishes the foundation for understanding how multiple handlers collaborate in 
+    event-driven systems without tight coupling.
 
-    ## Simplified Contract Creation
+    ### Simplified Contract Creation
 
-    This example introduces \`createSimpleArvoContract\`, a specialized utility for building 
-    request-response contracts with automatic event type generation. Unlike \`createArvoContract\`, 
-    which requires explicit definition of all event types, \`createSimpleArvoContract\` follows 
-    a convention-based approach that automatically generates the necessary event types. This 
-    reduces boilerplate for simple handlers while maintaining the full power of Arvo's contract 
-    system, including type safety, runtime validation, and versioning capabilities.
+    This example introduces \`createSimpleArvoContract\`, a convenience utility that automatically generates event 
+    type strings following Arvo's naming conventions. Instead of explicitly defining all event types, this function 
+    applies standard prefixes. It prepends \`com.\` to create the input event type, generates \`evt.\` prefixed 
+    success events, and automatically defines \`sys.\` prefixed error events.
 
-    ## Event Handler Factory Pattern
+    For the greeting handler, providing \`type: 'greeting.create'\` produces \`com.greeting.create\` as the input 
+    type and \`evt.greeting.create.success\` as the success emission type. System error events become 
+    \`sys.com.greeting.create.error\`. Use \`createSimpleArvoContract\` for straightforward request-response 
+    patterns and \`createArvoContract\` when you need complete control over event type naming.
 
-    You'll notice that event handlers aren't created directly as objects but rather as functions 
-    that return handlers—the \`EventHandlerFactory\` pattern. This design enables injection of 
-    deployment-specific functionality when handlers are instantiated for execution or registered 
-    with event brokers. This powerful mechanism provides a flexible dependency injection system 
-    that you'll explore further as you build more sophisticated applications.
+    ### Event Handler Factory Pattern
+
+    Handlers are created as functions returning handler instances rather than direct objects, following the 
+    \`EventHandlerFactory\` pattern. This enables dependency injection at instantiation time. When you register 
+    handlers with brokers or execute them in different environments, you can inject dependencies like database 
+    connections, API clients, or configuration without modifying handler code. The factory accepts an optional 
+    configuration object for providing these dependencies, keeping handlers testable and portable across deployment 
+    contexts.
   `),
   tabs: [
     {
@@ -69,7 +70,6 @@ export const greetingContract = createSimpleArvoContract({
 export const greetingHandler: EventHandlerFactory = () =>
   createArvoEventHandler({
     contract: greetingContract, // Contract binding ensures type safety through IntelliSense, compile-time validation, and runtime checks
-    executionunits: 0, // Base execution cost for handler operations - enables cost tracking and performance analysis in event-driven systems
     handler: {
       // Register handlers for all the versions of the contract
       '1.0.0': async ({ event }) => {
