@@ -43,15 +43,15 @@ export const PREPARATION_PACKAGES = {
 } as const;
 
 export const ARVO_PACKAGES = {
-  'arvo-core': '^3.0.25',
-  'arvo-event-handler': '^3.0.25',
-  zod: '^3.25.74',
+  'arvo-core': '^3.0.26',
+  'arvo-event-handler': '^3.0.26',
+  zod: '^3.25.76',
   xstate: '5.24.0',
   'zod-to-json-schema': '^3.25.0',
 } as const;
 
 export const ARVO_TOOLS = {
-  '@arvo-tools/agentic': '^1.2.13',
+  '@arvo-tools/agentic': '^1.2.14',
 } as const;
 
 export const OTEL_BROWSER_PACKAGES = {
