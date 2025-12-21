@@ -1,60 +1,71 @@
+import { ArvoEventFactoryLearn, ArvoEventLearn } from '../../../../../components/LearningTiles/data';
 import { cleanString } from '../../../../../utils';
 import type { DemoCodePanel } from '../../../../types';
 
 export const SimpleHandlerExecutionTab: DemoCodePanel = {
   heading: 'Executing Your First Event Handler',
   description: cleanString(`
-    Arvo event handlers are functions wrapped in objects that perform intelligent operations 
-    crucial to event handling. What sets Arvo apart from other EDA toolchains is its execution simplicity—handlers 
-    don't require special execution environments or event brokers to run. By treating these as deployment and
-    infrastructure concerns, Arvo allows you to defer such decisions and change them later as your needs evolve.
+    Event handlers in Arvo don't require special runtime environments or event brokers for exection. This design treats 
+    deployment and infrastructure as separate concerns, allowing you to defer those decisions and change them as 
+    requirements evolve.
 
-    In this example, the add handler is invoked directly via its \`.execute\` function—no 
-    ceremony required. The factory creates the event, the handler processes it, and outputs 
-    the result.
-    
-    ## Handler Execution Interface
+    The \`main.ts\` file demonstrates the simplest execution pattern. Create an event using the factory, call 
+    the handler's \`.execute()\` method with that event, and receive emitted events in response. No brokers, 
+    no queues, no infrastructure setup. This makes development, testing, and debugging straightforward since you can 
+    invoke handlers like regular functions.
 
-    Every event handler exposes a consistent \`.execute()\` function that accepts a properly formatted 
-    \`ArvoEvent\` and returns a list of events along with optional metadata. This uniformity extends 
-    across all handler types, from basic request-response handlers to state machine-based and imperative 
-    orchestration handlers. They all implement \`IArvoEventHandler\` interface and share the same 
-    execution signature, \`(ArvoEvent) => Promise<{events: ArvoEvent[]}>\`
+    ### A Uniform Execution Interface
 
+    Every event handler in Arvo implements the same \`IArvoEventHandler\` interface with an identical execution 
+    signature of \`(ArvoEvent) => Promise<{events: ArvoEvent[]}>\`. Whether executing a simple request-response 
+    handler, a state machine workflow, or an imperative orchestrator, the pattern remains consistent. This uniformity 
+    extends beyond call structure. Arvo standardizes execution behavior across handler types, enabling infrastructure 
+    and execution layers to treat all handlers identically without special-casing different implementations.
 
-    ## Event Creation Factory
+    ### Event Factory Pattern
 
-    Creating events manually can be complex, requiring careful management of numerous fields formatted 
-    according to both the base structure and the handler's \`ArvoContract\`. Arvo simplifies this through 
-    a powerful factory pattern. Using \`createArvoEventFactory\` with a contract version, you can easily 
-    create events that handlers can **accept** or **emit**. You will learn more about this in the \`ArvoEventFactory\`
-    documentation
+    Manually constructing \`ArvoEvent\` objects requires managing numerous fields following both CloudEvents 
+    specification and your contract's schemas. The [\`createArvoEventFactory\`](${ArvoEventFactoryLearn.link}) 
+    function eliminates this complexity. Bind it to a specific contract version and you get a factory with 
+    type-safe methods for creating events that handlers accept or emit. The factory enforces schema compliance 
+    at compile time through TypeScript and at runtime through validation, preventing malformed events from 
+    entering your system. The \`.accepts()\` method creates events conforming to the contract's input schema, 
+    while \`.emits()\` creates events matching emission schemas. 
+
+    ### The ArvoEvent
+
+    The logged event reveals the [\`ArvoEvent\`](${ArvoEventLearn.link}) structure. The \`type\` field matches the emission key from the contract 
+    (\`evt.calculator.add.success\`). The \`source\` field shows the handler's identifier (\`com.calculator.add\`), 
+    different from the triggering event's source. The \`to\` field contains the original source 
+    (\`test.test.test\`), establishing response routing. The \`subject\` field encodes workflow context enabling 
+    correlation across multi-step processes. The \`traceparent\` field provides [opentelemetry](https://opentelemetry.io/docs/concepts/signals/traces/)
+    distributed tracing context following W3C standards.
   `),
   tabs: [
     {
-      title: 'handlers/execute.add.handler.ts',
+      title: 'main.ts',
       lang: 'ts',
       code: `
 import { createArvoEventFactory } from 'arvo-core';
-import { addContract, addHandler } from './handlers/add.handler.js';
+import { addContract, addHandler } from './handlers/add.service.ts';
 
-export async function executeAddHandler() {
+async function main() {
   const event = createArvoEventFactory(addContract.version('1.0.0')).accepts({
-    // This can be any valid string. It denotes the source of the initiating event  
-    source: 'test.test.test',
+    source: 'test.test.test', // A valid source string, telling the event handler where to send the response back
     data: {
       numbers: [1, 2],
     },
   });
 
-  const { events: emittedEvents } = await addHandler().execute(event, { inheritFrom: 'EVENT' });
+  const { events: emittedEvents } = await addHandler().execute(event);
 
   for (const item of emittedEvents) {
     console.log(item.toString(2));
   }
 }
 
-executeAddHandler()
+main()
+
 
 /**
  * Console log output
@@ -74,7 +85,7 @@ executeAddHandler()
  *    "to": "test.test.test",
  *    "accesscontrol": null,
  *    "redirectto": null,
- *    "executionunits": 0.000002,
+ *    "executionunits": 0,
  *    "traceparent": "00-18abd9d92ac359994073cce4f7a3ab3a-37c41500126dbfa4-01",
  *    "tracestate": null,
  *    "parentid": "7714c68e-a670-4de2-84d4-0b85af34921d",

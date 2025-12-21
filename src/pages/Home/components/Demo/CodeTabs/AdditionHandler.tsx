@@ -1,53 +1,63 @@
+import { ArvoContractLearn, ArvoEventHandlerLearn, ArvoEventLearn } from '../../../../../components/LearningTiles/data';
 import { cleanString } from '../../../../../utils';
 import type { DemoCodePanel } from '../../../../types';
 
 export const AdditionHandlerTab: DemoCodePanel = {
   heading: 'Your First Event Handler',
-  description: cleanString(`\
-      The fundamental event handler in Arvo models a simple request-response system. Created using 
-      \`createArvoEventHandler\`, these \`ArvoEventHandler\` objects accept events as defined by their 
-      bound contract and emit one or more events according to that same contract. IntelliSense guides 
-      you toward correct data types and structures, eliminating the need to memorize event schemas.
+  description: cleanString(`
+    The simple request-response event handler is a fundamental building block in Arvo. This example demonstrates 
+    how to create your first handler using [\`createArvoEventHandler\`](${ArvoEventHandlerLearn.link}), bind it 
+    to a contract for type safety, and understand Arvo's error handling patterns.
 
-      ## Contract-First Design
+    ### Contract-First Design
 
-      Every event handler in Arvo is bound by one or more contracts that define the structure 
-      and key fields of \`ArvoEvent\` messages the handler can accept and emit. These contracts 
-      establish the interface through which handlers participate in Arvo's event-driven fabric.
+    All communication happens through [\`ArvoEvent\`](${ArvoEventLearn.link}) objects. Before building handlers, 
+    you define [\`ArvoContract\`](${ArvoContractLearn.link}) objects that specify what events your handler accepts 
+    and emits. Contracts provide:
 
-      Unlike traditional EDA specifications, Arvo contracts are executable code objects that serve 
-      multiple critical functions. They act as the single source of truth for communication interfaces, 
-      enable runtime event validation, facilitate \`ArvoEvent\` construction, and empower the TypeScript 
-      compiler to perform static type checking while providing comprehensive IntelliSense for all handler 
-      inputs and outputs. Additionally, their built-in versioning system enables seamless service evolution. 
-      You'll explore these \`ArvoContract\` objects in depth in their dedicated documentation.
+    - Single source of truth for service interfaces
+    - Runtime event validation against schemas
+    - Type-safe event construction through factory methods
+    - Full IntelliSense support during development
+    - Built-in versioning for evolving services without breaking changes
+    - JSON schema generation for building event catalogues
 
-      
+    The \`addContract\` demonstrates this pattern. It declares a URI identifying the service, a type string for 
+    events it accepts, and version-specific schemas. The \`accepts\` schema defines input structure while \`emits\` 
+    defines possible output events. When you bind this contract to a handler, TypeScript infers the exact shape of 
+    \`event.data\`, giving you compile-time verification and IntelliSense guidance.
 
+    ### Handler Implementation
 
-      ## Error Handling
+    The \`addHandler\` function creates an \`ArvoEventHandler\` bound to \`addContract\`. The handler configuration 
+    maps contract versions to implementation functions. Each implementation receives a typed event matching the 
+    contract's \`accepts\` schema and returns either success data or throws an error. The return object specifies 
+    which emission type to use and provides data conforming to that emission's schema. Arvo validates this data 
+    against the schema and constructs the response event automatically.
 
-      All event handlers in Arvo feature a consistent yet powerful error boundary system, explored 
-      comprehensively in its dedicated documentation. This system provides two distinct error handling 
-      approaches. First, system error events—uniform, specialized \`ArvoEvent\` messages that propagate 
-      errors through the event-driven fabric as part of your workflow. This is demonstrated in this
-      addition event handler. Second, \`ViolationError\` exceptions that bubble up beyond the handler's 
-      scope, representing critical failures requiring external intervention. These violations signal 
-      breaking conditions that exceed the handler's capacity to resolve and can be leveraged according 
-      to your architectural needs. The specific types of \`ViolationError\` exceptions available to 
-      you will be covered in the dedicated documentation.
+    ### Error Handling Patterns
 
-      ## Execution Units
+    Arvo distinguishes between two error categories serving different purposes:
 
-      All Arvo event handlers implement \`executionunits\`, a field in \`ArvoEvent\` that represents 
-      operational cost within the system. This domain-specific metric is yours to define based on your 
-      requirements and utilization patterns. This example demonstrates dynamic calculation of 
-      \`executionunits\` based on data size, though numerous other approaches exist.
-          
-    `),
+    - **System errors** are addressable failures that workflows and handlers can handle programmatically. When your 
+    handler throws an \`Error\`, Arvo catches it and emits a system error event (e.g., \`sys.com.calculator.add.error\`) 
+    that propagates through the event fabric. Other handlers can subscribe to these events and implement recovery 
+    logic. The schema for system error events is automatically defined by [\`ArvoContract\`](${ArvoContractLearn.link}), 
+    giving you this functionality immediately. The add handler demonstrates this by throwing when the numbers array 
+    is empty.
+
+    - **Violation errors** represent problems that cannot be addressed within the event system, such as infrastructure 
+    failures, misconfigurations, or transient issues. These extend \`ViolationError\` and are not caught by event 
+    handlers. Instead, they propagate to your operational layer where you implement mitigation strategies like retries, 
+    dead letter queues, or circuit breakers. Specific violation types are detailed in the 
+    [documentation](${ArvoEventHandlerLearn.link}).
+
+    This separation keeps business logic errors (handled via events) distinct from operational problems (handled via 
+    infrastructure patterns), enabling you to reason about each category with appropriate tools.
+  `),
   tabs: [
     {
-      title: 'handlers/add.handler.ts',
+      title: 'handlers/add.service.ts',
       lang: 'ts',
       code: `
 import { createArvoContract } from 'arvo-core';
@@ -55,7 +65,7 @@ import { createArvoEventHandler, type EventHandlerFactory } from 'arvo-event-han
 import { z } from 'zod';
 
 export const addContract = createArvoContract({
-  uri: '#/demo/calculator/add',
+  uri: '#/org/amas/calculator/add',
   type: 'com.calculator.add',
   description: 'This service provides the sum of all the numbers provided to it.',
   versions: {
@@ -75,7 +85,6 @@ export const addContract = createArvoContract({
 export const addHandler: EventHandlerFactory = () =>
   createArvoEventHandler({
     contract: addContract,
-    executionunits: 0,
     handler: {
       '1.0.0': async ({ event }) => {
         if (event.data.numbers.length === 0) {
@@ -87,7 +96,6 @@ export const addHandler: EventHandlerFactory = () =>
           data: {
             result: event.data.numbers.reduce((acc, cur) => acc + cur, 0),
           },
-          executionunits: event.data.numbers.length * 1e-6,
         };
       },
     },
@@ -98,10 +106,3 @@ export const addHandler: EventHandlerFactory = () =>
     },
   ],
 };
-
-/**
- * **Contracts function as calling cards between Arvo event handlers**. Rather than invoking other handlers 
-      directly, handlers register the contracts of services they're permitted to use, which becomes part of 
-      their interface and defines what events they can emit and expect during communication. **This pattern 
-      becomes clearer when exploring Arvo's orchestration capabilities**.
- */

@@ -19,7 +19,8 @@ const Mermaid: React.FC<MermaidProps> = ({ chart, config }) => {
     mermaid.initialize({
       startOnLoad: false,
       theme: 'default',
-      securityLevel: 'loose',
+      securityLevel: 'strict',
+      suppressErrorRendering: true,
       ...config,
     });
   }, [config]);
@@ -53,7 +54,13 @@ const Mermaid: React.FC<MermaidProps> = ({ chart, config }) => {
   };
 
   if (error) {
-    return <div className='text-red-500'>Error: {error}</div>;
+    return (
+      <div className='text-red-500 text-wrap'>
+        Unable to render chart
+        <br />
+        [Error] {error}
+      </div>
+    );
   }
 
   return (

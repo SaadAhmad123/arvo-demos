@@ -3,15 +3,17 @@ import { Md3ContentPadding } from '../../../../classNames';
 import { ContentContainer } from '../../../../components/ContentContainer';
 import { DemoView } from '../../../../components/DemoView';
 import { ReMark } from '../../../../components/ReMark';
-import { Separator } from '../../../../components/Separator';
 import { cleanString } from '../../../../utils';
 import { AdditionHandlerTab } from './CodeTabs/AdditionHandler';
 import { ExecuteTab } from './CodeTabs/ExecuteTab';
-import { GreetingOrchestratorTab } from './CodeTabs/GreetingOrchestrator';
-import { GreetingResumableTab } from './CodeTabs/GreetingResumable';
+import { OrchestratorTab } from './CodeTabs/Orchestrator';
+import { ResumableTab } from './CodeTabs/Resumable';
 import { SecondSimpleHandlerTab } from './CodeTabs/SecondSimpleHandler';
 import { SimpleHandlerExecutionTab } from './CodeTabs/SimpleHandlerExecution';
 import { TwoHandlerBrokerTab } from './CodeTabs/TwoHandlerEventBroker';
+import { TestOrchestratorTab } from './CodeTabs/TestOrchestrator';
+import { ExecuteOrchestratorTab } from './CodeTabs/ExecuteOrchestrator';
+import { TestResumableTab } from './CodeTabs/TestingResumable';
 
 export const Demo: React.FC = () => {
   return (
@@ -25,42 +27,31 @@ export const Demo: React.FC = () => {
               
               With your dependencies installed and project configured, you're ready to build your first 
               event-driven console application. This hands-on introduction demonstrates Arvo's core concepts 
-              through a fully functional EDA application that runs and tests locally without requiring any 
-              cloud infrastructure.
+              through a fully functional application that runs and tests locally without requiring any 
+              cloud infrastructure or external message brokers.
 
-              > **Key Concept**: Arvo's architecture is elegantly simple. Every functional component is an 
-              > event handler that communicates through \`ArvoEvent\` messages. Handlers maintain cohesion 
-              > through enforced contracts called \`ArvoContract\`, ensuring reliable interactions without 
-              > tight coupling.
-            `)}
-          />
-          <Separator padding={8} />
-          <ReMark
-            bodyTextSize='large'
-            content={cleanString(`
-              ## What Are You Building?
+              ## What You'll Build
 
-              This tutorial guides you through building progressively sophisticated event-driven patterns, 
-              **starting with fundamentals and advancing to orchestration strategies all running locally** in a 
-              console application.
+              This tutorial guides you through progressively sophisticated event-driven patterns, starting 
+              with fundamentals and advancing to orchestration strategies. Everything runs locally in your 
+              development environment.
 
-              You'll **begin by** creating a **simple event handler that sums a list of numbers and executes it 
-              directly**. Next, you'll **build a second handler that accepts a name and returns a personalized 
-              greeting**. At this stage, you'll also work with Arvo's **in-memory** FIFO queue-based **event broker**, 
-              designed specifically **for local testing and development**. You'll register both handlers with this 
-              broker, which manages event routing automatically.
+              - **Simple event handlers** - Create request-response handlers that process events and emit results, 
+                starting with a handler that sums numbers
+              - **Direct execution** - Learn how handlers execute as standalone functions during development and testing
+              - **Multiple handlers** - Build a second handler that multiplies numbers, demonstrating how different handlers 
+                coexist in a system
+              - **Event broker coordination** - Use \`SimpleEventBroker\` to route events between handlers, establishing 
+                the foundation for event-driven architecture
+              - **Declarative workflows** - Compose handlers into multi-step workflows using state machines, introducing 
+                memory backends for workflow state persistence
+              - **Testing patterns** - Apply Arvo's testing suite for unit and integration tests validating handler behavior 
+                and event-driven coordination
+              - **Imperative orchestration** - Coordinate complex workflows through code-driven orchestrators that make 
+                runtime decisions based on handler responses
 
-              Building on these foundations, you'll explore **Arvo's key composition patterns** by creating an 
-              **orchestrator—a specialized event handler that coordinates workflows through event emission 
-              rather than direct processing**. Using state charts and state machines, you'll implement 
-              event-driven orchestration where a single triggering event initiates both greeting and addition 
-              operations through the broker. This demonstrates **a distinctive orchestration** model where the 
-              orchestrator operates as a start-stop event handler in the Arvo fabric, **without centralized system 
-              control**.
-
-              Finally, you'll discover **Arvo's second orchestration paradigm-imperative orchestration**. This 
-              approach allows you to **control workflows through natural code flow** while maintaining the same 
-              start-stop event handler architecture that underpins the entire system.
+              Each section builds on previous concepts, gradually introducing the patterns and tools you'll use to 
+              construct production event-driven systems.
             `)}
           />
         </div>
@@ -72,8 +63,11 @@ export const Demo: React.FC = () => {
             SimpleHandlerExecutionTab,
             SecondSimpleHandlerTab,
             TwoHandlerBrokerTab,
-            GreetingOrchestratorTab,
-            GreetingResumableTab,
+            OrchestratorTab,
+            TestOrchestratorTab,
+            ExecuteOrchestratorTab,
+            ResumableTab,
+            TestResumableTab,
             ExecuteTab,
           ]}
         />
