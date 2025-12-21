@@ -49,9 +49,18 @@ export const Demo: React.FC = () => {
                 and event-driven coordination
               - **Imperative orchestration** - Coordinate complex workflows through code-driven orchestrators that make 
                 runtime decisions based on handler responses
+              - **Human-in-the-loop integration** - Implement workflows that pause for human approval and external coordination 
+                using domain-based event routing
 
               Each section builds on previous concepts, gradually introducing the patterns and tools you'll use to 
-              construct production event-driven systems.
+              construct production event-driven systems. The business logic throughout this tutorial is intentionally 
+              simple. Building a calculator with orchestrators, state machines, and event-driven coordination is 
+              architectural overkill for arithmetic operations. This simplicity is deliberate, keeping business 
+              complexity minimal so you can focus entirely on understanding Arvo's patterns, orchestration approaches, 
+              and testing strategies rather than wrestling with domain logic. By the end, you'll have built a calculator 
+              system, but the real value is understanding the event-driven concepts that apply to any production application.
+              **You'll understand how to compose handlers, coordinate workflows declaratively and imperatively, integrate 
+              external systems, and test event-driven logic in Arvo.**
             `)}
           />
         </div>
@@ -71,61 +80,6 @@ export const Demo: React.FC = () => {
             ExecuteTab,
           ]}
         />
-      </ContentContainer>
-      <ContentContainer content>
-        <div className={Md3ContentPadding}>
-          <ReMark
-            bodyTextSize='large'
-            content={cleanString(`
-              # Nature of Orchestration in Arvo
-
-              Orchestration in Arvo is designed to feel natural within the broader event-driven model. 
-              Rather than relying on a centralized workflow engine, **orchestrators are simply specialized 
-              event handlers** that manage state, emit events, and coordinate other handlers. This allows 
-              orchestration logic to run anywhere your handlers run—locally, in serverless environments, or 
-              across distributed clusters.
-
-              ## Two Orchestration Styles
-
-              Arvo provides two complementary approaches to workflow orchestration:
-
-              **State-Machine Orchestrators** are declarative workflows built on XState, ideal for well-defined, 
-              predictable processes that benefit from visualization and formal guarantees. They excel when your 
-              workflow has clear states and transitions that can be mapped out in advance.
-
-              **Resumable (Imperative) Orchestrators** offer step-by-step workflows written in familiar programming
-              constructs, perfect for *agentic AI scenarios* or dynamic processes where the next step depends on runtime 
-              inputs such as LLM responses, API calls, or human-in-the-loop actions. They provide the flexibility to 
-              handle complex conditional logic without state explosion.
-
-              ## Start-Stop Execution Model
-
-              A defining characteristic of Arvo's execution model is its **start-stop nature**. Orchestrators do not run 
-              as long-lived threads; instead, they process an incoming event, emit the next set of events, persist their
-              state, and then pause. When responses or follow-up events arrive, the orchestrator resumes from where it left off.
-
-              This execution model delivers three critical benefits:
-
-              **Resource Efficiency** — No CPU or memory is consumed while waiting for responses. Thousands of workflows 
-              can remain in flight without heavy infrastructure costs, as idle orchestrations consume zero resources.
-
-              **Horizontal Scalability** — Since orchestrators are stateless between events, new instances can be spun up 
-              on demand to handle load without coordination overhead. Each event can be processed by any available instance.
-
-              **Resiliency** — If a process crashes mid-orchestration, another instance can pick up seamlessly using the 
-              persisted state in \`IMachineMemory\`. Workflows survive failures without manual intervention or recovery 
-              procedures.
-
-              ## Unified Yet Flexible
-
-              This dual approach—structured state machines combined with imperative resumables—paired with the start-stop 
-              execution model means you can model both predictable workflows and adaptive AI-driven processes within the same
-              system. All orchestrators use contracts for type-safety and observability, making them straightforward to evolve, 
-              compose, and test without introducing central bottlenecks or architectural inconsistencies.
-            
-            `)}
-          />
-        </div>
       </ContentContainer>
     </>
   );

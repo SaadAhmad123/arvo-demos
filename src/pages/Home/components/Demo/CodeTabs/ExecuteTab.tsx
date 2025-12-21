@@ -2,25 +2,42 @@ import { cleanString } from '../../../../../utils';
 import type { DemoCodePanel } from '../../../../types';
 
 export const ExecuteTab: DemoCodePanel = {
-  heading: 'A Complete Event-Driven System ',
+  heading: 'A Complete Event-Driven System',
   description: cleanString(`
-    Let's bring everything we have created so far togather and make is participate 
-    in an application. The \`main.ts\` file now looks significantly different due to 
-    the addition of many component which brings interactivity and telemtry to the 
-    application. 
+    This brings together everything from the tutorial into a complete, runnable event-driven application. All 
+    handlers register with the same broker, simple request-response handlers working alongside state machine 
+    orchestrators and imperative orchestrators. The system coordinates across different handler types through 
+    events, demonstrating how Arvo components compose naturally without architectural distinction.
 
-    The \`executeHandler\` function now also captures the domained events and returns
-    them after the execution. The \`main\` function in addition to surrounding its 
-    logic with opentelemtry instrumentation, now implements an explicit event-loops
-    which works on the events and if they are not the final events then they are 
-    addressed appropriately. For instance, the human approval event is routed
-    to the handler function which inherits the event's opentelemtry context, demonstrating
-    distributed telemetry implementation, and implements the console interface
-    to get input from the human. 
+    ### The Event Loop Pattern
 
-    This tutorial gives you an end-to-end introduction on how to work with various 
-    event handlers in Arvo. There are a lot on concepts which can be explored in the
-    detailed documentation.
+    The \`executeHandlers\` function now captures domained events alongside regular results, returning both to 
+    the caller. The main function implements an explicit event loop that executes handlers, checks for events 
+    requiring external coordination, handles them outside the broker, and feeds responses back. The loop continues 
+    until the workflow completes with a final event. This pattern enables external systems like humans, third-party 
+    services, or cross-environment integrations to participate in workflows without blocking the event broker.
+
+    ### Human Approval and Distributed Tracing
+
+    The \`handleHumanApproval\` function demonstrates external coordination using a console interface. Your 
+    implementation could replace this with Slack integrations, web dashboards, or enterprise approval platforms without 
+    changing orchestrator code. The function extracts OpenTelemetry trace context from the incoming approval 
+    request event using \`createOtelContextFromEvent\`, then creates a child span maintaining the parent-child 
+    relationship in the distributed trace. This ensures observability continuity across event-driven boundaries, 
+    linking the human approval step back to the originating workflow in your tracing platform.
+
+    The approval handler also demonstrates event context stitching in practice. It extracts \`subject\`, \`parentid\`, 
+    \`to\`, and \`accesscontrol\` from the approval request and passes them when constructing the response event. 
+    This maintains proper event chain relationships, ensuring the orchestrator receives a correctly correlated 
+    response that resumes the workflow exactly where it suspended.
+
+    ### Complete Foundation
+
+    This tutorial provides an end-to-end introduction to event-driven development with Arvo. You've built simple 
+    handlers, coordinated them through brokers, orchestrated multi-step workflows with state machines, implemented 
+    imperative orchestration for dynamic scenarios, integrated human-in-the-loop patterns, and maintained distributed 
+    observability. The detailed documentation explores many deeper concepts about these components. You now have 
+    the foundational knowledge of Arvo for building event-driven application.
   `),
   tabs: [
     {

@@ -94,7 +94,7 @@ export const HomePage = withNavBar(() => {
       <Installation />
       <Separator padding={18} />
       <Demo />
-      <Separator padding={18} />
+      <Separator padding={36} />
       <PageNavigation
         next={{
           link: ArvoLearn.link,
