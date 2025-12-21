@@ -57,7 +57,7 @@ export const AdditionHandlerTab: DemoCodePanel = {
   `),
   tabs: [
     {
-      title: 'handlers/add.handler.ts',
+      title: 'handlers/add.service.ts',
       lang: 'ts',
       code: `
 import { createArvoContract } from 'arvo-core';
@@ -65,7 +65,7 @@ import { createArvoEventHandler, type EventHandlerFactory } from 'arvo-event-han
 import { z } from 'zod';
 
 export const addContract = createArvoContract({
-  uri: '#/demo/calculator/add',
+  uri: '#/org/amas/calculator/add',
   type: 'com.calculator.add',
   description: 'This service provides the sum of all the numbers provided to it.',
   versions: {

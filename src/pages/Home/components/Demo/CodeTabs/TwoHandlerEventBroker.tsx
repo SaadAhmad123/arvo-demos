@@ -5,119 +5,132 @@ import type { DemoCodePanel } from '../../../../types';
 export const TwoHandlerBrokerTab: DemoCodePanel = {
   heading: 'The Event Broker Pattern',
   description: cleanString(`
-    The event broker pattern is Arvo's native operational paradigm. What distinguishes Arvo is its remarkably 
-    [simple broker requirements](${EventRoutingAndBrokerInArvoLearn.link}). At its core, Arvo needs only basic 
-    content-based filtering and targeted delivery, matching events to their intended handlers. If your broker 
-    can match the \`event.to\` field of an \`ArvoEvent\` to a registered handler's \`handler.source\` value, 
-    you have everything needed. The routing logic lives in handlers, keeping the broker 
-    design lightweight and scalable.
+    The event broker is Arvo's native execution pattern and represents a shift from direct 
+    handler execution to event-driven coordination. Instead of calling handlers directly, you send events to 
+    a broker that routes them to appropriate handlers. This architectural change enables the decoupling and scalability characteristics 
+    that define event-driven systems.
 
-    ### The \`SimpleEventBroker\`
+    ### The \`SimpleEventBroker\` in Arvo
 
-    Arvo is a toolkit. It doesn't provide native integrations with external brokers like RabbitMQ 
-    or Kafka, expecting you to implement the necessary logic and networking for your infrastructure. However, for 
-    local development, testing, and non-distributed execution, Arvo provides \`SimpleEventBroker\`, an in-memory 
-    FIFO queue-based broker that executes entirely within your process.
+    Arvo provides \`SimpleEventBroker\`, an in-memory FIFO queue-based broker that runs entirely within your 
+    process. This broker works for local development, testing, and small-scale production applications where 
+    distributed infrastructure isn't needed yet.
 
-    The example demonstrates how handlers register with the broker. You create a broker instance with an array of 
-    handlers, then call \`.resolve()\` with an event. The broker examines the event's \`to\` field, matches it to 
-    a registered handler's source identifier, executes that handler, and returns the result.
+    The \`SimpleEventBroker\` implements Arvo's lightweight broker design by performing simple string matching between 
+    the event's \`to\` field and registered handlers' \`source\` identifiers. When a match occurs, it executes 
+    that handler and returns the result. This simplicity is intentional. Events in Arvo are self-describing and 
+    carry their routing information, allowing brokers to remain lightweight while handlers contain the orchestration 
+    intelligence. For a comprehensive understanding of this design philosophy and how it enables scalability, see 
+    the [${EventRoutingAndBrokerInArvoLearn.name}](${EventRoutingAndBrokerInArvoLearn.link}) documentation.
 
-    This same registration pattern extends throughout Arvo. Rather than tight coupling between components, 
-    Arvo maintains cohesion through \`ArvoContract\` definitions. Components communicate through events conforming 
-    to contracts, enabling independent evolution while preserving system-wide coordination. You can swap handler 
-    implementations, add new handlers, or modify existing ones without affecting other system components as long as 
-    contracts remain compatible.
+    The \`executeHandlers\` function demonstrates the registration pattern. Pass an array of handler instances 
+    to \`createSimpleEventBroker\`, and the broker builds an internal routing mechanism. Call \`.resolve()\` with 
+    an event, and the broker routes it through registered handlers, continuing until an event is emitted back 
+    to the original source. It returns this final event addressed to the initiating source.
+
+    ### Handler Coordination Without Coupling
+
+    Both the addition and product handlers register with the same broker but remain completely unaware of each 
+    other. Neither handler imports or references the other. They declare their identities through source values 
+    and trust the broker to deliver relevant events.
+
+    In later sections, you'll see orchestration and workflow handlers that emit events into this same broker. Those orchestrators 
+    won't call the addition or product handlers directly. They'll emit events based on workflow logic, and the 
+    broker routes those events to the appropriate handlers. This establishes true architectural decoupling where 
+    components communicate purely through events.
+
+    ### Infrastructure Portability
+
+    The same lightweight routing pattern that \`SimpleEventBroker\` implements locally is expected from large-scale brokers 
+    like Kafka or RabbitMQ. Handler code remains unchanged because handlers only interact with events, not the 
+    delivery mechanism. This enables you to defer infrastructure complexity. Start with \`SimpleEventBroker\` 
+    and build your handler logic without provisioning message queues. When your application scales beyond a 
+    single process, swap the broker implementation without modifying handler code.
   `),
   tabs: [
     {
-      title: 'execute.ts',
+      title: 'main.ts',
       lang: 'ts',
       code: `
-import { type ArvoEvent, createArvoEventFactory } from 'arvo-core';
+import { ArvoEvent, createArvoEventFactory } from 'arvo-core';
+import { addHandler } from './handlers/add.service.ts';
 import { createSimpleEventBroker } from 'arvo-event-handler';
-import { addContract, addHandler } from './handlers/add.handler';
-import { greetingContract, greetingHandler } from './handlers/greeting.handler';
+import { productContract, productHandler } from './handlers/product.service.ts';
 
-/**
- * Creates an in-memory event broker that automatically routes events to registered handlers.
- *
- * The broker uses event routing based on the 'event.to' field matching the handler's 'handler.source' field.
- * The 'resolve' function processes the event through the appropriate handler and returns
- * the final result after all event processing is complete.
- *
- * This pattern enables event brokering without requiring external message brokers and is helpful
- * for rapid development, limited-scoped projects, and testing
- */
-const executeBroker = async (event: ArvoEvent) =>
-  await createSimpleEventBroker([addHandler(), greetingHandler()]).resolve(event);
+const TEST_EVENT_SOURCE = 'test.test.test';
 
-export const executeWithEventBrokerPattern = async () => {
-  const additionEvent = createArvoEventFactory(addContract.version('1.0.0')).accepts({
-    source: 'test.test.test',
-    data: {
-      numbers: [1, 2, 3, 4],
-    },
-  });
-
-  const greetingEvent = createArvoEventFactory(greetingContract.version('1.0.0')).accepts({
-    source: 'test.test.test',
-    data: {
-      name: 'John Doe',
-    },
-  });
-
-  await executeBroker(additionEvent).then((result) => console.log(result?.toString(2) ?? 'No event resolved'));
-  /* Console log output
-    {
-      "id": "210242ac-5f05-4984-934e-144d965ddd3a",
-      "source": "com.calculator.add",
-      "specversion": "1.0",
-      "type": "evt.calculator.add.success",
-      "subject": "eJw9jtsKwjAQRP9ln5sQbVpt/2a72WIgF0gTEUL/3VXBl3mYA2emQy704KMWrLnA2iFhZFiBctSEgVr4AI3OwQBPLofPSfBFG23gHIBfTK1+yw7eCRrNjtbMVo0zb8oax2qZ6K6Y7LbsE17tdhOXT7763yhUOaD/IdDliF6UqYUgI5Eriv8836O2OO0=",
-      "datacontenttype": "application/cloudevents+json;charset=UTF-8;profile=arvo",
-      "dataschema": "#/demo/calculator/add/1.0.0",
-      "data": {
-        "result": 10
-      },
-      "time": "2025-09-30T21:56:55.713+00:00",
-      "to": "test.test.test",
-      "accesscontrol": null,
-      "redirectto": null,
-      "executionunits": 0,
-      "traceparent": "00-582e4a4d20e56ec93f804e8eda00138a-3c1389d5a4717fe4-01",
-      "tracestate": null,
-      "parentid": "291bc961-bdfb-467f-a4db-a36a1177f0bb",
-      "domain": null
-    }
-  */
-
-  await executeBroker(greetingEvent).then((result) => console.log(result?.toString(2) ?? 'No event resolved'));
-  /* Console log output
-    {
-      "id": "2fc51d15-5c38-42d2-a8c2-3a2cd9b12eed",
-      "source": "com.greeting.create",
-      "specversion": "1.0",
-      "type": "evt.greeting.create.success",
-      "subject": "eJw9jsEKwzAMQ//F5yakowukf+MmbmdoEkjdMQj993kb7KKDhJ7Uobb4oEMaSm0wdyiYCWaINdutEQmXzcZGKAQDPKkdXIvmo3XWwTUAvSie8jU7cPpUVwzkcTErxclMKTqDYwrGe3cLfiFc1ruyuLDwbxVEH9i/aJhqRlZkOfddRzIJKv+63kIrOlI=",
-      "datacontenttype": "application/cloudevents+json;charset=UTF-8;profile=arvo",
-      "dataschema": "#/demo/greeting/1.0.0",
-      "data": {
-        "greeting": "Hello, John Doe!"
-      },
-      "time": "2025-09-30T21:56:55.717+00:00",
-      "to": "test.test.test",
-      "accesscontrol": null,
-      "redirectto": null,
-      "executionunits": 0,
-      "traceparent": "00-3f26d50949798776bcf3d1956a68c53f-7474d5ca5bb1afdd-01",
-      "tracestate": null,
-      "parentid": "79dfe032-c4ea-4f04-8040-70f8f9049bec",
-      "domain": null
-    }
-  */
+// The function provides a simple interface to execute
+// any event by registering the event handler in a simple
+// in-process in-memory FIFO queue based event broker
+// provided out-of-the-box by Arvo
+export const executeHandlers = async (
+  event: ArvoEvent,
+): Promise<ArvoEvent[]> => {
+  // Registers event handlers with an in-memory broker that routes events
+  // based on the event's 'to' field matching handler 'source' identifiers.
+  // The broker continues routing until an event addressed to the original
+  // source is emitted, then returns that final event.
+  const response = await createSimpleEventBroker([
+    addHandler(),
+    productHandler(),
+  ]).resolve(event);
+  return response ? [response] : [];
 };
 
+async function main() {
+  const event = createArvoEventFactory(productContract.version('1.0.0'))
+    .accepts({
+      source: TEST_EVENT_SOURCE,
+      data: {
+        numbers: [1, 2, 3, 4],
+      },
+    });
+
+  const emittedEvents = await executeHandlers(event);
+
+  console.log('The output of the product handler');
+  for (const item of emittedEvents) {
+    console.log(item.toString(2));
+  }
+}
+
+main();
+
+
+/*
+
+Console log
+
+// Notice the emitted event structure:
+// - 'source' identifies which handler produced this event (com.calculator.product)
+// - 'to' contains the original event source (test.test.test) for response routing
+// - 'executionunits' shows the accumulated cost (0.000004) calculated by the handler
+// - 'subject' encodes workflow context enabling correlation across multi-step processes
+
+The output of the product handler
+{
+  "id": "a0ed0460-f688-4fee-9cca-461c76f50ffd",
+  "source": "com.calculator.product",
+  "specversion": "1.0",
+  "type": "evt.calculator.product.success",
+  "subject": "eJw9jksOwjAMRO/idROlJUDb26SOKyLlg1KnQqp6dwxIbGbhZ72ZA0rFB21cHZcK8wHZJYIZsCSNLmKLH6CftfiGDB3sVLdQsrz02mgDZwf0Imz8PR4QvCBzQTs5e1P9OEzK3pdJjVfjVb+O1i+D87SSuEIOHH7FwDJC/0OgL8kFUeYWo5QkYif+83wDxcM6ng==",
+  "datacontenttype": "application/cloudevents+json;charset=UTF-8;profile=arvo",
+  "dataschema": "#/org/amas/calculator/product/1.0.0",
+  "data": {
+    "result": 24
+  },
+  "time": "2025-12-21T13:34:40.404+00:00",
+  "to": "test.test.test",
+  "accesscontrol": null,
+  "redirectto": null,
+  "executionunits": 0.000004,
+  "traceparent": "00-dc28fda621a4cbdafc837371a48a1af6-b2b7938e5022e5dd-01",
+  "tracestate": null,
+  "parentid": "f8a9e7cc-1d84-40ec-bb82-5b4778761d3d",
+  "domain": null
+}
+
+*/
   
 `,
     },

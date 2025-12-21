@@ -14,7 +14,7 @@ sequenceDiagram
         Resumable->>Agent: execute(input event, context=null)
         Agent->>Otel: Start span (OpenInference AGENT kind)
         Agent->>Agent: Connect MCP client (if configured)
-        
+
         rect rgb(200, 220, 240)
             Note over Agent,Context: Context Engineering Phase
             Agent->>Context: contextBuilder({ lifecycle: 'init', input, tools, span })
