@@ -88,7 +88,7 @@ export const weightedAverageContract = createArvoOrchestratorContract({
 });
 
 export const weightedAverageResumable: EventHandlerFactory<
-  { memory: IMachineMemory<Record<string, unknown>> }
+  { memory: IMachineMemory }
 > = ({ memory }) =>
   createArvoResumable({
     contracts: {

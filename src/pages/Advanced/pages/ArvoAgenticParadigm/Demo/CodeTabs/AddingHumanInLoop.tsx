@@ -111,7 +111,7 @@ export const calculatorAgentContract = createArvoOrchestratorContract({
 
 export const calculatorAgent: EventHandlerFactory<
   {
-    memory: IMachineMemory<Record<string, unknown>>;
+    memory: IMachineMemory;
     onStream?: AgentStreamListener;
   }
 > = ({ memory, onStream }) =>

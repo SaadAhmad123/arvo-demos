@@ -129,7 +129,7 @@ export const simpleAgentContract = createArvoOrchestratorContract({
 
 export const simpleAgent: EventHandlerFactory<
   {
-    memory: IMachineMemory<Record<string, unknown>>;
+    memory: IMachineMemory;
     permissionManager?: IPermissionManager;
     onStream?: AgentStreamListener;
   }
@@ -215,7 +215,7 @@ export const calculatorAgentContract = createArvoOrchestratorContract({
 
 export const calculatorAgent: EventHandlerFactory<
   {
-    memory: IMachineMemory<Record<string, unknown>>;
+    memory: IMachineMemory;
     onStream?: AgentStreamListener;
   }
 > = ({ memory, onStream }) =>
@@ -338,7 +338,7 @@ export const operatorAgentContract = createArvoOrchestratorContract({
 
 export const operatorAgent: EventHandlerFactory<
   {
-    memory: IMachineMemory<Record<string, unknown>>;
+    memory: IMachineMemory;
     onStream?: AgentStreamListener;
   }
 > = ({ memory, onStream }) =>

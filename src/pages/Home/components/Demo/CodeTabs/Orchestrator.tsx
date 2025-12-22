@@ -106,7 +106,6 @@ import {
   createArvoOrchestrator,
   EventHandlerFactory,
   IMachineMemory,
-  MachineMemoryRecord,
   setupArvoMachine,
   xstate,
 } from 'arvo-event-handler';
@@ -255,11 +254,11 @@ const machineV100 = setupArvoMachine({
 // (SimpleMachineMemory for dev, Redis/databases for production) with optimistic
 // locking to prevent concurrent state corruption.
 export const averageWorkflow: EventHandlerFactory<
-  { memory: IMachineMemory<Record<string, unknown>> }
+  { memory: IMachineMemory }
 > = ({ memory }) =>
   createArvoOrchestrator({
     machines: [machineV100],
-    memory: memory as IMachineMemory<MachineMemoryRecord>, // Type cast to satisfy TypeScript compiler requirements
+    memory
   });
   
 `,

@@ -147,7 +147,7 @@ export const simpleAgentContract = createArvoOrchestratorContract({
 // Enable dependency injection for the permission manager and the memory backend.
 // This allows to pass these dependency to the agent without updating the agent code.
 export const simpleAgent: EventHandlerFactory<{
-  memory: IMachineMemory<Record<string, unknown>>;
+  memory: IMachineMemory;
   permissionManager?: IPermissionManager;
 }> = ({ memory, permissionManager }) =>
   createArvoAgent({

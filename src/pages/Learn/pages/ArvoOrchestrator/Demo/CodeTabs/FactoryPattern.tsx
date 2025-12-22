@@ -20,12 +20,6 @@ export const FactoryPattern: DemoCodePanel = {
     - **Type Safety**: Generic interfaces narrow to specific types where needed
     - **Consistency**: Uniform dependency injection across all Arvo event handlers
     - **Testability**: Easy mocking of dependencies for unit tests
-
-    In this example, the factory accepts a generic \`IMachineMemory<Record<string, unknown>>\` 
-    interface, which is then safely cast to the more specific \`IMachineMemory<MachineMemoryRecord>\` 
-    type required by the orchestrator. This type-casting is safe because \`MachineMemoryRecord\` 
-    is a specialized subset of \`Record<string, unknown>\`, and TypeScript's structural typing 
-    ensures compatibility.
   `),
   tabs: [
     {
@@ -36,7 +30,6 @@ import {
   createArvoOrchestrator,
   type EventHandlerFactory,
   type IMachineMemory,
-  type MachineMemoryRecord,
 } from 'arvo-event-handler';
 import { demoMachineV100 } from './machine.V100.js';
 
@@ -66,11 +59,11 @@ import { demoMachineV100 } from './machine.V100.js';
  * \`\`\`
  */
 export const demoOrchestrator: EventHandlerFactory<{
-  memory: IMachineMemory<Record<string, unknown>>;
+  memory: IMachineMemory;
 }> = ({ memory }) =>
   createArvoOrchestrator({
     // Type-safe narrowing from generic Record to specific MachineMemoryRecord
-    memory: memory as IMachineMemory<MachineMemoryRecord>,
+    memory,
     executionunits: 0,
     machines: [demoMachineV100],
   });

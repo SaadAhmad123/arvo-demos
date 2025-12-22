@@ -98,7 +98,7 @@ import { humanApprovalContract } from './human.approval.contract.ts';
 import { weightedAverageContract } from './contract.ts'
 
 export const weightedAverageResumable: EventHandlerFactory<
-  { memory: IMachineMemory<Record<string, unknown>> }
+  { memory: IMachineMemory }
 > = ({ memory }) =>
   createArvoResumable({
     contracts: {
