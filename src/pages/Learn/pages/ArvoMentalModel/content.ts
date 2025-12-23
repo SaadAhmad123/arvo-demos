@@ -376,7 +376,7 @@ export const ArvoMentalModelContent = cleanString(`
 
               Handlers are testable as pure transformations. Create an input event conforming to a contract, invoke 
               the handler's execute method, verify the output events match expectations. No mocking of infrastructure, no 
-              test doubles for other handlers, no complex test harness required. The handler processes events—test that 
+              test doubles for other handlers, no complex test kernel required. The handler processes events—test that 
               it does so correctly.
 
               Contracts provide executable specifications that enable property-based testing. Generate random valid events 

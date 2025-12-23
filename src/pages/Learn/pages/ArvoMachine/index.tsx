@@ -60,7 +60,7 @@ export const ArvoMachinePage = withNavBar(() => {
               effectively. These handlers must also interact with external systems—whether 
               receiving human input, integrating with third-party services, or managing 
               long-running processes. The event-driven paradigm naturally maps to these 
-              coordination challenges, and Arvo provides the mechanisms and tools to harness 
+              coordination challenges, and Arvo provides the mechanisms and tools to kernel 
               this paradigm for managing complexity.
 
               ### Virtual Orchestrations

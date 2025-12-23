@@ -6,7 +6,7 @@ export const TestOrchestratorTab: DemoCodePanel = {
   heading: 'Testing Event Handlers',
   description: cleanString(`
     Testing orchestrators and workflows traditionally requires simulating multi-step event sequences across time. 
-    You need infrastructure to deliver events, mechanisms to maintain state between steps, and complex harnesses 
+    You need infrastructure to deliver events, mechanisms to maintain state between steps, and complex kerneles 
     to validate behavior across the entire sequence. Arvo eliminates this complexity through step-based testing 
     that works without infrastructure which is possible due to the fact that event handlers in Arvo are infrastructure
     agnostic.

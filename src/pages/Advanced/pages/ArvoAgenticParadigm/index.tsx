@@ -98,21 +98,21 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               \`ArvoAgent\` is a sophisticated pattern implementation of \`ArvoResumable\`, 
               provided by the \`@arvo-tools/agentic\` package, that enables 
               you to build agentic event handlers powered by large language models. It encapsulates the 
-              operational architecture, which acts as a harness, necessary for LLM-driven agents to 
+              operational architecture, which acts as a kernel, necessary for LLM-driven agents to 
               participate reliably in your application or event-driven system as trustworthy, 
               observable components.
 
               The internal architecture of \`ArvoAgent\` separates AI intelligence from operational 
               mechanics. The LLM focuses exclusively on reasoning. It interprets ambiguous 
               situations, decides which actions to take, and composes response sequences. 
-              Meanwhile, the operational harness handles everything else. It routes tool 
+              Meanwhile, the agentic kernel handles everything else. It routes tool 
               requests to the appropriate execution strategy, enforces permission policies, manages 
               error feedback loops, maintains conversation state, and coordinates with the 
               broader system. This separation allows the AI to do what it does best while 
               \`ArvoAgent\` ensures those decisions execute reliably and safely.
               
               This architectural separation makes agents trustworthy despite using AI. Because 
-              operational concerns are enforced by the harness rather than relying on LLM behavior, 
+              operational concerns are enforced by the kernel rather than relying on LLM behavior, 
               the system guarantees deterministic handling of permissions, execution priorities, and 
               error recovery regardless of what the model decides. An agent cannot bypass permission 
               checks through prompt manipulation, cannot ignore priority-based execution ordering, 
@@ -128,7 +128,7 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               The following diagram illustrates the architecture components
               of \`ArvoAgent\`, showing how it layers the agentic implementation on top 
               the foundational capabilities of \`ArvoResumable\`. Each component represents a 
-              distinct responsibility in the operational harness that enables reliable 
+              distinct responsibility in the agentic kernel that enables reliable 
               LLM-driven agent execution.
 
               <br/>

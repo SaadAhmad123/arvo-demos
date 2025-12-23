@@ -49,14 +49,14 @@ export const ArvoAgentAnatomy: React.FC = () => {
                 content={cleanString(`
                   # The Anatomy of Arvo Agent
 
-                  Following are the key component of the Arvo Agent
+                  Following are the key component of the Arvo Agent (An Agentic Kernel based on ArvoResumable foundation)
                   
                   ${Object.entries(topicsMap)
                     .map(([key, value]) => `---\nCategory: ${getCategory(key as keyof typeof topicsMap)}\n${value}`)
                     .join('\n\n')}  
                 `)}
               />
-              <h1 className='text-center'>ArvoResumable</h1>
+              <h1 className='text-center'>Agentic Kernel (On ArvoResumable Foundation)</h1>
             </div>
             <button
               type='button'
@@ -79,7 +79,7 @@ export const ArvoAgentAnatomy: React.FC = () => {
               State Management
             </button>
             <div className={`${Md3Cards.filled} bg-surface-container-low! col-span-8 p-4 grid grid-cols-12 gap-2`}>
-              <h1 className='col-span-12 text-lg mb-2 text-center'>Agentic Implementation</h1>
+              <h1 className='col-span-12 text-lg mb-2 text-center'>Agentic Core</h1>
               <div className='col-span-6 grid grid-cols-12 gap-2'>
                 <button
                   type='button'

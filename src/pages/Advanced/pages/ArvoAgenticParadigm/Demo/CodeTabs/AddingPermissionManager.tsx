@@ -15,7 +15,7 @@ export const AddingPermissionManager: DemoCodePanel = {
 
     Arvo takes a different position. LLMs should focus on reasoning about ambiguous situations and making 
     intelligent decisions. Deterministic process enforcement like authorization checks, compliance validation, 
-    and operational guardrails belongs in the operational harness, not in prompts. When you provide an 
+    and operational guardrails belongs in the agentic kernel, not in prompts. When you provide an 
     \`IPermissionManager\` implementation to your agent, the Actions Engine enforces authorization 
     deterministically. Tools marked as requiring permission always pass through this gate, regardless of 
     what the LLM decides or how cleverly someone tries to manipulate it through prompts.
