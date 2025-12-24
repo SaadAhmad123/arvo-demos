@@ -51,7 +51,7 @@ export const ARVO_PACKAGES = {
 } as const;
 
 export const ARVO_TOOLS = {
-  '@arvo-tools/agentic': '^1.2.15',
+  '@arvo-tools/agentic': '^1.2.16',
 } as const;
 
 export const OTEL_BROWSER_PACKAGES = {

@@ -35,8 +35,8 @@ export const ArvoAgenticParadigmPage = withNavBar(() => {
               <h1 className={`${Md3Typography.display.large} text-on-surface`}>{AgenticResumableDesignLearn.name}</h1>
               <Separator padding={24} />
               <p className={`${Md3Typography.headline.medium} text-on-surface-variant`}>
-                Build applications, systems, and experiences where intelligence, automation, and human judgment
-                collaborate naturally to achieve value.
+                Build sustainable applications, systems, and experiences where intelligence, automation, and human
+                judgment collaborate naturally to achieve value.
               </p>
               <Separator padding={24} />
               <a
