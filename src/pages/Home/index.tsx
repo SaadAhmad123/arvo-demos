@@ -30,7 +30,8 @@ export const HomePage = withNavBar(() => {
       <ContentContainer content>
         <div className={Md3ContentPadding}>
           <h1 className={`${Md3Typography.headline.large} text-on-surface-variant font-light`}>
-            Build systems where AI, agents, humans, workflows, and business logic collaborate seamlessly.
+            Build enterprise-grade applications and systems where AI, agents, humans, workflows, and business logic can
+            collaborate seamlessly to deliver valuable &amp; transformative solutions.
           </h1>
         </div>
       </ContentContainer>
@@ -94,6 +95,111 @@ export const HomePage = withNavBar(() => {
       <Installation />
       <Separator padding={18} />
       <Demo />
+      <ContentContainer content>
+        <div className={Md3ContentPadding}>
+          <ReMark
+            bodyTextSize='large'
+            content={`
+# \`@arvo-tools\` — Arvo's Standard Library
+
+Once you've mastered Arvo's core paradigm, explore the 
+[\`@arvo-tools\`](https://github.com/SaadAhmad123/arvo-tools/tree/main/packages) 
+ecosystem which is Arvo's standard library providing production-ready 
+infrastructure implementations. These packages help you deploy 
+applications across various modalities and infrastructure 
+configurations without changing your business logic.
+
+## Leveraging JavaScript Concurrency
+
+For example, the \`@arvo-tools/concurrent\` package provides 
+concurrent in-process event routing and state management, enabling 
+you to maximize JavaScript's concurrency capabilities within 
+a single Node.js process.
+
+<br/>
+
+\`\`\`bash
+pnpm add @arvo-tools/concurrent
+\`\`\`
+
+<br/>
+
+Integrating concurrent infrastructure into the previous example 
+requires minimal changes to \`main.ts\`:
+
+<br/>
+
+\`\`\`typescript
+import { confirm } from '@inquirer/prompts';
+import { ArvoEvent, createArvoEventFactory } from 'arvo-core';
+import { addHandler } from './handlers/add.service.ts';
+import { productHandler } from './handlers/product.service.ts';
+import { averageWorkflow } from './handlers/average.workflow.ts';
+import {
+  weightedAverageContract,
+  weightedAverageResumable,
+} from './handlers/weighted.average.resumable.ts';
+import {
+  context,
+  SpanContext,
+  SpanKind,
+  SpanStatusCode,
+  trace,
+} from '@opentelemetry/api';
+import { humanApprovalContract } from './handlers/human.approval.contract.ts';
+import {
+  ConcurrentMachineMemory,
+  createConcurrentEventBroker,
+} from '@arvo-tools/concurrent';
+
+
+const tracer = trace.getTracer('main-agent-tracer');
+const TEST_EVENT_SOURCE = 'test.test.test';
+
+// Replace SimpleMachineMemory with concurrent implementation
+const memory = new ConcurrentMachineMemory();
+
+export const executeHandlers = async (
+  event: ArvoEvent,
+): Promise<ArvoEvent[]> => {
+  const domainedEvents: ArvoEvent[] = [];
+  
+  // Replace SimpleEventBroker with concurrent implementation
+  // Each handler gets independent concurrency control via prefetch limits
+  const { resolve, broker } = createConcurrentEventBroker([
+    { handler: addHandler(), prefetch: 2 },
+    { handler: productHandler(), prefetch: 2 },
+    { handler: averageWorkflow({ memory }), prefetch: 3 },
+    { handler: weightedAverageResumable({ memory }), prefetch: 2 },
+  ], {
+    onDomainedEvents: async ({ event }) => {
+      domainedEvents.push(event);
+    },
+  });
+  const response = await resolve(event);
+  broker.clear();
+  return response ? [response, ...domainedEvents] : domainedEvents;
+};
+
+// Rest of the code remains unchanged
+\`\`\`
+
+<br/>
+
+The concurrent broker maintains per-handler concurrency limits 
+through independent queue management, enabling optimal throughput 
+for I/O-bound handlers while preventing resource exhaustion. 
+\`ConcurrentMachineMemory\` adds atomic locking with automatic 
+expiration, preventing race conditions when multiple handlers 
+access the same workflow state.
+
+Additional \`@arvo-tools\` packages supporting various deployment 
+modalities and infrastructure integrations will continue expanding 
+the ecosystem.
+          `}
+          />
+        </div>
+      </ContentContainer>
       <Separator padding={36} />
       <PageNavigation
         next={{

@@ -1,5 +1,5 @@
 import { FaLightbulb, FaPuzzlePiece } from 'react-icons/fa6';
-import { MdHome } from 'react-icons/md';
+import { MdHome, MdGavel } from 'react-icons/md';
 import type { NavOption } from './types';
 
 export const navOptions: NavOption[] = [
@@ -20,5 +20,11 @@ export const navOptions: NavOption[] = [
     icon: <FaLightbulb size={18} />,
     link: '/advanced',
     isSelected: (location) => location.pathname.startsWith('/advanced'),
+  },
+  {
+    title: 'License',
+    icon: <MdGavel size={20} />,
+    link: '/license',
+    isSelected: (location) => location.pathname === '/license',
   },
 ];

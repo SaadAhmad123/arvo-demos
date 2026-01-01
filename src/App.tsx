@@ -16,6 +16,7 @@ import { ArvoMachinePage } from './pages/Learn/pages/ArvoMachine';
 import { ArvoMentalModelPage } from './pages/Learn/pages/ArvoMentalModel';
 import { ArvoOrchestratorPage } from './pages/Learn/pages/ArvoOrchestrator';
 import { ArvoResumablePage } from './pages/Learn/pages/ArvoResumable';
+import { LicensePage } from './pages/License';
 
 export default () => {
   useSystemTheme();
@@ -38,6 +39,7 @@ export default () => {
       <Route path='/advanced/arvo-agentic-resumables' element={<ArvoAgenticParadigmPage />} />
       <Route path='/advanced/error-boundaries' element={<AdvancedPage />} />
       <Route path='/advanced/multi-domain-broadcasting' element={<AdvancedPage />} />
+      <Route path='/license' element={<LicensePage />} />
       <Route path='/404' element={<NotFoundPage />} />
       <Route path='*' element={<Navigate to={'/404'} replace />} />
     </Routes>
